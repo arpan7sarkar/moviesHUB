@@ -1,6 +1,6 @@
 import { apiSlice } from '../api/apiSlice';
 
-export const movieApiSlice = apiSlice.injectEndpoints({
+export const movieApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTrending: builder.query({
       query: ({ mediaType, timeWindow, page = 1 }) => ({
@@ -76,4 +76,5 @@ export const {
   useGetPersonDetailsQuery,
   useGetPersonCreditsQuery,
   useGetRecommendationsQuery,
-} = movieApiSlice;
+} = movieApi;
+
