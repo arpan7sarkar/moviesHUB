@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  /* Cinematic Color Palette */
+  --color-primary: #0A0E17;
+  --color-secondary: #111827;
+  --color-elevated: #1A2035;
+  --color-surface: #1F2937;
+  --color-accent: #D4A853;
+  --color-accent-hover: #E8C06A;
+  --color-accent-subtle: rgba(212, 168, 83, 0.1);
+  --color-text-primary: #F3F4F6;
+  --color-text-secondary: #9CA3AF;
+  --color-text-muted: #6B7280;
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-danger: #EF4444;
+  --color-border: rgba(255, 255, 255, 0.06);
+
+  /* Typography */
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px rgba(212, 168, 83, 0.15);
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    /* Custom CSS vars for manual use/interpolation */
+    --accent: #D4A853;
+    --desaturate-factor: 0.85; 
+  }
+
+  [data-theme="light"] {
+    --color-primary: #FAFAFA;
+    --color-secondary: #FFFFFF;
+    --color-elevated: #F9FAFB;
+    --color-surface: #F3F4F6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #4B5563;
+    --color-text-muted: #9CA3AF;
+  }
+
+  body {
+    @apply bg-primary text-text-primary font-body antialiased transition-colors duration-300;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight font-semibold;
+  }
+
+  /* Prevent high-saturation vibrant colors specifically (Neon Blues/Purples as per global rules) */
+  [class*="blue"], [class*="purple"], [class*="indigo"], [class*="violet"] {
+    filter: saturate(var(--desaturate-factor));
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-primary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-elevated rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply w-full max-w-[1400px] mx-auto px-5 md:px-10 lg:px-20;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-accent text-primary font-medium rounded-md active:scale-95 transition-all shadow-md active:shadow-sm;
+  }
+
+  .glass-panel {
+    @apply bg-secondary/80 backdrop-blur-md border border-white/5 rounded-lg shadow-elevated;
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(212, 168, 83, 0.4);
+  }
+}
+
+/* Base resets */
+img, video {
+  @apply max-w-full block h-auto rounded-[inherit];
+}
+
+:focus-visible {
+  @apply outline-2 outline-accent outline-offset-3 rounded-sm;
+}
