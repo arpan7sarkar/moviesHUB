@@ -31,14 +31,13 @@ app.use(cookieParser());
 // Apply rate limiter to all requests
 app.use('/api', apiLimiter);
 
-// Routes (Placeholders)
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+// app.use('/api/tmdb', require('./routes/tmdbRoutes'));
+
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to MoviesHUB API' });
 });
-
-// TMDB & Auth routes will be added here
-// app.use('/api/auth', require('./routes/authRoutes'));
-// app.use('/api/tmdb', require('./routes/tmdbRoutes'));
 
 // Error Handling
 app.use(errorHandler);
