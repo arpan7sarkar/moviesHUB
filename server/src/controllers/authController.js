@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 const { generateToken, generateRefreshToken } = require('../utils/generateToken');
 
 const registerUser = async (req, res, next) => {
@@ -93,8 +94,57 @@ const logoutUser = async (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
+// @desc    Refresh access token
+// @route   POST /api/auth/refresh
+// @access  Public
+const refreshToken = async (req, res, next) => {
+  try {
+    const cookies = req.cookies;
+
+    if (!cookies || !cookies.refreshToken) {
+      res.status(401);
+      throw new Error('No refresh token provided');
+    }
+
+    const refreshToken = cookies.refreshToken;
+
+    // Verify refresh token
+    jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET,
+      async (err, decoded) => {
+        if (err) {
+          res.status(403);
+          return next(new Error('Invalid or expired refresh token'));
+        }
+
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+          res.status(401);
+          return next(new Error('User not found'));
+        }
+
+        const accessToken = generateToken(user._id);
+
+        res.json({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          avatar: user.avatar,
+          token: accessToken,
+        });
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
+  refreshToken,
 };
