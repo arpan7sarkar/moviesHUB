@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+    <main className="min-h-screen bg-primary">
+      <div className="container-custom py-20 flex flex-col items-center justify-center">
+        <h1 className="text-5xl md:text-7xl font-display font-bold text-accent text-glow tracking-tighter">
+          CineVault
+        </h1>
+        <p className="mt-4 text-xl text-text-secondary font-body">
+          The Ultimate Cinematic Experience
         </p>
+        <div className="mt-12 group glass-panel p-8 max-w-md text-center hover:border-accent/30 transition-all duration-300">
+          <p className="text-text-primary text-lg">
+            Tailwind v4 is <span className="text-success font-semibold italic">Live</span>.
+          </p>
+          <div className="mt-6 flex gap-4 justify-center">
+            <button className="btn-primary">Explore Movies</button>
+            <button className="px-6 py-2.5 border border-border text-text-primary rounded-md hover:bg-surface transition-all">
+              Sign In
+            </button>
+          </div>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </main>
   )
 }
 
 export default App
+
