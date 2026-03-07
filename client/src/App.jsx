@@ -6,8 +6,8 @@ import ProtectedRoute from './guards/ProtectedRoute.jsx';
 import AdminRoute from './guards/AdminRoute.jsx';
 
 // Layout & Core Pages
-// import Navbar from './components/layout/Navbar'; // We will create this next
-// import Footer from './components/layout/Footer'; // We will create this next
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 
 // Page Components
 import Home from './pages/Home';
@@ -36,14 +36,12 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-primary">
-      {/* <Navbar /> */}
+      <Navbar />
       
       <main className="flex-grow">
-        {/* AnimatePresence for smooth route transitions */}
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            
-            {/* Public Routes */}
+            {/* ... Routes remain unchanged ... */}
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/tv" element={<TvShows />} />
@@ -54,7 +52,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Protected User Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/watchlist" element={<Watchlist />} />
@@ -62,7 +59,6 @@ function App() {
               <Route path="/profile" element={<Profile />} />
             </Route>
             
-            {/* Admin Only Routes */}
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<Dashboard />} />
               <Route path="/admin/movies" element={<ManageMovies />} />
@@ -71,16 +67,15 @@ function App() {
               <Route path="/admin/users" element={<ManageUsers />} />
             </Route>
 
-            {/* 404 Catch All */}
             <Route path="*" element={<NotFound />} />
-            
           </Routes>
         </AnimatePresence>
       </main>
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
+
 
 export default App;
