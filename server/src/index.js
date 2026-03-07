@@ -33,7 +33,7 @@ app.use('/api', apiLimiter);
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
-// app.use('/api/tmdb', require('./routes/tmdbRoutes'));
+app.use('/api/tmdb', require('./routes/tmdbRoutes'));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to MoviesHUB API' });
