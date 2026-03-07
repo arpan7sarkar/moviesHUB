@@ -1,0 +1,19 @@
+const mongoose = require('mongoose');
+
+const connectDB = async (retryCount = 5) => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    if (retryCount > 0) {
+      console.error(`Error: ${error.message}. Retrying... (${retryCount} retries left)`);
+      setTimeout(() => connectDB(retryCount - 1), 5000);
+    } else {
+      console.error(`Error: ${error.message}. Max retries reached.`);
+      process.exit(1);
+    }
+  }
+};
+
+module.exports = connectDB;
+
