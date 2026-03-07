@@ -10,6 +10,14 @@ export const movieApi = apiSlice.injectEndpoints({
       }),
       providesTags: ['Movie'],
     }),
+    getList: builder.query({
+      query: ({ mediaType, listType, page = 1 }) => ({
+        url: `/tmdb/${mediaType}/${listType}`,
+        method: 'GET',
+        params: { page },
+      }),
+      providesTags: ['Movie'],
+    }),
     getMovieDetails: builder.query({
       query: (id) => ({
         url: `/tmdb/movie/${id}`,
@@ -22,7 +30,7 @@ export const movieApi = apiSlice.injectEndpoints({
         url: `/tmdb/tv/${id}`,
         method: 'GET',
       }),
-      providesTags: (result, error, id) => [{ type: 'Movie', id }], // Still using Movie tag for consistency in details
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
     }),
     getVideos: builder.query({
       query: ({ mediaType, id }) => ({
@@ -38,11 +46,12 @@ export const movieApi = apiSlice.injectEndpoints({
       }),
     }),
     discover: builder.query({
-      query: ({ mediaType, with_genres, page = 1 }) => ({
+      query: ({ mediaType, page = 1, ...params }) => ({
         url: `/tmdb/discover/${mediaType}`,
         method: 'GET',
-        params: { with_genres, page },
+        params: { page, ...params },
       }),
+      providesTags: ['Movie'],
     }),
     getPersonDetails: builder.query({
       query: (id) => ({
@@ -68,6 +77,7 @@ export const movieApi = apiSlice.injectEndpoints({
 
 export const {
   useGetTrendingQuery,
+  useGetListQuery,
   useGetMovieDetailsQuery,
   useGetTvDetailsQuery,
   useGetVideosQuery,

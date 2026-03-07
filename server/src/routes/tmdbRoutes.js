@@ -8,6 +8,7 @@ const {
   getVideos,
   getTvSeasonDetails,
   discover,
+  getList,
   getPersonDetails,
   getPersonCredits,
   getRecommendations,
@@ -23,5 +24,9 @@ router.get('/discover/:mediaType', discover);
 router.get('/person/:id', getPersonDetails);
 router.get('/person/:id/combined_credits', getPersonCredits);
 router.get('/:mediaType/:id/recommendations', getRecommendations);
+
+// Generic list route — MUST be last to avoid shadowing specific routes
+// Handles: /movie/popular, /movie/top_rated, /tv/popular, /tv/top_rated, etc.
+router.get('/:mediaType/:listType', getList);
 
 module.exports = router;

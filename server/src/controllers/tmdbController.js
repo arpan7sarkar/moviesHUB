@@ -81,14 +81,27 @@ const getTvSeasonDetails = async (req, res, next) => {
   }
 };
 
-// @desc    Discover movies/tv shows
+// @desc    Discover movies/tv shows (supports all TMDB discover params)
 // @route   GET /api/tmdb/discover/:mediaType
 const discover = async (req, res, next) => {
   try {
     const { mediaType } = req.params;
-    const { page, with_genres } = req.query;
     const { data } = await tmdbFetch.get(`/discover/${mediaType}`, {
-      params: { page, with_genres },
+      params: req.query,
+    });
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get list (popular, top_rated, now_playing, etc.)
+// @route   GET /api/tmdb/:mediaType/:listType
+const getList = async (req, res, next) => {
+  try {
+    const { mediaType, listType } = req.params;
+    const { data } = await tmdbFetch.get(`/${mediaType}/${listType}`, {
+      params: req.query,
     });
     res.json(data);
   } catch (error) {
@@ -143,6 +156,7 @@ module.exports = {
   getVideos,
   getTvSeasonDetails,
   discover,
+  getList,
   getPersonDetails,
   getPersonCredits,
   getRecommendations,
