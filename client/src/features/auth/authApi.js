@@ -1,6 +1,6 @@
 import { apiSlice } from '../api/apiSlice';
 
-export const authApiSlice = apiSlice.injectEndpoints({
+export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -24,10 +24,16 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
     getMe: builder.query({
       query: () => ({
-        url: '/auth/me', // We should define this route in the server next
+        url: '/auth/me', // Ensure to define this route in the server
         method: 'GET',
       }),
       providesTags: ['User'],
+    }),
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'POST',
+      }),
     }),
   }),
 });
@@ -37,4 +43,5 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetMeQuery,
-} = authApiSlice;
+  useRefreshTokenMutation,
+} = authApi;
