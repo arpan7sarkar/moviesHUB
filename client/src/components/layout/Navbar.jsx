@@ -44,10 +44,10 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out border-b will-change-transform ${
+        className={`fixed top-0 w-full z-50 border-b will-change-transform transition-[backdrop-filter,background-color,box-shadow,padding,height,border-color] duration-500 ease-out ${
           isScrolled 
-            ? 'bg-primary/95 backdrop-blur-md border-border py-2 h-16 md:h-[72px] shadow-elevated' 
-            : 'bg-primary/0 border-transparent py-4 h-20 md:h-[88px]'
+            ? 'bg-primary/85 backdrop-blur-xl border-border/90 py-2 h-16 md:h-[72px] shadow-[0_10px_35px_rgba(0,0,0,0.28)]' 
+            : 'bg-primary/0 backdrop-blur-0 border-transparent py-4 h-20 md:h-[88px]'
         }`}
       >
         <div className="container-custom flex items-center justify-between">

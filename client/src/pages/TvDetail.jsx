@@ -413,7 +413,7 @@ const TvDetail = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowTrailer(true)}
-                    className="btn-primary flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
+                    className="btn-primary cta-pulse flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
                   >
                     <FiPlay size={20} className="fill-primary" />
                     <span className="font-black uppercase tracking-tight">Play Trailer</span>

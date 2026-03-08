@@ -108,7 +108,7 @@ const HeroSlider = () => {
                     <div className="flex flex-wrap items-center gap-3">
                       <Link
                         to={`/${mediaRoute}/${item.id}`}
-                        className="btn-primary flex items-center gap-2 px-7 py-3 text-sm md:text-base"
+                        className="btn-primary cta-pulse flex items-center gap-2 px-7 py-3 text-sm md:text-base"
                       >
                         <FiPlay size={16} className="fill-primary" />
                         <span className="font-semibold">Watch Now</span>
