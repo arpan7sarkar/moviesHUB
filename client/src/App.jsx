@@ -1,5 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 // Route Guards
 import ProtectedRoute from './guards/ProtectedRoute.jsx';
@@ -36,8 +38,14 @@ import { useGetMeQuery } from './features/auth/authApi';
 
 function App() {
   const location = useLocation();
+  const mode = useSelector((state) => state.theme.mode);
   const token = localStorage.getItem('token');
-  
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', mode);
+    localStorage.setItem('theme', mode);
+  }, [mode]);
+
   // Initial auth check
   const { isLoading: authLoading } = useGetMeQuery(undefined, {
     skip: !token,
