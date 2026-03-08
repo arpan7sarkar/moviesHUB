@@ -1,21 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiClock, FiTrash2, FiSearch, FiFilm } from 'react-icons/fi';
+import { FiClock, FiTrash2, FiSearch } from 'react-icons/fi';
 import { useGetHistoryQuery, useClearHistoryMutation } from '../features/user/userApi';
 import SectionTitle from '../components/ui/SectionTitle';
 import { Link } from 'react-router-dom';
+import Toast from '../components/ui/Toast';
+import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
 
 const History = () => {
   const { data: history, isLoading, isError } = useGetHistoryQuery();
   const [clearHistory, { isLoading: isClearing }] = useClearHistoryMutation();
+  const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const handleClearHistory = async () => {
-    if (window.confirm('Are you sure you want to clear your entire watch history?')) {
-      try {
-        await clearHistory().unwrap();
-      } catch (err) {
-        console.error('Failed to clear history:', err);
-      }
+    try {
+      await clearHistory().unwrap();
+      setShowClearConfirm(false);
+      setToast({
+        show: true,
+        message: 'Watch history cleared successfully.',
+        type: 'success',
+      });
+    } catch (err) {
+      console.error('Failed to clear history:', err);
+      setToast({
+        show: true,
+        message: err?.data?.message || 'Failed to clear watch history.',
+        type: 'error',
+      });
     }
   };
 
@@ -50,8 +63,6 @@ const History = () => {
     return groups;
   }, {});
 
-  const TMDB_IMG = 'https://image.tmdb.org/t/p/w200';
-
   return (
     <div className="min-h-screen pt-32 pb-20 container-custom">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
@@ -64,12 +75,12 @@ const History = () => {
         
         {history?.length > 0 && (
           <button
-            onClick={handleClearHistory}
+            onClick={() => setShowClearConfirm(true)}
             disabled={isClearing}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger/10 hover:bg-danger/20 text-danger text-sm font-bold transition-all disabled:opacity-50 cursor-pointer w-fit self-end md:self-center"
           >
             <FiTrash2 />
-            {isClearing ? 'Clearing...' : 'Clear History'}
+            {isClearing ? 'Clearing...' : 'Clear All'}
           </button>
         )}
       </div>
@@ -101,17 +112,12 @@ const History = () => {
                     >
                       <Link to={item.mediaType === 'tv' ? `/tv/${item.tmdbId}` : `/movies/${item.tmdbId}`} className="shrink-0">
                         <div className="w-20 aspect-2/3 rounded-lg overflow-hidden bg-elevated">
-                          {item.poster_path || item.posterPath ? (
-                            <img 
-                              src={`${TMDB_IMG}${item.poster_path || item.posterPath}`} 
-                              alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-text-muted">
-                              <FiFilm size={20} />
-                            </div>
-                          )}
+                          <img 
+                            src={resolvePoster(item.poster_path || item.posterPath, 'w200')}
+                            alt={item.title}
+                            onError={handlePosterError}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
                         </div>
                       </Link>
                       
@@ -152,6 +158,37 @@ const History = () => {
           </Link>
         </motion.div>
       )}
+
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.show}
+        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
+      />
+
+      <Toast
+        message="Clear your entire watch history?"
+        type="info"
+        isVisible={showClearConfirm}
+        duration={0}
+        className="bottom-16 md:bottom-20"
+        onClose={() => setShowClearConfirm(false)}
+        showClose={!isClearing}
+        actions={[
+          {
+            label: 'Cancel',
+            variant: 'neutral',
+            onClick: () => setShowClearConfirm(false),
+            disabled: isClearing,
+          },
+          {
+            label: isClearing ? 'Clearing...' : 'Yes, Clear',
+            variant: 'danger',
+            onClick: handleClearHistory,
+            disabled: isClearing,
+          },
+        ]}
+      />
     </div>
   );
 };

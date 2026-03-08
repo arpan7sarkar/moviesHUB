@@ -98,6 +98,24 @@
 }
 
 @layer utilities {
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes ctaPulse {
+    0%, 100% {
+      box-shadow: 0 8px 24px rgba(212, 168, 83, 0.22);
+    }
+    50% {
+      box-shadow: 0 10px 34px rgba(212, 168, 83, 0.32);
+    }
+  }
+
   .visually-hidden {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
     clip: rect(0, 0, 0, 0);
@@ -113,6 +131,44 @@
 
   .text-glow {
     text-shadow: 0 0 10px rgba(212, 168, 83, 0.4);
+  }
+
+  .skeleton-shimmer {
+    @apply relative overflow-hidden;
+  }
+
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.18) 50%,
+      rgba(255, 255, 255, 0) 80%
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.6s infinite;
+  }
+
+  [data-theme="light"] .skeleton-shimmer::after {
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.75) 50%,
+      rgba(255, 255, 255, 0) 80%
+    );
+  }
+
+  .cta-pulse {
+    animation: ctaPulse 2.8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer::after,
+  .cta-pulse {
+    animation: none !important;
   }
 }
 

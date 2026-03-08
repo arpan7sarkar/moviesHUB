@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiX, FiArrowRight, FiFilm, FiTv, FiUser } from 'react-icons/fi';
 import { useSearchMultiQuery } from '../../features/movies/movieApi';
 import useDebounce from '../../hooks/useDebounce';
+import { resolvePoster, handlePosterError } from '../../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -48,12 +49,22 @@ const ResultItem = ({ item, onClose }) => {
       className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/[0.06] transition-colors group"
     >
       <div className="w-10 h-14 rounded-lg overflow-hidden bg-elevated border border-border/20 flex-shrink-0">
-        {imgPath ? (
-          <img src={`${TMDB_IMG}/w92${imgPath}`} alt={title} className="w-full h-full object-cover" loading="lazy" />
+        {mediaType === 'person' ? (
+          imgPath ? (
+            <img src={`${TMDB_IMG}/w92${imgPath}`} alt={title} className="w-full h-full object-cover" loading="lazy" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-text-muted">
+              <Icon size={16} />
+            </div>
+          )
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-muted">
-            <Icon size={16} />
-          </div>
+          <img
+            src={resolvePoster(imgPath, 'w92')}
+            alt={title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onError={handlePosterError}
+          />
         )}
       </div>
       <div className="flex-1 min-w-0">

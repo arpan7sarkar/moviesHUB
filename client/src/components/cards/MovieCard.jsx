@@ -1,32 +1,28 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiHeart, FiStar, FiFilm, FiTv, FiBookmark } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
-import { 
-  useGetFavoritesQuery, 
-  useAddToFavoritesMutation, 
+import {
+  useGetFavoritesQuery,
+  useAddToFavoritesMutation,
   useRemoveFromFavoritesMutation,
   useGetWatchlistQuery,
   useAddToWatchlistMutation,
-  useRemoveFromWatchlistMutation
+  useRemoveFromWatchlistMutation,
 } from '../../features/user/userApi';
-import { useNavigate } from 'react-router-dom';
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p';
+import { resolvePoster, handlePosterError } from '../../utils/mediaFallbacks';
 
 const MovieCard = ({ item, mediaType: propMediaType }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
-  const { isAuthenticated } = useSelector(state => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  // Get current favorites to check if this item is favorited
   const { data: favorites } = useGetFavoritesQuery(undefined, {
-    skip: !isAuthenticated
+    skip: !isAuthenticated,
   });
 
-  // Get current watchlist
   const { data: watchlist } = useGetWatchlistQuery(undefined, {
-    skip: !isAuthenticated
+    skip: !isAuthenticated,
   });
 
   const [addFavorite] = useAddToFavoritesMutation();
@@ -35,18 +31,18 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
   const [removeWatchlist] = useRemoveFromWatchlistMutation();
 
   const tmdbId = item.id || item.tmdbId;
-  const isFavorited = favorites?.some(fav => Number(fav.tmdbId) === Number(tmdbId));
-  const isInWatchlist = watchlist?.some(w => Number(w.tmdbId) === Number(tmdbId));
+  const isFavorited = favorites?.some((fav) => Number(fav.tmdbId) === Number(tmdbId));
+  const isInWatchlist = watchlist?.some((w) => Number(w.tmdbId) === Number(tmdbId));
 
   const title = item.title || item.name || 'Untitled';
   const year = (item.release_date || item.first_air_date)?.substring(0, 4);
   const rating = item.vote_average?.toFixed(1);
+  const numericRating = Number(item.vote_average || 0);
   const type = propMediaType || item.media_type || 'movie';
   const linkPath = type === 'tv' ? `/tv/${tmdbId}` : `/movies/${tmdbId}`;
-  
-  // Handle poster path carefully (from TMDB API or from our DB)
+
   const pPath = item.poster_path || item.posterPath;
-  const posterUrl = pPath ? `${TMDB_IMG}/w300${pPath}` : null;
+  const posterUrl = resolvePoster(pPath, 'w300');
 
   const handleFavoriteClick = async (e) => {
     e.preventDefault();
@@ -67,7 +63,7 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
           posterPath: pPath,
           mediaType: type,
           releaseDate: item.release_date || item.first_air_date,
-          voteAverage: item.vote_average
+          voteAverage: item.vote_average,
         }).unwrap();
       }
     } catch (err) {
@@ -94,7 +90,7 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
           posterPath: pPath,
           mediaType: type,
           releaseDate: item.release_date || item.first_air_date,
-          voteAverage: item.vote_average
+          voteAverage: item.vote_average,
         }).unwrap();
       }
     } catch (err) {
@@ -102,51 +98,57 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
     }
   };
 
-  const getRatingColor = (val) => {
-    if (val >= 7) return 'text-success';
-    if (val >= 5) return 'text-warning';
+  const getRatingColor = (value) => {
+    if (value >= 7) return 'text-success';
+    if (value >= 5) return 'text-warning';
     return 'text-danger';
   };
 
   return (
     <Link
       to={linkPath}
-      className="group relative flex flex-col w-full rounded-lg overflow-hidden cursor-pointer focus-visible:outline-accent"
+      className="group relative flex w-full flex-col cursor-pointer focus-visible:outline-accent"
       id={`movie-card-${tmdbId}`}
     >
-      {/* Poster Container */}
-      <div className="relative w-full aspect-[2/3] rounded-lg overflow-hidden bg-elevated shadow-card transition-all duration-300 group-hover:scale-[1.05] group-hover:shadow-elevated group-hover:z-10">
-        {/* Blur placeholder */}
-        {!imgLoaded && (
-          <div className="absolute inset-0 bg-elevated animate-pulse rounded-lg" />
-        )}
+      <div className="relative w-full aspect-[2/3] overflow-hidden rounded-2xl border border-border/70 bg-elevated shadow-[0_14px_40px_rgba(0,0,0,0.28)] transition-all duration-500 group-hover:-translate-y-1.5 group-hover:border-accent/45 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.45)]">
+        {!imgLoaded && <div className="absolute inset-0 rounded-2xl bg-elevated animate-pulse" />}
 
-        {/* Poster Image */}
-        {posterUrl ? (
-          <img
-            src={posterUrl}
-            alt={title}
-            loading="lazy"
-            onLoad={() => setImgLoaded(true)}
-            className={`w-full h-full object-cover transition-opacity duration-500 ${
-              imgLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-surface text-text-muted">
-            <FiFilm size={40} />
+        <img
+          src={posterUrl}
+          alt={title}
+          loading="lazy"
+          onLoad={() => setImgLoaded(true)}
+          onError={handlePosterError}
+          className={`h-full w-full object-cover transition-all duration-700 ${
+            imgLoaded ? 'scale-100 opacity-100 group-hover:scale-110' : 'scale-105 opacity-0'
+          }`}
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/0" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,168,83,0.26),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+        {rating && (
+          <div className="absolute left-3 top-3 z-20">
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/55 px-2.5 py-1 text-xs font-semibold backdrop-blur-sm ${getRatingColor(
+                numericRating
+              )}`}
+            >
+              <FiStar size={11} className="fill-current" />
+              {rating}
+            </span>
           </div>
         )}
 
-        {/* Action Overlays (top) */}
-        <div className="absolute top-2 right-2 flex flex-col gap-2 z-20">
+        <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
           <button
             onClick={handleFavoriteClick}
-            className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-200 border border-white/10
-              ${isFavorited
-                ? 'bg-danger text-white scale-110'
-                : 'bg-black/40 text-white/80 opacity-0 group-hover:opacity-100 hover:bg-danger/80 hover:text-white'
-              }`}
+            className={`rounded-full border border-white/20 p-2 backdrop-blur-md transition-all duration-200 ${
+              isFavorited
+                ? 'scale-110 bg-danger text-white shadow-[0_8px_22px_rgba(239,68,68,0.5)]'
+                : 'bg-black/45 text-white/90 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-danger/85 hover:text-white'
+            }`}
             aria-label="Toggle favorite"
           >
             <FiHeart size={14} className={isFavorited ? 'fill-white' : ''} />
@@ -154,40 +156,26 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
 
           <button
             onClick={handleWatchlistClick}
-            className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-200 border border-white/10
-              ${isInWatchlist
-                ? 'bg-accent text-primary scale-110'
-                : 'bg-black/40 text-white/80 opacity-0 group-hover:opacity-100 hover:bg-accent/80 hover:text-primary'
-              }`}
+            className={`rounded-full border border-white/20 p-2 backdrop-blur-md transition-all duration-200 ${
+              isInWatchlist
+                ? 'scale-110 bg-accent text-primary shadow-[0_8px_22px_rgba(212,168,83,0.45)]'
+                : 'bg-black/45 text-white/90 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-accent/85 hover:text-primary'
+            }`}
             aria-label="Toggle watchlist"
           >
             <FiBookmark size={14} className={isInWatchlist ? 'fill-current' : ''} />
           </button>
         </div>
 
-        {/* Slide-up detail panel on hover */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-3 pt-12 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-          <h4 className="text-sm font-semibold text-white truncate mb-1">{title}</h4>
-          <div className="flex items-center gap-2 text-xs">
-            {/* Rating */}
-            {rating && (
-              <span className={`flex items-center gap-0.5 font-mono font-semibold ${getRatingColor(item.vote_average)}`}>
-                <FiStar size={10} className="fill-current" />
-                {rating}
-              </span>
-            )}
-            {year && <span className="text-white/60">• {year}</span>}
-            <span className="text-white/40 ml-auto">
-              {type === 'tv' ? <FiTv size={12} /> : <FiFilm size={12} />}
-            </span>
-          </div>
-        </div>
       </div>
 
-      {/* Title & Year below card (visible always, for mobile) */}
-      <div className="mt-2 px-0.5 text-left">
-        <h3 className="text-sm font-medium text-text-primary truncate leading-tight">{title}</h3>
-        <p className="text-xs text-text-muted mt-0.5">{year || 'TBA'}</p>
+      <div className="mt-3 px-1 text-left">
+        <h3 className="truncate text-sm font-semibold leading-tight text-text-primary transition-colors duration-200 group-hover:text-accent">
+          {title}
+        </h3>
+        <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-text-muted">
+          {type === 'tv' ? 'Series' : 'Feature'} | {year || 'TBA'}
+        </p>
       </div>
     </Link>
   );

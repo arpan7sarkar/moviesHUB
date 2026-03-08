@@ -29,6 +29,7 @@ import {
   useRemoveFromWatchlistMutation,
   useAddToHistoryMutation,
 } from '../features/user/userApi';
+import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -145,11 +146,9 @@ const EpisodeCard = ({ episode, index }) => {
             </span>
           )}
         </div>
-        {episode.overview && (
-          <p className="text-text-muted text-xs md:text-sm leading-relaxed line-clamp-2">
-            {episode.overview}
-          </p>
-        )}
+        <p className="text-text-muted text-xs md:text-sm leading-relaxed line-clamp-2">
+          {episode.overview || 'Description not available'}
+        </p>
       </div>
     </motion.div>
   );
@@ -325,13 +324,12 @@ const TvDetail = () => {
               transition={{ duration: 0.5 }}
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
-                {tv.poster_path ? (
-                  <img src={`${TMDB_IMG}/w500${tv.poster_path}`} alt={title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-elevated flex items-center justify-center text-text-muted text-6xl font-display">
-                    {title?.charAt(0)}
-                  </div>
-                )}
+                <img
+                  src={resolvePoster(tv.poster_path, 'w500')}
+                  alt={title}
+                  onError={handlePosterError}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </motion.div>
 
@@ -399,26 +397,24 @@ const TvDetail = () => {
               )}
 
               {/* Overview */}
-              {tv.overview && (
-                <div className="mb-12 max-w-4xl">
-                  <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-accent/80 mb-4">Overview</h3>
-                  <p className="text-text-primary text-lg md:text-xl leading-relaxed font-normal opacity-90">{tv.overview}</p>
-                </div>
-              )}
+              <div className="mb-12 max-w-4xl">
+                <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-accent/80 mb-4">Overview</h3>
+                <p className="text-text-primary text-lg md:text-xl leading-relaxed font-normal opacity-90">
+                  {tv.overview || 'Description not available'}
+                </p>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 justify-center md:justify-start mb-16">
-                {trailer && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowTrailer(true)}
-                    className="btn-primary flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
-                  >
-                    <FiPlay size={20} className="fill-primary" />
-                    <span className="font-black uppercase tracking-tight">Play Trailer</span>
-                  </motion.button>
-                )}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowTrailer(true)}
+                  className="btn-primary cta-pulse flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
+                >
+                  <FiPlay size={20} className="fill-primary" />
+                  <span className="font-black uppercase tracking-tight">Play Trailer</span>
+                </motion.button>
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-center">
                   <motion.button
                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -498,13 +494,12 @@ const TvDetail = () => {
               {/* Season Overview */}
               {seasonData && (
                 <div className="mb-8 flex items-center gap-4">
-                  {seasonData.poster_path && (
-                    <img
-                      src={`${TMDB_IMG}/w92${seasonData.poster_path}`}
-                      alt={seasonData.name}
-                      className="w-14 h-20 rounded-lg object-cover border border-border/20 flex-shrink-0"
-                    />
-                  )}
+                  <img
+                    src={resolvePoster(seasonData.poster_path, 'w92')}
+                    alt={seasonData.name}
+                    onError={handlePosterError}
+                    className="w-14 h-20 rounded-lg object-cover border border-border/20 flex-shrink-0"
+                  />
                   <div>
                     <h3 className="text-lg font-bold text-text-primary">{seasonData.name}</h3>
                     <p className="text-text-muted text-sm">

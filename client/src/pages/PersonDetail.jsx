@@ -9,6 +9,7 @@ import { useGetPersonDetailsQuery } from '../features/movies/movieApi';
 import PageTransition from '../components/layout/PageTransition';
 import DetailSkeleton from '../components/skeletons/DetailSkeleton';
 import ContentRow from '../components/media/ContentRow';
+import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -45,11 +46,13 @@ const FilmographyItem = ({ credit, mediaType }) => {
     >
       {/* Poster Thumbnail */}
       <div className="w-10 h-14 rounded-lg overflow-hidden bg-elevated border border-border/20 flex-shrink-0">
-        {credit.poster_path ? (
-          <img src={`${TMDB_IMG}/w92${credit.poster_path}`} alt={title} className="w-full h-full object-cover" loading="lazy" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-muted"><FiFilm size={14} /></div>
-        )}
+        <img
+          src={resolvePoster(credit.poster_path, 'w92')}
+          alt={title}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          onError={handlePosterError}
+        />
       </div>
 
       {/* Info */}
@@ -89,7 +92,7 @@ const PersonDetail = () => {
   const knownFor = useMemo(() => {
     if (!person?.combined_credits?.cast) return [];
     return person.combined_credits.cast
-      .filter((c) => c.vote_count > 50 && c.poster_path)
+      .filter((c) => c.vote_count > 50)
       .sort((a, b) => b.popularity - a.popularity)
       .slice(0, 10);
   }, [person]);
