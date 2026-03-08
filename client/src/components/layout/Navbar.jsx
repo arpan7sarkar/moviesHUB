@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 import Sidebar from './Sidebar';
@@ -24,8 +24,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled((prev) => {
+        if (!prev && y > 72) return true;
+        if (prev && y < 28) return false;
+        return prev;
+      });
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -43,14 +49,15 @@ const Navbar = () => {
 
   return (
     <>
-      <nav
-        className={`fixed top-0 w-full z-50 border-b will-change-transform transition-[backdrop-filter,background-color,box-shadow,padding,height,border-color] duration-500 ease-out ${
-          isScrolled 
-            ? 'bg-primary/85 backdrop-blur-xl border-border/90 py-2 h-16 md:h-[72px] shadow-[0_10px_35px_rgba(0,0,0,0.28)]' 
-            : 'bg-primary/0 backdrop-blur-0 border-transparent py-4 h-20 md:h-[88px]'
-        }`}
-      >
-        <div className="container-custom flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50">
+        <div
+          className={`will-change-transform transition-[margin,margin-top,height,border-radius,background-color,box-shadow,backdrop-filter,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            isScrolled
+              ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-16 md:h-[72px] rounded-2xl border bg-primary/92 backdrop-blur-xl border-border/90 shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
+              : 'mx-0 mt-0 h-20 md:h-[88px] rounded-none border border-transparent bg-primary/0 backdrop-blur-0 shadow-none'
+          }`}
+        >
+        <div className="container-custom h-full flex items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
@@ -139,13 +146,14 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+        </div>
       </nav>
 
       <Sidebar 
         isOpen={isMobileMenuOpen} 
         onClose={closeMobileMenu} 
         navLinks={navLinks}
-        isScrolled={isScrolled} 
+        isScrolled={isScrolled}
       />
 
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

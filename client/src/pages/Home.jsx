@@ -20,7 +20,7 @@ const Home = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary">
+      <main className="min-h-screen bg-primary pt-[5.25rem] md:pt-[6rem]">
         {/* Hero Slider */}
         <HeroSlider />
 
