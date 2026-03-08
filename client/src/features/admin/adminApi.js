@@ -1,15 +1,30 @@
-wimport { apiSlice } from '../api/apiSlice';
+import { apiSlice } from '../api/apiSlice';
 
 export const adminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Dashboard Stats
+    getAdminStats: builder.query({
+      query: () => ({
+        url: '/admin/stats',
+        method: 'GET',
+      }),
+      providesTags: ['Admin'],
+    }),
     // Movies Management
     getAdminMovies: builder.query({
-      query: (page = 1) => ({
+      query: ({ page = 1, search = '', category = '' } = {}) => ({
         url: '/admin/movies',
         method: 'GET',
-        params: { page },
+        params: { page, search, category },
       }),
       providesTags: ['Admin', 'Movie'],
+    }),
+    getAdminMovieById: builder.query({
+      query: (id) => ({
+        url: `/admin/movies/${id}`,
+        method: 'GET',
+      }),
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
     }),
     createMovie: builder.mutation({
       query: (movieData) => ({
@@ -40,10 +55,10 @@ export const adminApi = apiSlice.injectEndpoints({
 
     // User Management
     getUsers: builder.query({
-      query: (page = 1) => ({
+      query: ({ page = 1, search = '' } = {}) => ({
         url: '/admin/users',
         method: 'GET',
-        params: { page },
+        params: { page, search },
       }),
       providesTags: ['Admin', 'User'],
     }),
@@ -61,15 +76,26 @@ export const adminApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Admin', 'User'],
     }),
+    updateUserRole: builder.mutation({
+      query: ({ id, role }) => ({
+        url: `/admin/users/${id}/role`,
+        method: 'PUT',
+        data: { role },
+      }),
+      invalidatesTags: ['Admin', 'User'],
+    }),
   }),
 });
 
 export const {
+  useGetAdminStatsQuery,
   useGetAdminMoviesQuery,
+  useGetAdminMovieByIdQuery,
   useCreateMovieMutation,
   useUpdateMovieMutation,
   useDeleteMovieMutation,
   useGetUsersQuery,
   useBanUserMutation,
   useDeleteUserMutation,
+  useUpdateUserRoleMutation,
 } = adminApi;

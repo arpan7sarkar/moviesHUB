@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiHeart, FiBookmark, FiClock } from 'react-icons/fi';
+import { FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 
 const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
@@ -105,6 +105,13 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
               {/* Conditional Actions */}
               {isAuthenticated ? (
                 <div className="flex flex-col gap-5">
+                  {user?.role === 'admin' && (
+                    <motion.div variants={linkVariants}>
+                      <Link to="/admin" className="flex items-center gap-3 text-lg font-display text-accent hover:text-accent-hover transition-colors font-semibold">
+                        <FiSettings className="animate-spin-slow" /> Admin Panel
+                      </Link>
+                    </motion.div>
+                  )}
                   <motion.div variants={linkVariants}>
                     <Link to="/favorites" className="flex items-center gap-3 text-lg font-display text-text-primary hover:text-accent transition-colors">
                       <FiHeart className="text-accent" /> Favorites

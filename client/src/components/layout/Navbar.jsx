@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark, FiClock } from 'react-icons/fi';
+import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 import Sidebar from './Sidebar';
 import SearchOverlay from '../search/SearchOverlay';
@@ -92,7 +92,17 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-4 ml-2">
-                 <Link to="/favorites" title="Favorites" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
+                {user?.role === 'admin' && (
+                  <Link 
+                    to="/admin" 
+                    title="Admin Dashboard" 
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20 transition-all font-medium text-xs md:text-sm"
+                  >
+                    <FiSettings className="animate-spin-slow transition-transform group-hover:rotate-90" />
+                    <span className="hidden lg:inline">Admin Panel</span>
+                  </Link>
+                )}
+                <Link to="/favorites" title="Favorites" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
                   <FiHeart size={20} />
                 </Link>
                 <Link to="/watchlist" title="Watchlist" className="hidden md:block text-text-secondary hover:text-accent transition-colors">

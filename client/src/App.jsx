@@ -8,6 +8,7 @@ import AdminRoute from './guards/AdminRoute.jsx';
 // Layout & Core Pages
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import AdminLayout from './components/layout/AdminLayout';
 
 // Page Components
 import Home from './pages/Home';
@@ -76,11 +77,13 @@ function App() {
             </Route>
             
             <Route element={<AdminRoute />}>
-              <Route path="/admin" element={<Dashboard />} />
-              <Route path="/admin/movies" element={<ManageMovies />} />
-              <Route path="/admin/movies/new" element={<MovieForm />} />
-              <Route path="/admin/movies/:id/edit" element={<MovieForm />} />
-              <Route path="/admin/users" element={<ManageUsers />} />
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<Dashboard />} />
+                <Route path="/admin/movies" element={<ManageMovies />} />
+                <Route path="/admin/movies/new" element={<MovieForm />} />
+                <Route path="/admin/movies/:id/edit" element={<MovieForm />} />
+                <Route path="/admin/users" element={<ManageUsers />} />
+              </Route>
             </Route>
 
             <Route path="*" element={<NotFound />} />
