@@ -12,12 +12,19 @@ export const adminApi = apiSlice.injectEndpoints({
     }),
     // Movies Management
     getAdminMovies: builder.query({
-      query: (page = 1) => ({
+      query: ({ page = 1, search = '', category = '' } = {}) => ({
         url: '/admin/movies',
         method: 'GET',
-        params: { page },
+        params: { page, search, category },
       }),
       providesTags: ['Admin', 'Movie'],
+    }),
+    getAdminMovieById: builder.query({
+      query: (id) => ({
+        url: `/admin/movies/${id}`,
+        method: 'GET',
+      }),
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
     }),
     createMovie: builder.mutation({
       query: (movieData) => ({
@@ -48,10 +55,10 @@ export const adminApi = apiSlice.injectEndpoints({
 
     // User Management
     getUsers: builder.query({
-      query: (page = 1) => ({
+      query: ({ page = 1, search = '' } = {}) => ({
         url: '/admin/users',
         method: 'GET',
-        params: { page },
+        params: { page, search },
       }),
       providesTags: ['Admin', 'User'],
     }),
@@ -75,6 +82,7 @@ export const adminApi = apiSlice.injectEndpoints({
 export const {
   useGetAdminStatsQuery,
   useGetAdminMoviesQuery,
+  useGetAdminMovieByIdQuery,
   useCreateMovieMutation,
   useUpdateMovieMutation,
   useDeleteMovieMutation,
