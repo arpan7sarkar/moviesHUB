@@ -11,6 +11,16 @@ import {
   useGetRecommendationsQuery,
   useGetSimilarQuery,
 } from '../features/movies/movieApi';
+import { useSelector } from 'react-redux';
+import {
+  useGetFavoritesQuery,
+  useAddToFavoritesMutation,
+  useRemoveFromFavoritesMutation,
+  useGetWatchlistQuery,
+  useAddToWatchlistMutation,
+  useRemoveFromWatchlistMutation,
+  useAddToHistoryMutation,
+} from '../features/user/userApi';
 import PageTransition from '../components/layout/PageTransition';
 import DetailSkeleton from '../components/skeletons/DetailSkeleton';
 import PersonCard from '../components/cards/PersonCard';
@@ -23,8 +33,7 @@ const TMDB_IMG = 'https://image.tmdb.org/t/p';
 const MovieDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const { isAuthenticated } = useSelector(state => state.auth);
 
   // Queries
   const { data: movie, isLoading, isError } = useGetMovieDetailsQuery(id);
@@ -55,6 +64,66 @@ const MovieDetail = () => {
       null
     );
   }, [videosData]);
+
+  // User features queries
+  const { data: favorites } = useGetFavoritesQuery(undefined, { skip: !isAuthenticated });
+  const { data: watchlist } = useGetWatchlistQuery(undefined, { skip: !isAuthenticated });
+  
+  const [addFavorite] = useAddToFavoritesMutation();
+  const [removeFavorite] = useRemoveFromFavoritesMutation();
+  const [addWatchlist] = useAddToWatchlistMutation();
+  const [removeWatchlist] = useRemoveFromWatchlistMutation();
+  const [addToHistory] = useAddToHistoryMutation();
+
+  const isFavorited = favorites?.some(fav => String(fav.tmdbId) === String(id));
+  const isWatchlisted = watchlist?.some(w => String(w.tmdbId) === String(id));
+
+  React.useEffect(() => {
+    if (isAuthenticated && movie) {
+      addToHistory({
+        tmdbId: movie.id,
+        title: movie.title || movie.name,
+        posterPath: movie.poster_path,
+        mediaType: 'movie',
+        releaseDate: movie.release_date || movie.first_air_date,
+        voteAverage: movie.vote_average
+      });
+    }
+  }, [isAuthenticated, movie, addToHistory]);
+
+  const handleFavoriteClick = async () => {
+    if (!isAuthenticated) return;
+    try {
+      if (isFavorited) await removeFavorite(id).unwrap();
+      else {
+        await addFavorite({
+          tmdbId: movie.id,
+          title: movie.title || movie.name,
+          posterPath: movie.poster_path,
+          mediaType: 'movie',
+          releaseDate: movie.release_date || movie.first_air_date,
+          voteAverage: movie.vote_average
+        }).unwrap();
+      }
+    } catch (err) { console.error(err); }
+  };
+
+  const handleWatchlistClick = async () => {
+    if (!isAuthenticated) return;
+    try {
+      if (isWatchlisted) await removeWatchlist(id).unwrap();
+      else {
+        await addWatchlist({
+          tmdbId: movie.id,
+          title: movie.title || movie.name,
+          posterPath: movie.poster_path,
+          mediaType: 'movie',
+          releaseDate: movie.release_date || movie.first_air_date,
+          voteAverage: movie.vote_average
+        }).unwrap();
+      }
+    } catch (err) { console.error(err); }
+  };
 
   const cast = creditsData?.cast?.slice(0, 20) || [];
   const director = creditsData?.crew?.find((c) => c.job === 'Director');
@@ -247,7 +316,7 @@ const MovieDetail = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsFavorited(!isFavorited)}
+                    onClick={handleFavoriteClick}
                     className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border transition-all text-sm font-bold backdrop-blur-xl
                       ${isFavorited
                         ? 'bg-danger/20 border-danger/60 text-danger shadow-[0_0_25px_rgba(239,68,68,0.3)]'
@@ -262,7 +331,7 @@ const MovieDetail = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsWatchlisted(!isWatchlisted)}
+                    onClick={handleWatchlistClick}
                     className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border transition-all text-sm font-bold backdrop-blur-xl
                       ${isWatchlisted
                         ? 'bg-accent/20 border-accent/60 text-accent shadow-[0_0_25px_rgba(196,160,82,0.3)]'
