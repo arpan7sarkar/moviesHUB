@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiClock, FiTrash2, FiSearch, FiFilm } from 'react-icons/fi';
+import { FiClock, FiTrash2, FiSearch } from 'react-icons/fi';
 import { useGetHistoryQuery, useClearHistoryMutation } from '../features/user/userApi';
 import SectionTitle from '../components/ui/SectionTitle';
 import { Link } from 'react-router-dom';
 import Toast from '../components/ui/Toast';
+import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
 
 const History = () => {
   const { data: history, isLoading, isError } = useGetHistoryQuery();
@@ -62,8 +63,6 @@ const History = () => {
     return groups;
   }, {});
 
-  const TMDB_IMG = 'https://image.tmdb.org/t/p/w200';
-
   return (
     <div className="min-h-screen pt-32 pb-20 container-custom">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
@@ -113,17 +112,12 @@ const History = () => {
                     >
                       <Link to={item.mediaType === 'tv' ? `/tv/${item.tmdbId}` : `/movies/${item.tmdbId}`} className="shrink-0">
                         <div className="w-20 aspect-2/3 rounded-lg overflow-hidden bg-elevated">
-                          {item.poster_path || item.posterPath ? (
-                            <img 
-                              src={`${TMDB_IMG}${item.poster_path || item.posterPath}`} 
-                              alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-text-muted">
-                              <FiFilm size={20} />
-                            </div>
-                          )}
+                          <img 
+                            src={resolvePoster(item.poster_path || item.posterPath, 'w200')}
+                            alt={item.title}
+                            onError={handlePosterError}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
                         </div>
                       </Link>
                       

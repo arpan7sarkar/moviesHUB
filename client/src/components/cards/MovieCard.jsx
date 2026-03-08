@@ -10,8 +10,7 @@ import {
   useAddToWatchlistMutation,
   useRemoveFromWatchlistMutation,
 } from '../../features/user/userApi';
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p';
+import { resolvePoster, handlePosterError } from '../../utils/mediaFallbacks';
 
 const MovieCard = ({ item, mediaType: propMediaType }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -43,7 +42,7 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
   const linkPath = type === 'tv' ? `/tv/${tmdbId}` : `/movies/${tmdbId}`;
 
   const pPath = item.poster_path || item.posterPath;
-  const posterUrl = pPath ? `${TMDB_IMG}/w300${pPath}` : null;
+  const posterUrl = resolvePoster(pPath, 'w300');
 
   const handleFavoriteClick = async (e) => {
     e.preventDefault();
@@ -114,21 +113,16 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
       <div className="relative w-full aspect-[2/3] overflow-hidden rounded-2xl border border-border/70 bg-elevated shadow-[0_14px_40px_rgba(0,0,0,0.28)] transition-all duration-500 group-hover:-translate-y-1.5 group-hover:border-accent/45 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.45)]">
         {!imgLoaded && <div className="absolute inset-0 rounded-2xl bg-elevated animate-pulse" />}
 
-        {posterUrl ? (
-          <img
-            src={posterUrl}
-            alt={title}
-            loading="lazy"
-            onLoad={() => setImgLoaded(true)}
-            className={`h-full w-full object-cover transition-all duration-700 ${
-              imgLoaded ? 'scale-100 opacity-100 group-hover:scale-110' : 'scale-105 opacity-0'
-            }`}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-surface text-text-muted">
-            <FiFilm size={38} />
-          </div>
-        )}
+        <img
+          src={posterUrl}
+          alt={title}
+          loading="lazy"
+          onLoad={() => setImgLoaded(true)}
+          onError={handlePosterError}
+          className={`h-full w-full object-cover transition-all duration-700 ${
+            imgLoaded ? 'scale-100 opacity-100 group-hover:scale-110' : 'scale-105 opacity-0'
+          }`}
+        />
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/0" />

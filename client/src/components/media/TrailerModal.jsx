@@ -73,16 +73,16 @@ const TrailerModal = ({ isOpen, onClose, videoKey, title }) => {
                 className="w-full h-full"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-8">
-                <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                  <FiFilm size={36} className="text-text-muted" />
+              <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-8 bg-[radial-gradient(circle_at_top,rgba(212,168,83,0.18),transparent_42%)]">
+                <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_25px_rgba(212,168,83,0.16)]">
+                  <FiFilm size={34} className="text-accent" />
                 </div>
-                <div className="text-center">
+                <div className="text-center max-w-md">
                   <h3 className="text-xl font-display font-bold text-text-primary mb-2">
-                    Trailer Not Available
+                    Trailer not available
                   </h3>
-                  <p className="text-text-muted text-sm max-w-md">
-                    Unfortunately, there is no trailer available for this title at the moment. Check back later or visit TMDB for more information.
+                  <p className="text-text-muted text-sm">
+                    We could not find a trailer for this title yet. Please check again later.
                   </p>
                 </div>
                 <button

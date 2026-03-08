@@ -101,7 +101,7 @@ const HeroSlider = () => {
 
                     {/* Overview */}
                     <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-8 max-w-lg line-clamp-3">
-                      {overview || 'No description available.'}
+                      {overview || 'Description not available'}
                     </p>
 
                     {/* CTA Buttons */}

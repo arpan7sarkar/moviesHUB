@@ -11,6 +11,7 @@ import AdminRoute from './guards/AdminRoute.jsx';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AdminLayout from './components/layout/AdminLayout';
+import RouteErrorBoundary from './components/errors/RouteErrorBoundary';
 
 // Page Components
 import Home from './pages/Home';
@@ -40,6 +41,11 @@ function App() {
   const location = useLocation();
   const mode = useSelector((state) => state.theme.mode);
   const token = localStorage.getItem('token');
+  const withRouteBoundary = (element, key) => (
+    <RouteErrorBoundary resetKey={`${key}-${location.pathname}`}>
+      {element}
+    </RouteErrorBoundary>
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', mode);
@@ -66,35 +72,34 @@ function App() {
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            {/* ... Routes remain unchanged ... */}
-            <Route path="/" element={<Home />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/tv" element={<TvShows />} />
-            <Route path="/movies/:id" element={<MovieDetail />} />
-            <Route path="/tv/:id" element={<TvDetail />} />
-            <Route path="/person/:id" element={<PersonDetail />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/" element={withRouteBoundary(<Home />, 'home')} />
+            <Route path="/movies" element={withRouteBoundary(<Movies />, 'movies')} />
+            <Route path="/tv" element={withRouteBoundary(<TvShows />, 'tv')} />
+            <Route path="/movies/:id" element={withRouteBoundary(<MovieDetail />, 'movie-detail')} />
+            <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
+            <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
+            <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
+            <Route path="/login" element={withRouteBoundary(<Login />, 'login')} />
+            <Route path="/register" element={withRouteBoundary(<Register />, 'register')} />
             
-            <Route element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/watchlist" element={<Watchlist />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/profile" element={<Profile />} />
+            <Route element={withRouteBoundary(<ProtectedRoute />, 'protected')}>
+              <Route path="/favorites" element={withRouteBoundary(<Favorites />, 'favorites')} />
+              <Route path="/watchlist" element={withRouteBoundary(<Watchlist />, 'watchlist')} />
+              <Route path="/history" element={withRouteBoundary(<History />, 'history')} />
+              <Route path="/profile" element={withRouteBoundary(<Profile />, 'profile')} />
             </Route>
             
-            <Route element={<AdminRoute />}>
-              <Route element={<AdminLayout />}>
-                <Route path="/admin" element={<Dashboard />} />
-                <Route path="/admin/movies" element={<ManageMovies />} />
-                <Route path="/admin/movies/new" element={<MovieForm />} />
-                <Route path="/admin/movies/:id/edit" element={<MovieForm />} />
-                <Route path="/admin/users" element={<ManageUsers />} />
+            <Route element={withRouteBoundary(<AdminRoute />, 'admin-guard')}>
+              <Route element={withRouteBoundary(<AdminLayout />, 'admin-layout')}>
+                <Route path="/admin" element={withRouteBoundary(<Dashboard />, 'admin-dashboard')} />
+                <Route path="/admin/movies" element={withRouteBoundary(<ManageMovies />, 'admin-movies')} />
+                <Route path="/admin/movies/new" element={withRouteBoundary(<MovieForm />, 'admin-movie-new')} />
+                <Route path="/admin/movies/:id/edit" element={withRouteBoundary(<MovieForm />, 'admin-movie-edit')} />
+                <Route path="/admin/users" element={withRouteBoundary(<ManageUsers />, 'admin-users')} />
               </Route>
             </Route>
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={withRouteBoundary(<NotFound />, 'not-found')} />
           </Routes>
         </AnimatePresence>
       </main>

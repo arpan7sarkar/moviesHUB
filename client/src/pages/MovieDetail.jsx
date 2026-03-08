@@ -27,6 +27,7 @@ import PersonCard from '../components/cards/PersonCard';
 import ContentRow from '../components/media/ContentRow';
 import GenreRecommendationRow from '../components/media/GenreRecommendationRow';
 import TrailerModal from '../components/media/TrailerModal';
+import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -196,17 +197,12 @@ const MovieDetail = () => {
               transition={{ duration: 0.5 }}
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
-                {movie.poster_path ? (
-                  <img
-                    src={`${TMDB_IMG}/w500${movie.poster_path}`}
-                    alt={title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-elevated flex items-center justify-center text-text-muted text-6xl font-display">
-                    {title?.charAt(0)}
-                  </div>
-                )}
+                <img
+                  src={resolvePoster(movie.poster_path, 'w500')}
+                  alt={title}
+                  onError={handlePosterError}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </motion.div>
 
@@ -284,31 +280,27 @@ const MovieDetail = () => {
               )}
 
               {/* Overview */}
-              {movie.overview && (
-                <div className="mb-12 max-w-4xl">
-                  <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-accent/80 mb-4">
-                    Overview
-                  </h3>
-                  <p className="text-text-primary text-lg md:text-xl leading-relaxed font-normal opacity-90 text-shadow-sm">
-                    {movie.overview}
-                  </p>
-                </div>
-              )}
+              <div className="mb-12 max-w-4xl">
+                <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-accent/80 mb-4">
+                  Overview
+                </h3>
+                <p className="text-text-primary text-lg md:text-xl leading-relaxed font-normal opacity-90 text-shadow-sm">
+                  {movie.overview || 'Description not available'}
+                </p>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 justify-center md:justify-start mb-16">
                 {/* Play Trailer */}
-                {trailer && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowTrailer(true)}
-                    className="btn-primary cta-pulse flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
-                  >
-                    <FiPlay size={20} className="fill-primary" />
-                    <span className="font-black uppercase tracking-tight">Play Trailer</span>
-                  </motion.button>
-                )}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowTrailer(true)}
+                  className="btn-primary cta-pulse flex items-center justify-center gap-3 px-10 py-4 text-base md:text-lg w-full sm:w-auto min-w-[200px] shadow-[0_8px_30px_rgba(196,160,82,0.3)]"
+                >
+                  <FiPlay size={20} className="fill-primary" />
+                  <span className="font-black uppercase tracking-tight">Play Trailer</span>
+                </motion.button>
 
                 {/* Action group */}
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-center">
