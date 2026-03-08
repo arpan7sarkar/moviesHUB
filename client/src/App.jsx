@@ -52,6 +52,11 @@ function App() {
     localStorage.setItem('theme', mode);
   }, [mode]);
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
   // Initial auth check
   const { isLoading: authLoading } = useGetMeQuery(undefined, {
     skip: !token,
