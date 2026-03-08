@@ -84,8 +84,8 @@ const Register = () => {
       <main className="min-h-screen bg-primary flex items-center justify-center px-4 py-20 relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-accent/[0.03] blur-3xl" />
-          <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/[0.04] blur-3xl" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-accent/3 blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/4 blur-3xl" />
         </div>
 
         <motion.div
@@ -121,7 +121,7 @@ const Register = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
                       errors.name ? 'border-danger/50 focus:ring-danger/20' : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
                     }`}
                   />
@@ -140,7 +140,7 @@ const Register = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="you@example.com"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
                       errors.email ? 'border-danger/50 focus:ring-danger/20' : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
                     }`}
                   />
@@ -159,7 +159,7 @@ const Register = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-2.5 pl-11 pr-11 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-2.5 pl-11 pr-11 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
                       errors.password ? 'border-danger/50 focus:ring-danger/20' : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
                     }`}
                   />
@@ -185,7 +185,7 @@ const Register = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-2.5 pl-11 pr-4 text-sm text-text-primary focus:outline-none focus:ring-2 transition-all ${
                       errors.confirmPassword ? 'border-danger/50 focus:ring-danger/20' : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
                     }`}
                   />
