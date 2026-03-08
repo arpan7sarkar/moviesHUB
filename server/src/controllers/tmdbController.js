@@ -109,6 +109,18 @@ const getList = async (req, res, next) => {
   }
 };
 
+// @desc    Get credits (cast & crew) for movie or TV
+// @route   GET /api/tmdb/:mediaType/:id/credits
+const getCredits = async (req, res, next) => {
+  try {
+    const { mediaType, id } = req.params;
+    const { data } = await tmdbFetch.get(`/${mediaType}/${id}/credits`);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get person details
 // @route   GET /api/tmdb/person/:id
 const getPersonDetails = async (req, res, next) => {
@@ -132,7 +144,6 @@ const getPersonCredits = async (req, res, next) => {
     next(error);
   }
 };
-
 // @desc    Get content recommendations
 // @route   GET /api/tmdb/:mediaType/:id/recommendations
 const getRecommendations = async (req, res, next) => {
@@ -140,6 +151,21 @@ const getRecommendations = async (req, res, next) => {
     const { mediaType, id } = req.params;
     const { page } = req.query;
     const { data } = await tmdbFetch.get(`/${mediaType}/${id}/recommendations`, {
+      params: { page },
+    });
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get similar movies/tv shows
+// @route   GET /api/tmdb/:mediaType/:id/similar
+const getSimilar = async (req, res, next) => {
+  try {
+    const { mediaType, id } = req.params;
+    const { page } = req.query;
+    const { data } = await tmdbFetch.get(`/${mediaType}/${id}/similar`, {
       params: { page },
     });
     res.json(data);
@@ -157,7 +183,9 @@ module.exports = {
   getTvSeasonDetails,
   discover,
   getList,
+  getCredits,
   getPersonDetails,
   getPersonCredits,
   getRecommendations,
+  getSimilar,
 };
