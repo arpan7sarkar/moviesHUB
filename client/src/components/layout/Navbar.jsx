@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 import Sidebar from './Sidebar';
+import SearchOverlay from '../search/SearchOverlay';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
@@ -80,9 +82,9 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-5">
-            <Link to="/search" className="p-2 text-text-secondary hover:text-accent transition-colors">
+            <button onClick={() => setIsSearchOpen(true)} className="p-2 text-text-secondary hover:text-accent transition-colors cursor-pointer" aria-label="Open search">
               <FiSearch size={20} />
-            </Link>
+            </button>
             
             <div className="hidden sm:block">
               <ThemeToggle />
@@ -129,6 +131,8 @@ const Navbar = () => {
         navLinks={navLinks}
         isScrolled={isScrolled} 
       />
+
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 };

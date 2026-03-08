@@ -38,6 +38,12 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getCredits: builder.query({
+      query: ({ mediaType, id }) => ({
+        url: `/tmdb/${mediaType}/${id}/credits`,
+        method: 'GET',
+      }),
+    }),
     searchMulti: builder.query({
       query: ({ query, page = 1 }) => ({
         url: '/tmdb/search/multi',
@@ -72,6 +78,19 @@ export const movieApi = apiSlice.injectEndpoints({
         params: { page },
       }),
     }),
+    getSimilar: builder.query({
+      query: ({ mediaType, id, page = 1 }) => ({
+        url: `/tmdb/${mediaType}/${id}/similar`,
+        method: 'GET',
+        params: { page },
+      }),
+    }),
+    getTvSeasonDetails: builder.query({
+      query: ({ tvId, seasonNumber }) => ({
+        url: `/tmdb/tv/${tvId}/season/${seasonNumber}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -81,10 +100,13 @@ export const {
   useGetMovieDetailsQuery,
   useGetTvDetailsQuery,
   useGetVideosQuery,
+  useGetCreditsQuery,
   useSearchMultiQuery,
   useDiscoverQuery,
   useGetPersonDetailsQuery,
   useGetPersonCreditsQuery,
   useGetRecommendationsQuery,
+  useGetSimilarQuery,
+  useGetTvSeasonDetailsQuery,
 } = movieApi;
 
