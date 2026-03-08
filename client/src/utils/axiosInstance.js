@@ -28,8 +28,11 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // If the error is 401 and not already retried
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip refresh attempt for auth endpoints themselves
+    const isAuthEndpoint = originalRequest?.url?.includes('/auth/');
+
+    // If the error is 401 and not already retried and not an auth endpoint
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
 
       try {
@@ -46,9 +49,9 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
-        // If refresh fails, logout the user
+        // If refresh fails, clear token but don't force redirect
+        // Let the app handle auth state via Redux
         localStorage.removeItem('token');
-        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
