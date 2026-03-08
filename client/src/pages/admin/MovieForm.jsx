@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 const MovieForm = () => {
   const { id } = useParams();
   return (
-    <div className="min-h-screen bg-primary pt-20 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-display text-text-primary uppercase tracking-wider">
-        {id ? `Edit Movie: ${id}` : 'Create New Movie'}
+    <div>
+      <h1 className="text-3xl font-display font-bold text-text-primary mb-2">
+        {id ? `Edit Movie` : 'Create New Movie'}
       </h1>
+      <p className="text-text-muted text-sm">
+        {id ? 'Update movie details below.' : 'Fill in the details to add a new movie.'}
+      </p>
     </div>
   );
 };

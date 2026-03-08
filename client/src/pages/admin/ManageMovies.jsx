@@ -1,7 +1,10 @@
 const ManageMovies = () => {
   return (
-    <div className="min-h-screen bg-primary pt-20 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-display text-text-primary uppercase tracking-wider">Manage Movies</h1>
+    <div>
+      <h1 className="text-3xl font-display font-bold text-text-primary mb-2">
+        Manage Movies
+      </h1>
+      <p className="text-text-muted text-sm">Add, edit, or remove movies from the catalog.</p>
     </div>
   );
 };
