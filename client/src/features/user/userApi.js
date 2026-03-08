@@ -4,7 +4,10 @@ export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Favorites
     getFavorites: builder.query({
-      query: () => '/favorites',
+      query: () => ({
+        url: '/favorites',
+        method: 'GET',
+      }),
       providesTags: ['Favorite'],
     }),
     addToFavorites: builder.mutation({
@@ -25,7 +28,10 @@ export const userApi = apiSlice.injectEndpoints({
 
     // Watchlist
     getWatchlist: builder.query({
-      query: () => '/watchlist',
+      query: () => ({
+        url: '/watchlist',
+        method: 'GET',
+      }),
       providesTags: ['Watchlist'],
     }),
     addToWatchlist: builder.mutation({
@@ -46,7 +52,10 @@ export const userApi = apiSlice.injectEndpoints({
 
     // History
     getHistory: builder.query({
-      query: () => '/history',
+      query: () => ({
+        url: '/history',
+        method: 'GET',
+      }),
       providesTags: ['History'],
     }),
     addToHistory: builder.mutation({

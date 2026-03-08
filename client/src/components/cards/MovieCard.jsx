@@ -35,8 +35,8 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
   const [removeWatchlist] = useRemoveFromWatchlistMutation();
 
   const tmdbId = item.id || item.tmdbId;
-  const isFavorited = favorites?.some(fav => fav.tmdbId === tmdbId);
-  const isInWatchlist = watchlist?.some(w => w.tmdbId === tmdbId);
+  const isFavorited = favorites?.some(fav => Number(fav.tmdbId) === Number(tmdbId));
+  const isInWatchlist = watchlist?.some(w => Number(w.tmdbId) === Number(tmdbId));
 
   const title = item.title || item.name || 'Untitled';
   const year = (item.release_date || item.first_air_date)?.substring(0, 4);

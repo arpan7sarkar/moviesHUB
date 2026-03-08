@@ -75,8 +75,8 @@ const MovieDetail = () => {
   const [removeWatchlist] = useRemoveFromWatchlistMutation();
   const [addToHistory] = useAddToHistoryMutation();
 
-  const isFavorited = favorites?.some(fav => String(fav.tmdbId) === String(id));
-  const isWatchlisted = watchlist?.some(w => String(w.tmdbId) === String(id));
+  const isFavorited = favorites?.some(fav => Number(fav.tmdbId) === Number(id));
+  const isWatchlisted = watchlist?.some(w => Number(w.tmdbId) === Number(id));
 
   React.useEffect(() => {
     if (isAuthenticated && movie) {
