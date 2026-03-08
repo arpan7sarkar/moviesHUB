@@ -397,6 +397,7 @@ const MovieForm = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w342${form.posterPath}`}
                 alt="Poster preview"
+                loading="lazy"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.style.display = 'none';

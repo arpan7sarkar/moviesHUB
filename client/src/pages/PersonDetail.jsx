@@ -9,9 +9,7 @@ import { useGetPersonDetailsQuery } from '../features/movies/movieApi';
 import PageTransition from '../components/layout/PageTransition';
 import DetailSkeleton from '../components/skeletons/DetailSkeleton';
 import ContentRow from '../components/media/ContentRow';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 /* ─── Filmography Tab Button ──────────────────────────────────────── */
 const TabButton = ({ active, onClick, icon: Icon, label, count }) => (
@@ -85,6 +83,7 @@ const PersonDetail = () => {
   const { id } = useParams();
   const [showFullBio, setShowFullBio] = useState(false);
   const [filmographyTab, setFilmographyTab] = useState('movies');
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   const { data: person, isLoading, isError } = useGetPersonDetailsQuery(id);
 
@@ -147,6 +146,10 @@ const PersonDetail = () => {
 
   const activeFilmography = filmographyTab === 'movies' ? filmography.movies : filmography.tv;
 
+  React.useEffect(() => {
+    setProfileLoaded(false);
+  }, [id]);
+
   if (isLoading) return <PageTransition><DetailSkeleton /></PageTransition>;
 
   if (isError || !person) {
@@ -181,17 +184,17 @@ const PersonDetail = () => {
             >
               {/* Circular Profile Image */}
               <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-elevated border-4 border-border/30 mb-8">
-                {person.profile_path ? (
-                  <img
-                    src={`${TMDB_IMG}/h632${person.profile_path}`}
-                    alt={person.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-elevated flex items-center justify-center text-text-muted text-7xl font-display">
-                    <FiUser size={80} />
-                  </div>
-                )}
+                <img
+                  src={resolvePoster(person.profile_path, 'w780')}
+                  alt={person.name}
+                  loading="lazy"
+                  onLoad={() => setProfileLoaded(true)}
+                  onError={handlePosterError}
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    profileLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
+                />
               </div>
 
               {/* Name (mobile only) */}

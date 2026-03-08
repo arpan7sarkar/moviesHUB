@@ -29,7 +29,7 @@ import {
   useRemoveFromWatchlistMutation,
   useAddToHistoryMutation,
 } from '../features/user/userApi';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -158,6 +158,7 @@ const EpisodeCard = ({ episode, index }) => {
 const TvDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
   const [selectedSeason, setSelectedSeason] = useState(1);
 
@@ -220,6 +221,10 @@ const TvDetail = () => {
       });
     }
   }, [isAuthenticated, tv, addToHistory]);
+
+  useEffect(() => {
+    setPosterLoaded(false);
+  }, [id]);
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) return;
@@ -305,7 +310,7 @@ const TvDetail = () => {
               src={`${TMDB_IMG}/original${tv.backdrop_path}`}
               alt=""
               className="w-full h-full object-cover object-[center_20%] opacity-40 md:opacity-100"
-              loading="eager"
+              loading="lazy"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/90 md:via-primary/20 to-transparent" />
@@ -325,10 +330,15 @@ const TvDetail = () => {
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
                 <img
-                  src={resolvePoster(tv.poster_path, 'w500')}
+                  src={resolvePoster(tv.poster_path, 'w780')}
                   alt={title}
+                  loading="lazy"
+                  onLoad={() => setPosterLoaded(true)}
                   onError={handlePosterError}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    posterLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
                 />
               </div>
             </motion.div>
@@ -497,6 +507,7 @@ const TvDetail = () => {
                   <img
                     src={resolvePoster(seasonData.poster_path, 'w92')}
                     alt={seasonData.name}
+                    loading="lazy"
                     onError={handlePosterError}
                     className="w-14 h-20 rounded-lg object-cover border border-border/20 flex-shrink-0"
                   />

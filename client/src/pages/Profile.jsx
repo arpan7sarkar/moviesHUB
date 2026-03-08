@@ -94,7 +94,7 @@ const Profile = () => {
               >
                 <div className="w-24 h-24 rounded-full bg-elevated border-2 border-accent p-1 mb-4">
                   {user.avatar ? (
-                    <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                    <img src={user.avatar} alt={user.name} loading="lazy" className="w-full h-full rounded-full object-cover" />
                   ) : (
                     <div className="w-full h-full rounded-full flex items-center justify-center bg-surface text-accent">
                       <FiUser size={40} />

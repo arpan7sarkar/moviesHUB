@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiSearch, FiFilm, FiTv, FiUser, FiGrid } from 'react-icons/fi';
@@ -48,6 +48,7 @@ const SearchResults = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [page, setPage] = useState(1);
   const [allResults, setAllResults] = useState([]);
+  const loadMoreRef = useRef(null);
 
   const { data, isLoading, isFetching } = useSearchMultiQuery(
     { query, page },
@@ -89,6 +90,25 @@ const SearchResults = () => {
 
   const totalPages = data?.total_pages || 1;
   const canLoadMore = page < totalPages && page < 20; // Cap at 20 pages
+
+  useEffect(() => {
+    if (activeTab !== 'all' || !canLoadMore || isFetching || isLoading) return;
+    const current = loadMoreRef.current;
+    if (!current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { root: null, rootMargin: '0px', threshold: 1 }
+    );
+
+    observer.observe(current);
+    return () => observer.disconnect();
+  }, [activeTab, canLoadMore, isFetching, isLoading]);
 
   if (!query) {
     return (
@@ -179,25 +199,14 @@ const SearchResults = () => {
                 })}
               </div>
 
-              {/* Load More */}
               {canLoadMore && activeTab === 'all' && (
-                <div className="flex justify-center">
-                  <motion.button
-                    onClick={() => setPage(p => p + 1)}
-                    disabled={isFetching}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-2 px-8 py-3 rounded-xl bg-white/5 border border-border/30 text-text-primary font-medium text-sm hover:bg-white/10 disabled:opacity-50 transition-all cursor-pointer"
-                  >
-                    {isFetching ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                        <span>Loading...</span>
-                      </>
-                    ) : (
-                      <span>Load More Results</span>
-                    )}
-                  </motion.button>
+                <div ref={loadMoreRef} className="flex justify-center min-h-10">
+                  {isFetching && (
+                    <div className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/5 border border-border/30 text-text-muted text-sm">
+                      <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                      <span>Loading...</span>
+                    </div>
+                  )}
                 </div>
               )}
             </>

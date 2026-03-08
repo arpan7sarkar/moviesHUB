@@ -115,6 +115,7 @@ const History = () => {
                           <img 
                             src={resolvePoster(item.poster_path || item.posterPath, 'w200')}
                             alt={item.title}
+                            loading="lazy"
                             onError={handlePosterError}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />

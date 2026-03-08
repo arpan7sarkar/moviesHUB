@@ -27,13 +27,14 @@ import PersonCard from '../components/cards/PersonCard';
 import ContentRow from '../components/media/ContentRow';
 import GenreRecommendationRow from '../components/media/GenreRecommendationRow';
 import TrailerModal from '../components/media/TrailerModal';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
 const MovieDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
 
   // Queries
@@ -91,6 +92,10 @@ const MovieDetail = () => {
       });
     }
   }, [isAuthenticated, movie, addToHistory]);
+
+  React.useEffect(() => {
+    setPosterLoaded(false);
+  }, [id]);
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) return;
@@ -177,7 +182,7 @@ const MovieDetail = () => {
               src={`${TMDB_IMG}/original${movie.backdrop_path}`}
               alt=""
               className="w-full h-full object-cover object-[center_20%] opacity-40 md:opacity-100"
-              loading="eager"
+              loading="lazy"
             />
           )}
           {/* Enhanced cinematic gradient overlays for maximum readability */}
@@ -198,10 +203,15 @@ const MovieDetail = () => {
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
                 <img
-                  src={resolvePoster(movie.poster_path, 'w500')}
+                  src={resolvePoster(movie.poster_path, 'w780')}
                   alt={title}
+                  loading="lazy"
+                  onLoad={() => setPosterLoaded(true)}
                   onError={handlePosterError}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    posterLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
                 />
               </div>
             </motion.div>

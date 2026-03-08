@@ -146,6 +146,7 @@ const ManageMovies = () => {
                             <img
                               src={`https://image.tmdb.org/t/p/w92${movie.posterPath}`}
                               alt={movie.title}
+                              loading="lazy"
                               className="w-full h-full object-cover"
                             />
                           ) : (

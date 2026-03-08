@@ -114,7 +114,7 @@ const Navbar = () => {
                 <Link to="/profile" className="flex items-center gap-2 group">
                   <div className="w-8 h-8 rounded-full bg-elevated border border-border overflow-hidden group-hover:border-accent transition-all">
                     {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                      <img src={user.avatar} alt={user.name} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-text-muted">
                         <FiUser size={16} />

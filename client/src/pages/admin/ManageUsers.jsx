@@ -130,6 +130,7 @@ const ManageUsers = () => {
                             <img
                               src={user.avatar}
                               alt={user.name}
+                              loading="lazy"
                               className="w-full h-full object-cover"
                             />
                           ) : (

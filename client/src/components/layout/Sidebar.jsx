@@ -68,7 +68,7 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                 <motion.div variants={linkVariants} className="flex items-center gap-4 mb-2 pb-4 border-b border-border">
                   <div className="w-12 h-12 rounded-full border border-accent bg-elevated overflow-hidden shrink-0 transition-colors">
                     {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name || 'User'} className="w-full h-full object-cover" />
+                      <img src={user.avatar} alt={user.name || 'User'} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-accent">
                         <FiUser size={24} />

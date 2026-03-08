@@ -135,6 +135,7 @@ const Dashboard = () => {
                       <img
                         src={user.avatar}
                         alt={user.name}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -199,6 +200,7 @@ const Dashboard = () => {
                       <img
                         src={`https://image.tmdb.org/t/p/w92${fav.posterPath}`}
                         alt={fav.title}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     ) : (

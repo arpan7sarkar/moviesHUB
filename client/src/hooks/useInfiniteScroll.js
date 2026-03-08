@@ -66,8 +66,8 @@ const useInfiniteScroll = (useQueryHook, queryArgs = {}, options = {}) => {
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
-      rootMargin: '100px', // Trigger fetch slightly before the user reaches the very bottom
-      threshold: 0.1,
+      rootMargin: '0px',
+      threshold: 1,
       ...options,
     });
 
