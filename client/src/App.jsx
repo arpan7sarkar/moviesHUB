@@ -31,8 +31,24 @@ import ManageMovies from './pages/admin/ManageMovies';
 import MovieForm from './pages/admin/MovieForm';
 import ManageUsers from './pages/admin/ManageUsers';
 
+import { useGetMeQuery } from './features/auth/authApi';
+
 function App() {
   const location = useLocation();
+  const token = localStorage.getItem('token');
+  
+  // Initial auth check
+  const { isLoading: authLoading } = useGetMeQuery(undefined, {
+    skip: !token,
+  });
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-primary flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-primary">

@@ -24,10 +24,33 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     getMe: builder.query({
       query: () => ({
-        url: '/auth/me', // Ensure to define this route in the server
+        url: '/auth/me',
         method: 'GET',
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+        } catch (err) {
+          // Handle failed session check
+          dispatch(setUser(null));
+        }
+      },
       providesTags: ['User'],
+    }),
+    updateProfile: builder.mutation({
+      query: (data) => ({
+        url: '/auth/profile',
+        method: 'PUT',
+        data,
+      }),
+      invalidatesTags: ['User'],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+        } catch (err) {}
+      },
     }),
     refreshToken: builder.mutation({
       query: () => ({
@@ -43,5 +66,6 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetMeQuery,
+  useUpdateProfileMutation,
   useRefreshTokenMutation,
 } = authApi;

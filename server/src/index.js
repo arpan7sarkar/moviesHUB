@@ -20,7 +20,7 @@ connectDB();
 // Global Middleware
 app.use(helmet());
 app.use(cors({
-  origin: env.CLIENT_URL,
+  origin: env.CLIENT_URL && "http://localhost:5174",
   credentials: true
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
