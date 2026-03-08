@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark } from 'react-icons/fi';
+import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark, FiClock } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 import Sidebar from './Sidebar';
 import SearchOverlay from '../search/SearchOverlay';
@@ -92,8 +92,14 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-4 ml-2">
-                 <Link to="/favorites" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
+                 <Link to="/favorites" title="Favorites" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
                   <FiHeart size={20} />
+                </Link>
+                <Link to="/watchlist" title="Watchlist" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
+                  <FiBookmark size={20} />
+                </Link>
+                <Link to="/history" title="History" className="hidden md:block text-text-secondary hover:text-accent transition-colors">
+                  <FiClock size={20} />
                 </Link>
                 <Link to="/profile" className="flex items-center gap-2 group">
                   <div className="w-8 h-8 rounded-full bg-elevated border border-border overflow-hidden group-hover:border-accent transition-all">
