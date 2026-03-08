@@ -20,7 +20,7 @@ connectDB();
 // Global Middleware
 app.use(helmet());
 app.use(cors({
-  origin: env.CLIENT_URL && "http://localhost:5174",
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -34,6 +34,7 @@ app.use('/api', apiLimiter);
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tmdb', require('./routes/tmdbRoutes'));
+app.use('/api', require('./routes/userRoutes'));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to MoviesHUB API' });

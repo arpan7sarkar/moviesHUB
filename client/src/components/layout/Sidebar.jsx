@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiHeart, FiBookmark } from 'react-icons/fi';
+import { FiUser, FiHeart, FiBookmark, FiClock } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 
 const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
@@ -113,6 +113,11 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                   <motion.div variants={linkVariants}>
                     <Link to="/watchlist" className="flex items-center gap-3 text-lg font-display text-text-primary hover:text-accent transition-colors">
                       <FiBookmark className="text-accent" /> Watchlist
+                    </Link>
+                  </motion.div>
+                  <motion.div variants={linkVariants}>
+                    <Link to="/history" className="flex items-center gap-3 text-lg font-display text-text-primary hover:text-accent transition-colors">
+                      <FiClock className="text-accent" /> History
                     </Link>
                   </motion.div>
                   <motion.div variants={linkVariants}>

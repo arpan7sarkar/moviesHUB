@@ -19,6 +19,16 @@ import PersonCard from '../components/cards/PersonCard';
 import ContentRow from '../components/media/ContentRow';
 import GenreRecommendationRow from '../components/media/GenreRecommendationRow';
 import TrailerModal from '../components/media/TrailerModal';
+import { useSelector } from 'react-redux';
+import {
+  useGetFavoritesQuery,
+  useAddToFavoritesMutation,
+  useRemoveFromFavoritesMutation,
+  useGetWatchlistQuery,
+  useAddToWatchlistMutation,
+  useRemoveFromWatchlistMutation,
+  useAddToHistoryMutation,
+} from '../features/user/userApi';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -149,8 +159,7 @@ const EpisodeCard = ({ episode, index }) => {
 const TvDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const { isAuthenticated } = useSelector(state => state.auth);
   const [selectedSeason, setSelectedSeason] = useState(1);
 
   // Queries
@@ -186,6 +195,66 @@ const TvDetail = () => {
       null
     );
   }, [videosData]);
+
+  // User features queries
+  const { data: favorites } = useGetFavoritesQuery(undefined, { skip: !isAuthenticated });
+  const { data: watchlist } = useGetWatchlistQuery(undefined, { skip: !isAuthenticated });
+  
+  const [addFavorite] = useAddToFavoritesMutation();
+  const [removeFavorite] = useRemoveFromFavoritesMutation();
+  const [addWatchlist] = useAddToWatchlistMutation();
+  const [removeWatchlist] = useRemoveFromWatchlistMutation();
+  const [addToHistory] = useAddToHistoryMutation();
+
+  const isFavorited = favorites?.some(fav => Number(fav.tmdbId) === Number(id));
+  const isWatchlisted = watchlist?.some(w => Number(w.tmdbId) === Number(id));
+
+  useEffect(() => {
+    if (isAuthenticated && tv) {
+      addToHistory({
+        tmdbId: tv.id,
+        title: tv.name || tv.title,
+        posterPath: tv.poster_path,
+        mediaType: 'tv',
+        releaseDate: tv.first_air_date,
+        voteAverage: tv.vote_average
+      });
+    }
+  }, [isAuthenticated, tv, addToHistory]);
+
+  const handleFavoriteClick = async () => {
+    if (!isAuthenticated) return;
+    try {
+      if (isFavorited) await removeFavorite(id).unwrap();
+      else {
+        await addFavorite({
+          tmdbId: tv.id,
+          title: tv.name || tv.title,
+          posterPath: tv.poster_path,
+          mediaType: 'tv',
+          releaseDate: tv.first_air_date,
+          voteAverage: tv.vote_average
+        }).unwrap();
+      }
+    } catch (err) { console.error(err); }
+  };
+
+  const handleWatchlistClick = async () => {
+    if (!isAuthenticated) return;
+    try {
+      if (isWatchlisted) await removeWatchlist(id).unwrap();
+      else {
+        await addWatchlist({
+          tmdbId: tv.id,
+          title: tv.name || tv.title,
+          posterPath: tv.poster_path,
+          mediaType: 'tv',
+          releaseDate: tv.first_air_date,
+          voteAverage: tv.vote_average
+        }).unwrap();
+      }
+    } catch (err) { console.error(err); }
+  };
 
   const cast = creditsData?.cast?.slice(0, 20) || [];
   const creators = tv?.created_by || [];
@@ -353,7 +422,7 @@ const TvDetail = () => {
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-center">
                   <motion.button
                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsFavorited(!isFavorited)}
+                    onClick={handleFavoriteClick}
                     className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border transition-all text-sm font-bold backdrop-blur-xl
                       ${isFavorited ? 'bg-danger/20 border-danger/60 text-danger shadow-[0_0_25px_rgba(239,68,68,0.3)]' : 'bg-white/5 border-border/80 text-text-primary hover:border-text-muted hover:bg-white/10 shadow-lg'}`}
                   >
@@ -362,7 +431,7 @@ const TvDetail = () => {
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsWatchlisted(!isWatchlisted)}
+                    onClick={handleWatchlistClick}
                     className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl border transition-all text-sm font-bold backdrop-blur-xl
                       ${isWatchlisted ? 'bg-accent/20 border-accent/60 text-accent shadow-[0_0_25px_rgba(196,160,82,0.3)]' : 'bg-white/5 border-border/80 text-text-primary hover:border-text-muted hover:bg-white/10 shadow-lg'}`}
                   >

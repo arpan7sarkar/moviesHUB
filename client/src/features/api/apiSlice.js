@@ -25,9 +25,7 @@ const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }) =>
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: axiosBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  }),
+  baseQuery: axiosBaseQuery(),
   tagTypes: ['User', 'Movie', 'Favorite', 'History', 'Watchlist', 'Admin'],
   endpoints: (builder) => ({}), // Split into feature-specific slices
 });

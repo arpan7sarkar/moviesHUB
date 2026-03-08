@@ -1,4 +1,5 @@
 import { apiSlice } from '../api/apiSlice';
+import { setUser } from './authSlice';
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
