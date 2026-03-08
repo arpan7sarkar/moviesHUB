@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import { FiSearch, FiTrash2, FiChevronLeft, FiChevronRight, FiUser, FiCheckCircle, FiXCircle } from 'react-icons/fi';
-import { useGetUsersQuery, useBanUserMutation, useDeleteUserMutation } from '../../features/admin/adminApi';
+import { FiSearch, FiTrash2, FiChevronLeft, FiChevronRight, FiUser, FiCheckCircle, FiXCircle, FiShield } from 'react-icons/fi';
+import { useGetUsersQuery, useBanUserMutation, useDeleteUserMutation, useUpdateUserRoleMutation } from '../../features/admin/adminApi';
+import { useSelector } from 'react-redux';
 
 const ManageUsers = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const { data, isLoading, isFetching } = useGetUsersQuery({ page, search });
   const [banUser, { isLoading: isBanning }] = useBanUserMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [updateUserRole, { isLoading: isUpdatingRole }] = useUpdateUserRoleMutation();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -24,6 +27,14 @@ const ManageUsers = () => {
       await banUser(user._id).unwrap();
     } catch (err) {
       console.error('Failed to toggle ban status:', err);
+    }
+  };
+
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      await updateUserRole({ id: userId, role: newRole }).unwrap();
+    } catch (err) {
+      console.error('Failed to update user role:', err);
     }
   };
 
@@ -54,8 +65,8 @@ const ManageUsers = () => {
       </div>
 
       {/* ───── Filters ───── */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
+      <div className="flex flex-col md:flex-row gap-3">
+        <form onSubmit={handleSearch} className="relative flex-1">
           <FiSearch
             size={16}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
@@ -71,16 +82,16 @@ const ManageUsers = () => {
       </div>
 
       {/* ───── Table ───── */}
-      <div className="bg-secondary border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-secondary border border-border rounded-xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left">
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider">User</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider hidden sm:table-cell">Joined</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider">Role</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider">Status</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider text-right">Actions</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider">User</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden md:table-cell">Joined</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden sm:table-cell">Role</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider">Status</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -150,16 +161,20 @@ const ManageUsers = () => {
                     </td>
 
                     {/* Role */}
-                    <td className="px-5 py-4">
-                      <span
-                        className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                    <td className="px-5 py-4 hidden sm:table-cell">
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                        disabled={isUpdatingRole || user._id === currentUser?._id}
+                        className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-full bg-transparent border focus:outline-none cursor-pointer transition-colors ${
                           user.role === 'admin'
-                            ? 'bg-accent/10 text-accent border border-accent/20'
-                            : 'bg-elevated text-text-muted border border-border'
-                        }`}
+                            ? 'text-accent border-accent/30 hover:border-accent'
+                            : 'text-text-muted border-border hover:border-text-muted'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
-                        {user.role}
-                      </span>
+                        <option value="user" className="bg-secondary text-text-primary">User</option>
+                        <option value="admin" className="bg-secondary text-text-primary">Admin</option>
+                      </select>
                     </td>
 
                     {/* Status */}

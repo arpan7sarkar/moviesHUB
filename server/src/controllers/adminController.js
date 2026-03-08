@@ -130,6 +130,37 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// @desc    Update user role
+// @route   PUT /api/admin/users/:id/role
+// @access  Private/Admin
+const updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    
+    if (!['user', 'admin'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Prevent demoting self (best practice to avoid being locked out)
+    if (user._id.toString() === req.user._id.toString() && role !== 'admin') {
+      return res.status(400).json({ message: 'You cannot demote yourself' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.json({ message: `User role updated to ${role}`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // ═══════════════════════════════════════
 // MOVIE MANAGEMENT
 // ═══════════════════════════════════════
@@ -267,6 +298,7 @@ module.exports = {
   getUsers,
   banUser,
   deleteUser,
+  updateUserRole,
   getMovies,
   createMovie,
   updateMovie,

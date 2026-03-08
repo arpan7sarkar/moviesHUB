@@ -8,6 +8,7 @@ const {
   getUsers,
   banUser,
   deleteUser,
+  updateUserRole,
   getMovies,
   createMovie,
   updateMovie,
@@ -26,6 +27,7 @@ router.get('/stats', getStats);
 router.get('/users', getUsers);
 router.put('/users/:id/ban', banUser);
 router.delete('/users/:id', deleteUser);
+router.put('/users/:id/role', updateUserRole);
 
 // Movie management
 router.get('/movies', getMovies);

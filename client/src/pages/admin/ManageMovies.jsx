@@ -55,9 +55,9 @@ const ManageMovies = () => {
       </div>
 
       {/* ───── Filters ───── */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col md:flex-row gap-3">
         {/* Search */}
-        <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
+        <form onSubmit={handleSearch} className="relative flex-1">
           <FiSearch
             size={16}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
@@ -78,7 +78,7 @@ const ManageMovies = () => {
             setCategory(e.target.value === 'all' ? '' : e.target.value);
             setPage(1);
           }}
-          className="px-4 py-2.5 bg-secondary border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent/50 transition-colors cursor-pointer"
+          className="w-full md:w-48 px-4 py-2.5 bg-secondary border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent/50 transition-colors cursor-pointer"
         >
           {CATEGORIES.map((cat) => (
             <option key={cat} value={cat === 'all' ? '' : cat}>
@@ -89,17 +89,17 @@ const ManageMovies = () => {
       </div>
 
       {/* ───── Table ───── */}
-      <div className="bg-secondary border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-secondary border border-border rounded-xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left">
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider">Movie</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider hidden md:table-cell">TMDB ID</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider hidden lg:table-cell">Genre</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider">Category</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider hidden sm:table-cell">Release</th>
-                <th className="px-5 py-3.5 font-semibold text-text-muted text-xs uppercase tracking-wider text-right">Actions</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider">Movie</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden sm:table-cell">TMDB ID</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden lg:table-cell">Genre</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden xs:table-cell">Category</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider hidden md:table-cell">Release</th>
+                <th className="px-5 py-4 font-semibold text-text-muted text-[10px] uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">

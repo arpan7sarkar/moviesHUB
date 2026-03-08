@@ -76,6 +76,14 @@ export const adminApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Admin', 'User'],
     }),
+    updateUserRole: builder.mutation({
+      query: ({ id, role }) => ({
+        url: `/admin/users/${id}/role`,
+        method: 'PUT',
+        data: { role },
+      }),
+      invalidatesTags: ['Admin', 'User'],
+    }),
   }),
 });
 
@@ -89,4 +97,5 @@ export const {
   useGetUsersQuery,
   useBanUserMutation,
   useDeleteUserMutation,
+  useUpdateUserRoleMutation,
 } = adminApi;
