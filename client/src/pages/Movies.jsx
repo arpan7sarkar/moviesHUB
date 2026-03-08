@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiFilter, FiX, FiChevronDown, FiGrid, FiSliders } from 'react-icons/fi';
-import { useDiscoverQuery, useGetListQuery } from '../features/movies/movieApi';
+import { useDiscoverQuery } from '../features/movies/movieApi';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import PageTransition from '../components/layout/PageTransition';
 import MovieCard from '../components/cards/MovieCard';
 
@@ -35,9 +37,16 @@ const SORT_OPTIONS = [
 ];
 
 const Movies = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  const [selectedGenres, setSelectedGenres] = useState([]);
-  const [sortBy, setSortBy] = useState('popularity.desc');
+  
+  const selectedGenres = useMemo(() => {
+    const genreParam = searchParams.get('genre');
+    return genreParam ? genreParam.split(',').map(Number) : [];
+  }, [searchParams]);
+  
+  const sortBy = searchParams.get('sort') || 'popularity.desc';
+
   const [showFilters, setShowFilters] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
@@ -56,26 +65,35 @@ const Movies = () => {
     return params;
   }, [selectedGenres, sortBy, page]);
 
-  const { data, isLoading, isFetching } = useDiscoverQuery(queryParams);
+  const { data: combinedData, isLoading, isFetching, hasMore, sentinelRef } = useInfiniteScroll(
+    useDiscoverQuery,
+    queryParams
+  );
 
   const toggleGenre = useCallback((genreId) => {
-    setSelectedGenres(prev =>
-      prev.includes(genreId)
-        ? prev.filter(id => id !== genreId)
-        : [...prev, genreId]
-    );
+    const newGenres = selectedGenres.includes(genreId)
+      ? selectedGenres.filter(id => id !== genreId)
+      : [...selectedGenres, genreId];
+      
+    const newParams = new URLSearchParams(searchParams);
+    if (newGenres.length > 0) {
+      newParams.set('genre', newGenres.join(','));
+    } else {
+      newParams.delete('genre');
+    }
+    setSearchParams(newParams);
     setPage(1);
-  }, []);
+  }, [selectedGenres, searchParams, setSearchParams]);
 
   const clearFilters = useCallback(() => {
-    setSelectedGenres([]);
-    setSortBy('popularity.desc');
+    setSearchParams({});
     setPage(1);
-  }, []);
+  }, [setSearchParams]);
 
   const activeSortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Sort';
-  const totalPages = data?.total_pages || 1;
-  const totalResults = data?.total_results || 0;
+
+  // totalResults isn't easily extracted from combinedData array directly. 
+  // We can just rely on the data length or if we really needed it, we could expose it from the hook.
   const hasActiveFilters = selectedGenres.length > 0 || sortBy !== 'popularity.desc';
 
   return (
@@ -94,7 +112,7 @@ const Movies = () => {
               Explore <span className="text-accent">Movies</span>
             </h1>
             <p className="text-text-muted text-base md:text-lg">
-              Discover from {totalResults > 0 ? totalResults.toLocaleString() : 'thousands of'} titles
+              Discover thousands of titles
             </p>
           </motion.div>
 
@@ -146,7 +164,13 @@ const Movies = () => {
                       {SORT_OPTIONS.map(option => (
                         <li key={option.value}>
                           <button
-                            onClick={() => { setSortBy(option.value); setShowSortDropdown(false); setPage(1); }}
+                            onClick={() => { 
+                              const newParams = new URLSearchParams(searchParams);
+                              newParams.set('sort', option.value);
+                              setSearchParams(newParams);
+                              setShowSortDropdown(false); 
+                              setPage(1); 
+                            }}
                             className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer
                               ${option.value === sortBy
                                 ? 'bg-accent/10 text-accent font-semibold'
@@ -173,9 +197,9 @@ const Movies = () => {
               )}
             </div>
 
-            {/* Results count */}
+            {/* Results count indicator removed since it's infinite scroll */}
             <p className="text-text-muted text-xs font-mono">
-              Page {page} of {totalPages > 500 ? '500' : totalPages}
+               {combinedData?.length > 0 ? `${combinedData.length} loaded` : ''}
             </p>
           </motion.div>
 
@@ -189,14 +213,14 @@ const Movies = () => {
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden mb-8"
               >
-                <div className="flex flex-wrap gap-2.5 p-5 bg-white/[0.02] border border-border/15 rounded-2xl">
+                <div className="flex overflow-x-auto gap-3 p-5 bg-white/[0.02] border border-border/15 rounded-2xl custom-scrollbar pb-6">
                   {MOVIE_GENRES.map(genre => (
                     <button
                       key={genre.id}
                       onClick={() => toggleGenre(genre.id)}
-                      className={`px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer border
+                      className={`shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer border
                         ${selectedGenres.includes(genre.id)
-                          ? 'bg-accent/15 border-accent/40 text-accent font-semibold'
+                          ? 'bg-accent border-accent text-primary shadow-[0_0_15px_rgba(var(--color-accent),0.3)]'
                           : 'bg-white/5 border-border/30 text-text-primary hover:bg-white/10 hover:border-border/60'
                         }`}
                     >
@@ -211,7 +235,7 @@ const Movies = () => {
           {/* ═══════════ Movie Grid ═══════════ */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 mb-12">
             {isLoading ? (
-              // Skeleton cards
+              // Initial Skeleton loading
               Array.from({ length: 18 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
                   <div className="aspect-[2/3] bg-elevated rounded-lg mb-2" />
@@ -219,10 +243,19 @@ const Movies = () => {
                   <div className="h-2.5 bg-elevated rounded w-1/2" />
                 </div>
               ))
-            ) : data?.results?.length > 0 ? (
-              data.results.map(item => (
-                <MovieCard key={item.id} item={item} mediaType="movie" />
-              ))
+            ) : combinedData?.length > 0 ? (
+              <>
+                {combinedData.map(item => (
+                  <MovieCard key={item.id} item={item} mediaType="movie" />
+                ))}
+                
+                {/* Sentinel div for intersection observer */}
+                <div ref={sentinelRef} className="col-span-full h-10 w-full flex items-center justify-center mt-4">
+                  {hasMore && isFetching && (
+                    <div className="w-8 h-8 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
+                  )}
+                </div>
+              </>
             ) : (
               <div className="col-span-full text-center py-20">
                 <FiGrid size={48} className="text-text-muted mx-auto mb-4" />
@@ -237,60 +270,7 @@ const Movies = () => {
             )}
           </div>
 
-          {/* ═══════════ Pagination ═══════════ */}
-          {data?.results?.length > 0 && (
-            <motion.div
-              className="flex items-center justify-center gap-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page <= 1}
-                className="px-5 py-2.5 rounded-xl bg-white/5 border border-border/30 text-text-primary font-medium text-sm hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
-              >
-                Previous
-              </button>
-
-              {/* Page number buttons */}
-              <div className="flex gap-1.5">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (page <= 3) {
-                    pageNum = i + 1;
-                  } else if (page >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = page - 2 + i;
-                  }
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => setPage(pageNum)}
-                      className={`w-10 h-10 rounded-xl text-sm font-medium transition-all cursor-pointer
-                        ${pageNum === page
-                          ? 'bg-accent text-primary font-bold'
-                          : 'bg-white/5 text-text-primary hover:bg-white/10'
-                        }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => setPage(p => Math.min(totalPages > 500 ? 500 : totalPages, p + 1))}
-                disabled={page >= (totalPages > 500 ? 500 : totalPages)}
-                className="px-5 py-2.5 rounded-xl bg-white/5 border border-border/30 text-text-primary font-medium text-sm hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
-              >
-                Next
-              </button>
-            </motion.div>
-          )}
+          {/* Fetching overlay removed in favor of infinite scroll spinner at bottom */}
 
           {/* Fetching overlay */}
           {isFetching && !isLoading && (
