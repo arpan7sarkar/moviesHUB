@@ -126,7 +126,9 @@ const getCredits = async (req, res, next) => {
 const getPersonDetails = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { data } = await tmdbFetch.get(`/person/${id}`);
+    const { data } = await tmdbFetch.get(`/person/${id}`, {
+      params: { append_to_response: 'external_ids,combined_credits' }
+    });
     res.json(data);
   } catch (error) {
     next(error);

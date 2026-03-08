@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiFilm } from 'react-icons/fi';
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -14,6 +14,22 @@ const modalVariants = {
 };
 
 const TrailerModal = ({ isOpen, onClose, videoKey, title }) => {
+  // Close on Escape key
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, handleKeyDown]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -24,15 +40,15 @@ const TrailerModal = ({ isOpen, onClose, videoKey, title }) => {
           animate="visible"
           exit="hidden"
         >
-          {/* Backdrop */}
+          {/* Backdrop - close on click */}
           <motion.div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
             onClick={onClose}
           />
 
           {/* Modal */}
           <motion.div
-            className="relative w-full max-w-5xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl z-10"
+            className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 border border-white/5"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -41,13 +57,13 @@ const TrailerModal = ({ isOpen, onClose, videoKey, title }) => {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+              className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white transition-all backdrop-blur-sm border border-white/10 hover:border-white/30 cursor-pointer"
               aria-label="Close trailer"
             >
               <FiX size={20} />
             </button>
 
-            {/* YouTube Embed */}
+            {/* YouTube Embed or Unavailable Message */}
             {videoKey ? (
               <iframe
                 src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0&modestbranding=1`}
@@ -57,8 +73,24 @@ const TrailerModal = ({ isOpen, onClose, videoKey, title }) => {
                 className="w-full h-full"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-text-muted text-lg">
-                No trailer available
+              <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-8">
+                <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <FiFilm size={36} className="text-text-muted" />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-display font-bold text-text-primary mb-2">
+                    Trailer Not Available
+                  </h3>
+                  <p className="text-text-muted text-sm max-w-md">
+                    Unfortunately, there is no trailer available for this title at the moment. Check back later or visit TMDB for more information.
+                  </p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="mt-4 px-6 py-2.5 rounded-xl bg-white/10 border border-white/15 text-text-primary font-medium hover:bg-white/20 transition-all text-sm cursor-pointer"
+                >
+                  Close
+                </button>
               </div>
             )}
           </motion.div>

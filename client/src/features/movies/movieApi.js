@@ -85,6 +85,12 @@ export const movieApi = apiSlice.injectEndpoints({
         params: { page },
       }),
     }),
+    getTvSeasonDetails: builder.query({
+      query: ({ tvId, seasonNumber }) => ({
+        url: `/tmdb/tv/${tvId}/season/${seasonNumber}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -101,5 +107,6 @@ export const {
   useGetPersonCreditsQuery,
   useGetRecommendationsQuery,
   useGetSimilarQuery,
+  useGetTvSeasonDetailsQuery,
 } = movieApi;
 
