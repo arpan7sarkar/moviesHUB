@@ -1,7 +1,6 @@
 const HeroSkeleton = () => {
   return (
-    <div className="w-full h-[60vh] md:h-[80vh] relative bg-elevated skeleton-shimmer">
-      <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent"></div>
+    <div className="relative left-1/2 -translate-x-1/2 w-screen max-w-none h-[60vh] md:h-[80vh] bg-elevated skeleton-shimmer">
       <div className="absolute inset-0 flex flex-col justify-end container-custom pb-20 md:pb-32">
         <div className="h-12 bg-surface rounded w-3/4 md:w-1/2 mb-4 skeleton-shimmer"></div>
         <div className="h-4 bg-surface rounded w-full md:w-2/3 mb-2 skeleton-shimmer"></div>

@@ -15,8 +15,8 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
 
   // Match sidebar top with navbar bottom in both states.
   const navHeightClass = isScrolled
-    ? 'top-[4.75rem] md:top-[5.5rem]'
-    : 'top-20 md:top-[88px]';
+    ? 'top-[4.25rem] md:top-20'
+    : 'top-[4.5rem] md:top-20';
 
   const backdropVariants = {
     hidden: { opacity: 0 },

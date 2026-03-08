@@ -53,8 +53,8 @@ const Navbar = () => {
         <div
           className={`will-change-transform transition-[margin,margin-top,height,border-radius,background-color,box-shadow,backdrop-filter,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             isScrolled
-              ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-16 md:h-[72px] rounded-2xl border bg-primary/92 backdrop-blur-xl border-border/90 shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
-              : 'mx-0 mt-0 h-20 md:h-[88px] rounded-none border border-transparent bg-primary/0 backdrop-blur-0 shadow-none'
+              ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-14 md:h-16 rounded-2xl border bg-primary/92 backdrop-blur-xl border-border/90 shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
+              : 'mx-0 mt-0 h-[4.5rem] md:h-20 rounded-none border border-transparent bg-primary/0 backdrop-blur-0 shadow-none'
           }`}
         >
         <div className="container-custom h-full flex items-center justify-between">

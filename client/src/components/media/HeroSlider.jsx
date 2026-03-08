@@ -24,7 +24,7 @@ const HeroSlider = () => {
     .slice(0, 8);
 
   return (
-    <div className="relative w-full h-[65vh] sm:h-[70vh] md:h-[85vh]">
+    <div className="relative left-1/2 -translate-x-1/2 w-screen max-w-none h-[65vh] sm:h-[70vh] md:h-[85vh]">
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
@@ -70,37 +70,37 @@ const HeroSlider = () => {
                   />
                 </div>
 
-                {/* Gradient overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-primary to-transparent" />
+                {/* Readability overlays */}
+                <div className="hero-overlay hero-overlay-v absolute inset-0" />
+                <div className="hero-overlay hero-overlay-h absolute inset-0" />
+                <div className="hero-overlay hero-overlay-bottom absolute bottom-0 left-0 right-0 h-32" />
 
                 {/* Content */}
                 <div className="absolute inset-0 flex flex-col justify-end container-custom pb-20 sm:pb-24 md:pb-32">
                   <div className="max-w-2xl">
                     {/* Media type badge */}
-                    <span className="inline-block mb-3 text-[10px] font-semibold tracking-[0.2em] uppercase text-accent border border-accent/30 bg-accent/10 px-2.5 py-1 rounded">
+                    <span className="inline-block mb-3 text-[10px] font-semibold tracking-[0.2em] uppercase text-accent border border-accent/40 bg-black/25 backdrop-blur-sm px-2.5 py-1 rounded">
                       {item.media_type === 'tv' ? 'TV Series' : 'Movie'}
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-['Melodrama'] font-bold text-text-primary leading-[1.1] mb-4 tracking-tight ">
+                    <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-['Melodrama'] font-bold text-white leading-[1.1] mb-4 tracking-tight">
                       {title}
                     </h1>
 
                     {/* Metadata */}
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-text-secondary mb-5">
+                    <div className="hero-meta flex flex-wrap items-center gap-3 text-sm text-white/85 mb-5">
                       {rating && (
-                        <span className="flex items-center gap-1 text-warning font-mono font-semibold bg-warning/10 px-2 py-0.5 rounded border border-warning/20">
+                        <span className="flex items-center gap-1 text-warning font-mono font-semibold bg-warning/20 px-2 py-0.5 rounded border border-warning/40">
                           <FiStar size={12} className="fill-warning" />
                           {rating}
                         </span>
                       )}
-                      {year && <span className="text-text-secondary">{year}</span>}
+                      {year && <span className="text-white/85">{year}</span>}
                     </div>
 
                     {/* Overview */}
-                    <p className="font-['Zodiak'] text-text-secondary text-sm md:text-base leading-relaxed mb-8 max-w-lg line-clamp-3">
+                    <p className="hero-overview font-['Zodiak'] text-white/80 text-sm md:text-base leading-relaxed mb-8 max-w-lg line-clamp-3">
                       {overview || 'Description not available'}
                     </p>
 
@@ -113,7 +113,7 @@ const HeroSlider = () => {
                         <FiPlay size={16} className="fill-primary" />
                         <span className="font-semibold">Watch Now</span>
                       </Link>
-                      <button className="flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 text-text-primary text-sm md:text-base font-medium rounded-md border border-white/10 hover:border-white/20 transition-all backdrop-blur-sm active:scale-95">
+                      <button className="flex items-center gap-2 px-5 py-3 bg-black/25 hover:bg-black/35 text-white text-sm md:text-base font-medium rounded-md border border-white/20 hover:border-white/35 transition-all backdrop-blur-sm active:scale-95">
                         <FiBookmark size={16} />
                         <span>Watchlist</span>
                       </button>
@@ -130,17 +130,71 @@ const HeroSlider = () => {
       <div className="hero-pagination absolute bottom-6 sm:bottom-8 md:bottom-12 left-0 right-0 z-10 container-custom flex justify-start gap-1.5" />
 
       <style>{`
+        .hero-overlay-v {
+          background: linear-gradient(
+            to top,
+            rgba(5, 10, 18, 0.88) 0%,
+            rgba(5, 10, 18, 0.5) 48%,
+            rgba(5, 10, 18, 0) 100%
+          );
+        }
+        .hero-overlay-h {
+          background: linear-gradient(
+            to right,
+            rgba(5, 10, 18, 0.82) 0%,
+            rgba(5, 10, 18, 0.28) 50%,
+            rgba(5, 10, 18, 0) 100%
+          );
+        }
+        .hero-overlay-bottom {
+          background: linear-gradient(
+            to top,
+            rgba(5, 10, 18, 0.85) 0%,
+            rgba(5, 10, 18, 0) 100%
+          );
+        }
+
+        [data-theme="light"] .hero-overlay-v {
+          background: linear-gradient(
+            to top,
+            rgba(10, 16, 30, 0.76) 0%,
+            rgba(10, 16, 30, 0.38) 50%,
+            rgba(10, 16, 30, 0.04) 100%
+          );
+        }
+        [data-theme="light"] .hero-overlay-h {
+          background: linear-gradient(
+            to right,
+            rgba(10, 16, 30, 0.7) 0%,
+            rgba(10, 16, 30, 0.22) 52%,
+            rgba(10, 16, 30, 0) 100%
+          );
+        }
+        [data-theme="light"] .hero-overlay-bottom {
+          background: linear-gradient(
+            to top,
+            rgba(10, 16, 30, 0.58) 0%,
+            rgba(10, 16, 30, 0) 100%
+          );
+        }
+
         .hero-dot {
           display: inline-block;
           width: 8px;
           height: 8px;
           border-radius: 4px;
-          background: rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.38);
           cursor: pointer;
           transition: all 0.3s ease;
         }
         .hero-dot:hover {
-          background: rgba(255, 255, 255, 0.6);
+          background: rgba(255, 255, 255, 0.7);
+        }
+        [data-theme="light"] .hero-dot {
+          background: rgba(15, 23, 42, 0.28);
+        }
+        [data-theme="light"] .hero-dot:hover {
+          background: rgba(15, 23, 42, 0.5);
         }
         .hero-dot-active {
           width: 28px !important;
