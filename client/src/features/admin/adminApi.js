@@ -2,6 +2,14 @@ import { apiSlice } from '../api/apiSlice';
 
 export const adminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Dashboard Stats
+    getAdminStats: builder.query({
+      query: () => ({
+        url: '/admin/stats',
+        method: 'GET',
+      }),
+      providesTags: ['Admin'],
+    }),
     // Movies Management
     getAdminMovies: builder.query({
       query: (page = 1) => ({
@@ -65,6 +73,7 @@ export const adminApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetAdminStatsQuery,
   useGetAdminMoviesQuery,
   useCreateMovieMutation,
   useUpdateMovieMutation,
