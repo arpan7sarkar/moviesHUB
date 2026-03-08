@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiFilter, FiX, FiChevronDown, FiGrid, FiSliders } from 'react-icons/fi';
 import { useDiscoverQuery } from '../features/movies/movieApi';
@@ -33,9 +34,16 @@ const SORT_OPTIONS = [
 ];
 
 const TvShows = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  const [selectedGenres, setSelectedGenres] = useState([]);
-  const [sortBy, setSortBy] = useState('popularity.desc');
+  
+  const selectedGenres = useMemo(() => {
+    const genreParam = searchParams.get('genre');
+    return genreParam ? genreParam.split(',').map(Number) : [];
+  }, [searchParams]);
+  
+  const sortBy = searchParams.get('sort') || 'popularity.desc';
+
   const [showFilters, setShowFilters] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
@@ -59,19 +67,24 @@ const TvShows = () => {
   );
 
   const toggleGenre = useCallback((genreId) => {
-    setSelectedGenres(prev =>
-      prev.includes(genreId)
-        ? prev.filter(id => id !== genreId)
-        : [...prev, genreId]
-    );
+    const newGenres = selectedGenres.includes(genreId)
+      ? selectedGenres.filter(id => id !== genreId)
+      : [...selectedGenres, genreId];
+      
+    const newParams = new URLSearchParams(searchParams);
+    if (newGenres.length > 0) {
+      newParams.set('genre', newGenres.join(','));
+    } else {
+      newParams.delete('genre');
+    }
+    setSearchParams(newParams);
     setPage(1);
-  }, []);
+  }, [selectedGenres, searchParams, setSearchParams]);
 
   const clearFilters = useCallback(() => {
-    setSelectedGenres([]);
-    setSortBy('popularity.desc');
+    setSearchParams({});
     setPage(1);
-  }, []);
+  }, [setSearchParams]);
 
   const activeSortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Sort';
   const hasActiveFilters = selectedGenres.length > 0 || sortBy !== 'popularity.desc';
@@ -144,7 +157,13 @@ const TvShows = () => {
                       {SORT_OPTIONS.map(option => (
                         <li key={option.value}>
                           <button
-                            onClick={() => { setSortBy(option.value); setShowSortDropdown(false); setPage(1); }}
+                            onClick={() => { 
+                              const newParams = new URLSearchParams(searchParams);
+                              newParams.set('sort', option.value);
+                              setSearchParams(newParams);
+                              setShowSortDropdown(false); 
+                              setPage(1); 
+                            }}
                             className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer
                               ${option.value === sortBy
                                 ? 'bg-accent/10 text-accent font-semibold'
@@ -187,14 +206,14 @@ const TvShows = () => {
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden mb-8"
               >
-                <div className="flex flex-wrap gap-2.5 p-5 bg-white/[0.02] border border-border/15 rounded-2xl">
+                <div className="flex overflow-x-auto gap-3 p-5 bg-white/[0.02] border border-border/15 rounded-2xl custom-scrollbar pb-6">
                   {TV_GENRES.map(genre => (
                     <button
                       key={genre.id}
                       onClick={() => toggleGenre(genre.id)}
-                      className={`px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer border
+                      className={`shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer border
                         ${selectedGenres.includes(genre.id)
-                          ? 'bg-accent/15 border-accent/40 text-accent font-semibold'
+                          ? 'bg-accent border-accent text-primary shadow-[0_0_15px_rgba(var(--color-accent),0.3)]'
                           : 'bg-white/5 border-border/30 text-text-primary hover:bg-white/10 hover:border-border/60'
                         }`}
                     >
