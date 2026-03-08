@@ -350,7 +350,7 @@ const TvDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-text-primary leading-tight mb-3 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-text-primary leading-tight mb-3 tracking-tight">
                 {title}
                 {year && <span className="text-text-muted font-normal text-2xl md:text-3xl ml-3">({year})</span>}
               </h1>

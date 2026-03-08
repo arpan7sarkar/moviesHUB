@@ -84,7 +84,7 @@ const HeroSlider = () => {
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-text-primary leading-[1.1] mb-4 tracking-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-['Melodrama'] font-bold text-text-primary leading-[1.1] mb-4 tracking-tight ">
                       {title}
                     </h1>
 
@@ -100,7 +100,7 @@ const HeroSlider = () => {
                     </div>
 
                     {/* Overview */}
-                    <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-8 max-w-lg line-clamp-3">
+                    <p className="font-['Zodiak'] text-text-secondary text-sm md:text-base leading-relaxed mb-8 max-w-lg line-clamp-3">
                       {overview || 'Description not available'}
                     </p>
 

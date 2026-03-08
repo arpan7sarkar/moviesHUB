@@ -20,7 +20,7 @@ const ContentRow = ({ title, items, isLoading, isError, seeAllLink, mediaType })
     <section className="w-full py-6 md:py-10 relative group/row">
       {/* Section Header */}
       <div className="container-custom flex items-center justify-between mb-5 md:mb-6">
-        <h2 className="text-xl md:text-2xl font-display font-semibold text-text-primary tracking-tight">
+        <h2 className="text-xl md:text-2xl font-display font-semibold text-text-primary tracking-tight ">
           {title}
         </h2>
         {seeAllLink && (

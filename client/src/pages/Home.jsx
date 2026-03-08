@@ -25,7 +25,7 @@ const Home = () => {
         <HeroSlider />
 
         {/* Content Rows */}
-        <div className="flex flex-col -mt-10 relative z-10">
+        <div className="flex flex-col -mt-10 relative z-10 ">
           <ContentRow
             title="Trending Now"
             items={trending.data?.results}

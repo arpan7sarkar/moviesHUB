@@ -125,7 +125,7 @@ const History = () => {
                       <div className="flex flex-col justify-center min-w-0">
                         <Link 
                           to={item.mediaType === 'tv' ? `/tv/${item.tmdbId}` : `/movies/${item.tmdbId}`}
-                          className="text-text-primary font-bold hover:text-accent transition-colors truncate"
+                          className="text-text-primary font-serif text-lg font-bold hover:text-accent transition-colors truncate"
                         >
                           {item.title}
                         </Link>
