@@ -26,6 +26,7 @@ const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }) =>
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery(),
+  keepUnusedDataFor: 600,
   tagTypes: ['User', 'Movie', 'Favorite', 'History', 'Watchlist', 'Admin'],
   endpoints: (builder) => ({}), // Split into feature-specific slices
 });

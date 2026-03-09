@@ -20,12 +20,12 @@ const Home = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 overflow-x-clip">
         {/* Hero Slider */}
         <HeroSlider />
 
         {/* Content Rows */}
-        <div className="flex flex-col -mt-10 relative z-10">
+        <div className="relative z-10 flex flex-col">
           <ContentRow
             title="Trending Now"
             items={trending.data?.results}

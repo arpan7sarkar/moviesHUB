@@ -27,13 +27,14 @@ import PersonCard from '../components/cards/PersonCard';
 import ContentRow from '../components/media/ContentRow';
 import GenreRecommendationRow from '../components/media/GenreRecommendationRow';
 import TrailerModal from '../components/media/TrailerModal';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
 const MovieDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
 
   // Queries
@@ -91,6 +92,10 @@ const MovieDetail = () => {
       });
     }
   }, [isAuthenticated, movie, addToHistory]);
+
+  React.useEffect(() => {
+    setPosterLoaded(false);
+  }, [id]);
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) return;
@@ -166,7 +171,7 @@ const MovieDetail = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pb-12">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-12">
         {/* Full-bleed Backdrop */}
         <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden">
           {movie.backdrop_path && (
@@ -177,7 +182,7 @@ const MovieDetail = () => {
               src={`${TMDB_IMG}/original${movie.backdrop_path}`}
               alt=""
               className="w-full h-full object-cover object-[center_20%] opacity-40 md:opacity-100"
-              loading="eager"
+              loading="lazy"
             />
           )}
           {/* Enhanced cinematic gradient overlays for maximum readability */}
@@ -198,10 +203,15 @@ const MovieDetail = () => {
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
                 <img
-                  src={resolvePoster(movie.poster_path, 'w500')}
+                  src={resolvePoster(movie.poster_path, 'w780')}
                   alt={title}
+                  loading="lazy"
+                  onLoad={() => setPosterLoaded(true)}
                   onError={handlePosterError}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    posterLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
                 />
               </div>
             </motion.div>
@@ -214,7 +224,7 @@ const MovieDetail = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-text-primary leading-tight mb-3 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-['Melodrama'] font-bold text-text-primary leading-tight mb-3 tracking-tight">
                 {title}
                 {year && (
                   <span className="text-text-muted font-normal text-2xl md:text-3xl ml-3">
@@ -372,7 +382,7 @@ const MovieDetail = () => {
         {/* Cast Section */}
         {cast.length > 0 && (
           <motion.section
-            className="mt-32 md:mt-48"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -397,7 +407,7 @@ const MovieDetail = () => {
         )}
 
         {/* Dynamic Recommendation & Genre Rows - Nexura Inspired */}
-        <div className="mt-20 md:mt-32 space-y-16 md:space-y-24">
+        <div className="mt-12 md:mt-16 space-y-10 md:space-y-14">
           <ContentRow
             title="Recommendations"
             items={recommendationsData?.results}

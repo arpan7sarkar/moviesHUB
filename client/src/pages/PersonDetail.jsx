@@ -9,9 +9,7 @@ import { useGetPersonDetailsQuery } from '../features/movies/movieApi';
 import PageTransition from '../components/layout/PageTransition';
 import DetailSkeleton from '../components/skeletons/DetailSkeleton';
 import ContentRow from '../components/media/ContentRow';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 /* ─── Filmography Tab Button ──────────────────────────────────────── */
 const TabButton = ({ active, onClick, icon: Icon, label, count }) => (
@@ -42,10 +40,10 @@ const FilmographyItem = ({ credit, mediaType }) => {
   return (
     <Link
       to={route}
-      className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
+      className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/4 transition-colors group"
     >
       {/* Poster Thumbnail */}
-      <div className="w-10 h-14 rounded-lg overflow-hidden bg-elevated border border-border/20 flex-shrink-0">
+      <div className="w-10 h-14 rounded-lg overflow-hidden bg-elevated border border-border/20 shrink-0">
         <img
           src={resolvePoster(credit.poster_path, 'w92')}
           alt={title}
@@ -67,7 +65,7 @@ const FilmographyItem = ({ credit, mediaType }) => {
       </div>
 
       {/* Year + Rating */}
-      <div className="flex items-center gap-3 flex-shrink-0">
+      <div className="flex items-center gap-3 shrink-0">
         {credit.vote_average > 0 && (
           <span className="flex items-center gap-1 text-xs text-accent font-mono">
             <FiStar size={11} className="fill-current" />
@@ -85,6 +83,7 @@ const PersonDetail = () => {
   const { id } = useParams();
   const [showFullBio, setShowFullBio] = useState(false);
   const [filmographyTab, setFilmographyTab] = useState('movies');
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   const { data: person, isLoading, isError } = useGetPersonDetailsQuery(id);
 
@@ -147,6 +146,10 @@ const PersonDetail = () => {
 
   const activeFilmography = filmographyTab === 'movies' ? filmography.movies : filmography.tv;
 
+  React.useEffect(() => {
+    setProfileLoaded(false);
+  }, [id]);
+
   if (isLoading) return <PageTransition><DetailSkeleton /></PageTransition>;
 
   if (isError || !person) {
@@ -168,30 +171,30 @@ const PersonDetail = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-24 pb-20">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-20">
         <div className="container-custom px-4 md:px-8">
           <div className="flex flex-col md:flex-row gap-10 md:gap-16">
 
             {/* ═══════════ LEFT COLUMN: Profile & Info ═══════════ */}
             <motion.div
-              className="md:w-72 lg:w-80 flex-shrink-0 flex flex-col items-center md:items-start"
+              className="md:w-72 lg:w-80 shrink-0 flex flex-col items-center md:items-start"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
               {/* Circular Profile Image */}
               <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-elevated border-4 border-border/30 mb-8">
-                {person.profile_path ? (
-                  <img
-                    src={`${TMDB_IMG}/h632${person.profile_path}`}
-                    alt={person.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-elevated flex items-center justify-center text-text-muted text-7xl font-display">
-                    <FiUser size={80} />
-                  </div>
-                )}
+                <img
+                  src={resolvePoster(person.profile_path, 'w780')}
+                  alt={person.name}
+                  loading="lazy"
+                  onLoad={() => setProfileLoaded(true)}
+                  onError={handlePosterError}
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    profileLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
+                />
               </div>
 
               {/* Name (mobile only) */}
@@ -217,7 +220,7 @@ const PersonDetail = () => {
               )}
 
               {/* Personal Info Card */}
-              <div className="w-full space-y-5 bg-white/[0.02] border border-border/15 rounded-2xl p-6">
+              <div className="w-full space-y-5 bg-white/2 border border-border/15 rounded-2xl p-6">
                 <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent/80 mb-2">Personal Info</h3>
 
                 <div>
@@ -323,7 +326,7 @@ const PersonDetail = () => {
                     <h2 className="text-2xl md:text-3xl font-display font-black text-text-primary tracking-tighter uppercase italic">
                       Filmography
                     </h2>
-                    <div className="h-[2px] flex-1 bg-gradient-to-r from-accent/40 via-border/20 to-transparent" />
+                    <div className="h-[2px] flex-1 bg-linear-to-r from-accent/40 via-border/20 to-transparent" />
                   </div>
 
                   {/* Tab Buttons */}
@@ -345,7 +348,7 @@ const PersonDetail = () => {
                   </div>
 
                   {/* Filmography List */}
-                  <div className="border border-border/10 rounded-2xl bg-white/[0.01] divide-y divide-border/10 max-h-[600px] overflow-y-auto no-scrollbar">
+                  <div className="border border-border/10 rounded-2xl bg-white/1 divide-y divide-border/10 max-h-[600px] overflow-y-auto no-scrollbar">
                     {activeFilmography.length > 0 ? (
                       activeFilmography.map((credit, i) => (
                         <FilmographyItem

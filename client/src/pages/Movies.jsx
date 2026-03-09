@@ -98,7 +98,7 @@ const Movies = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-24 pb-16">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-16">
         <div className="container-custom px-4 md:px-8">
 
           {/* ═══════════ Page Header ═══════════ */}
@@ -213,7 +213,7 @@ const Movies = () => {
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden mb-8"
               >
-                <div className="flex overflow-x-auto gap-3 p-5 bg-white/[0.02] border border-border/15 rounded-2xl custom-scrollbar pb-6">
+                <div className="flex overflow-x-auto gap-3 p-5 bg-white/2 border border-border/15 rounded-2xl custom-scrollbar pb-6">
                   {MOVIE_GENRES.map(genre => (
                     <button
                       key={genre.id}
@@ -238,7 +238,7 @@ const Movies = () => {
               // Initial Skeleton loading
               Array.from({ length: 18 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="aspect-[2/3] bg-elevated rounded-lg mb-2" />
+                  <div className="aspect-2/3 bg-elevated rounded-lg mb-2" />
                   <div className="h-3 bg-elevated rounded w-3/4 mb-1" />
                   <div className="h-2.5 bg-elevated rounded w-1/2" />
                 </div>

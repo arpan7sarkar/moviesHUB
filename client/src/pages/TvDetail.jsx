@@ -29,7 +29,7 @@ import {
   useRemoveFromWatchlistMutation,
   useAddToHistoryMutation,
 } from '../features/user/userApi';
-import { resolvePoster, handlePosterError } from '../utils/mediaFallbacks';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../utils/mediaFallbacks';
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
 
@@ -158,6 +158,7 @@ const EpisodeCard = ({ episode, index }) => {
 const TvDetail = () => {
   const { id } = useParams();
   const [showTrailer, setShowTrailer] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   const { isAuthenticated } = useSelector(state => state.auth);
   const [selectedSeason, setSelectedSeason] = useState(1);
 
@@ -220,6 +221,10 @@ const TvDetail = () => {
       });
     }
   }, [isAuthenticated, tv, addToHistory]);
+
+  useEffect(() => {
+    setPosterLoaded(false);
+  }, [id]);
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) return;
@@ -294,7 +299,7 @@ const TvDetail = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pb-12">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-12">
         {/* Full-bleed Backdrop */}
         <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden">
           {tv.backdrop_path && (
@@ -305,7 +310,7 @@ const TvDetail = () => {
               src={`${TMDB_IMG}/original${tv.backdrop_path}`}
               alt=""
               className="w-full h-full object-cover object-[center_20%] opacity-40 md:opacity-100"
-              loading="eager"
+              loading="lazy"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/90 md:via-primary/20 to-transparent" />
@@ -325,10 +330,15 @@ const TvDetail = () => {
             >
               <div className="w-48 sm:w-56 md:w-72 aspect-[2/3] rounded-xl overflow-hidden shadow-elevated border border-border/30">
                 <img
-                  src={resolvePoster(tv.poster_path, 'w500')}
+                  src={resolvePoster(tv.poster_path, 'w780')}
                   alt={title}
+                  loading="lazy"
+                  onLoad={() => setPosterLoaded(true)}
                   onError={handlePosterError}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    posterLoaded ? 'blur-0 scale-100 opacity-100' : 'blur-xl scale-[1.03] opacity-75'
+                  }`}
+                  style={getBlurBackground('detail')}
                 />
               </div>
             </motion.div>
@@ -340,7 +350,7 @@ const TvDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-text-primary leading-tight mb-3 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-text-primary leading-tight mb-3 tracking-tight">
                 {title}
                 {year && <span className="text-text-muted font-normal text-2xl md:text-3xl ml-3">({year})</span>}
               </h1>
@@ -469,7 +479,7 @@ const TvDetail = () => {
         {/* ═══════════ Seasons & Episodes Section ═══════════ */}
         {seasons.length > 0 && (
           <motion.section
-            className="mt-24 md:mt-36"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -497,6 +507,7 @@ const TvDetail = () => {
                   <img
                     src={resolvePoster(seasonData.poster_path, 'w92')}
                     alt={seasonData.name}
+                    loading="lazy"
                     onError={handlePosterError}
                     className="w-14 h-20 rounded-lg object-cover border border-border/20 flex-shrink-0"
                   />
@@ -533,7 +544,7 @@ const TvDetail = () => {
         {/* Cast Section */}
         {cast.length > 0 && (
           <motion.section
-            className="mt-24 md:mt-36"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -558,7 +569,7 @@ const TvDetail = () => {
         )}
 
         {/* Recommendation & Genre Rows */}
-        <div className="mt-20 md:mt-32 space-y-16 md:space-y-24">
+        <div className="mt-12 md:mt-16 space-y-10 md:space-y-14">
           <ContentRow title="Recommendations" items={recommendationsData?.results} isLoading={isRecommendationsLoading} isError={isRecommendationsError} mediaType="tv" />
           <ContentRow title="Similar Shows" items={similarData?.results} isLoading={isSimilarLoading} isError={isSimilarError} mediaType="tv" />
           {tv.genres?.slice(0, 3).map((genre) => (
