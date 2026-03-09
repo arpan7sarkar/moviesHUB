@@ -62,3 +62,5 @@ const PORT = env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running in ${env.NODE_ENV} mode on port ${PORT}`);
 });
+
+module.exports = app;
