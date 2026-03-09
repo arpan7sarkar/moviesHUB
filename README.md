@@ -5,7 +5,7 @@
   
   <br/>
   
-  # 🎬 CinmeaHUb
+  # 🎬 CinmeaHUB
   
   **A Premium, Production-Grade Full-Stack Movie Discovery Platform**
   
