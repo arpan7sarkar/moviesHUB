@@ -81,7 +81,7 @@ const Dashboard = () => {
       <div>
         <h1 className="text-3xl font-display font-bold text-text-primary">Dashboard</h1>
         <p className="text-sm text-text-muted mt-1">
-          Overview of your CineVault platform activity.
+          Overview of your CinemaHub platform activity.
         </p>
       </div>
 

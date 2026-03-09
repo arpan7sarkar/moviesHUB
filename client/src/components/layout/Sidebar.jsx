@@ -83,7 +83,7 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                       {user?.name || 'User'}
                     </span>
                     <span className="text-sm text-text-muted truncate">
-                      {user?.email || 'user@cinevault.io'}
+                      {user?.email || 'user@cinemahub.io'}
                     </span>
                   </div>
                 </motion.div>

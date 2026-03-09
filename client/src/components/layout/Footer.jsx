@@ -13,13 +13,13 @@ const Footer = () => {
           <div className="md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
             <Link 
               to="/" 
-              className="text-2xl font-display font-bold tracking-tighter text-text-primary group mb-4"
+              className="text-3xl font-branding font-bold tracking-wide text-accent group mb-4"
             >
-              Cine<span className="text-accent group-hover:text-accent-hover transition-colors">Vault</span>
+              <span className="text-text-primary">Cinema</span>Hub
             </Link>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
               Experience movie magic at its finest. Discover, track, and watch your 
-              favorite cinema pieces with CineVault.
+              favorite cinema pieces with CinemaHub.
             </p>
           </div>
 
@@ -64,7 +64,7 @@ const Footer = () => {
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-text-muted">
-            &copy; {currentYear} CineVault Inc. All rights reserved.
+            &copy; {currentYear} CinemaHub Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-8">
             <Link to="#" className="text-xs text-text-muted hover:text-text-primary transition-colors">Privacy Policy</Link>

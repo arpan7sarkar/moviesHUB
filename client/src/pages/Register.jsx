@@ -99,12 +99,12 @@ const Register = () => {
                 <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
                   <FiFilm size={20} className="text-accent" />
                 </div>
-                <span className="text-xl font-display font-bold text-text-primary">
-                  Cine<span className="text-accent">Vault</span>
+                <span className="text-xl font-branding font-bold text-accent">
+                   <span className="text-text-primary">Cinema</span>Hub
                 </span>
               </Link>
               <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-2">
-                Join CineVault
+                Join CinemaHub
               </h1>
               <p className="text-text-muted text-sm">Create your account to start exploring</p>
             </div>

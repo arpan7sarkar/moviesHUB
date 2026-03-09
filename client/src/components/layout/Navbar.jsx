@@ -61,9 +61,10 @@ const Navbar = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-2xl md:text-3xl font-display font-bold tracking-tighter text-text-primary group"
+            className="text-4xl md:text-4xl sm:text-2xl font-branding font-bold tracking-wide text-accent group"
           >
-            Cine<span className="text-accent group-hover:text-accent-hover transition-colors">Vault</span>
+            <span className="text-text-primary">Cinema</span>
+            <span >Hub</span>
           </Link>
 
           {/* Desktop Navigation */}

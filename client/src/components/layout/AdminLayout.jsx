@@ -145,7 +145,9 @@ const AdminLayout = () => {
             >
               <FiMenu size={20} />
             </button>
-            <h1 className="text-lg font-bold text-text-primary uppercase tracking-wider font-display shrink-0">CineVault Admin</h1>
+            <h1 className="text-lg font-bold uppercase tracking-wider font-branding shrink-0">
+               <span className="text-text-primary">Cinema</span><span className="text-accent">Hub Admin</span>
+            </h1>
           </div>
         </div>
 

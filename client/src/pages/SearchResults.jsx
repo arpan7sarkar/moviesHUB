@@ -116,7 +116,7 @@ const SearchResults = () => {
         <main className="min-h-screen bg-primary pt-24 pb-16">
           <div className="container-custom px-4 md:px-8 flex flex-col items-center justify-center min-h-[60vh]">
             <FiSearch size={56} className="text-text-muted mb-6" />
-            <h1 className="text-3xl font-display font-bold text-text-primary mb-3">Search CineVault</h1>
+            <h1 className="text-3xl font-display font-bold text-text-primary mb-3">Search CinemaHub</h1>
             <p className="text-text-muted text-base">Use the search icon in the navbar to find movies, TV shows, and people.</p>
           </div>
         </main>
