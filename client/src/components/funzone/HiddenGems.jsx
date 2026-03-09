@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiFilter, FiStar, FiCalendar, FiArrowLeft, FiAward } from 'react-icons/fi';
 import { useDiscoverQuery } from '../../features/movies/movieApi';
-import { Link } from 'react-router-dom';
+import MovieCard from '../cards/MovieCard';
 
 const GENRES = [
   { id: '', name: 'All Genres' },
@@ -84,51 +84,13 @@ const GemResults = ({ filters, onBack }) => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
           {movies.slice(0, 10).map((movie) => (
-            <Link
-              key={movie.id}
-              to={`/movies/${movie.id}`}
-              className="group bg-primary/50 border border-border/50 rounded-2xl overflow-hidden hover:border-accent/40 hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1 block"
-            >
-              <div className="relative aspect-2/3 overflow-hidden">
-                {movie.poster_path ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-surface flex items-center justify-center text-text-muted text-xs text-center p-2">
-                    {movie.title}
-                  </div>
-                )}
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {/* Rare Badge */}
-                <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent/90 backdrop-blur-sm text-primary text-[10px] font-bold rounded-md uppercase tracking-wider shadow-md">
-                  Rare Gem
-                </div>
+            <div key={movie.id} className="relative group/gem">
+              <MovieCard item={movie} mediaType="movie" />
+              {/* Rare Badge */}
+              <div className="absolute -top-3 -left-3 px-3 py-1 bg-accent text-primary text-[11px] z-30 pointer-events-none font-extrabold rounded-md uppercase tracking-wider shadow-[0_4px_12px_rgba(212,168,83,0.4)] transform -rotate-3 transition-transform duration-300 group-hover/gem:rotate-0 group-hover/gem:scale-110">
+                Rare Gem
               </div>
-              
-              <div className="p-4 relative">
-                <h3 className="font-display font-bold text-text-primary text-sm line-clamp-1 mb-2 group-hover:text-accent transition-colors">
-                  {movie.title}
-                </h3>
-                <div className="flex items-center justify-between text-xs text-text-muted">
-                   <div className="flex items-center gap-1">
-                      <FiStar className="text-warning fill-warning" />
-                      <span className="text-text-primary font-medium">{movie.vote_average?.toFixed(1)}</span>
-                   </div>
-                   {movie.release_date && (
-                     <div className="flex items-center gap-1">
-                       <FiCalendar />
-                       <span>{new Date(movie.release_date).getFullYear()}</span>
-                     </div>
-                   )}
-                </div>
-              </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

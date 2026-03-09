@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlay, FiRefreshCw, FiStar, FiCalendar, FiArrowLeft } from 'react-icons/fi';
 import { useDiscoverQuery } from '../../features/movies/movieApi';
-import { Link } from 'react-router-dom';
+import MovieCard from '../cards/MovieCard';
 
 const GENRES = [
   { id: 28, name: 'ACTION' },
@@ -85,46 +85,7 @@ const RouletteResult = ({ genre, onReset }) => {
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
         {selectedMovies.map((movie) => (
-          <Link
-            key={movie.id}
-            to={`/movies/${movie.id}`}
-            className="group bg-primary/50 border border-border/50 rounded-2xl overflow-hidden hover:border-accent/40 hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full"
-          >
-            <div className="relative aspect-2/3 overflow-hidden shrink-0">
-              {movie.poster_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full bg-surface flex items-center justify-center text-text-muted text-sm text-center p-2">
-                  No Poster
-                </div>
-              )}
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-            
-            <div className="p-3 md:p-4 flex flex-col grow justify-between">
-              <h3 className="font-display font-bold text-text-primary text-sm line-clamp-2 leading-tight mb-2 group-hover:text-accent transition-colors">
-                {movie.title}
-              </h3>
-              <div className="flex items-center justify-between text-xs text-text-muted mt-auto">
-                 <div className="flex items-center gap-1">
-                    <FiStar className="text-warning fill-warning" />
-                    <span className="text-text-primary font-medium">{movie.vote_average?.toFixed(1)}</span>
-                 </div>
-                 {movie.release_date && (
-                   <div className="flex items-center gap-1">
-                     <FiCalendar />
-                     <span>{new Date(movie.release_date).getFullYear()}</span>
-                   </div>
-                 )}
-              </div>
-            </div>
-          </Link>
+          <MovieCard key={movie.id} item={movie} mediaType="movie" />
         ))}
       </div>
       
