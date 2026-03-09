@@ -68,9 +68,9 @@ const RouletteResult = ({ genre, onReset }) => {
     >
       <div className="w-48 md:w-64 shrink-0 rounded-2xl overflow-hidden shadow-elevated relative group">
         {posterUrl ? (
-          <img src={posterUrl} alt={selectedMovie.title} className="w-full h-auto object-cover aspect-[2/3]" />
+          <img src={posterUrl} alt={selectedMovie.title} className="w-full h-auto object-cover aspect-2/3" />
         ) : (
-          <div className="w-full aspect-[2/3] bg-surface flex items-center justify-center text-text-muted">
+          <div className="w-full aspect-2/3 bg-surface flex items-center justify-center text-text-muted">
             No Poster
           </div>
         )}

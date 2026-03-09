@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiTrendingUp, FiSmile, FiTarget } from 'react-icons/fi';
-import PageTransition from '../components/layout/PageTransition';
 import MovieRoulette from '../components/funzone/MovieRoulette';
+import MoodSelector from '../components/funzone/MoodSelector';
+import HiddenGems from '../components/funzone/HiddenGems';
+import PageTransition from '../components/layout/PageTransition';
 
 const Funzone = () => {
   const [activeTab, setActiveTab] = useState('roulette');
@@ -43,7 +45,7 @@ const Funzone = () => {
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="activeTabGlow"
-                    className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-linear-to-br from-accent/5 to-transparent pointer-events-none"
                     initial={false}
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
@@ -93,13 +95,8 @@ const Funzone = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-center min-h-[400px]"
                 >
-                  <div className="text-center">
-                    <FiSmile size={64} className="text-accent/50 mx-auto mb-4" />
-                    <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Mood Matcher</h2>
-                    <p className="text-text-muted">Coming soon in step 2!</p>
-                  </div>
+                  <MoodSelector />
                 </motion.div>
               )}
               {activeTab === 'hiddengems' && (
@@ -109,13 +106,8 @@ const Funzone = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-center min-h-[400px]"
                 >
-                  <div className="text-center">
-                    <FiTrendingUp size={64} className="text-accent/50 mx-auto mb-4" />
-                    <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Hidden Gems</h2>
-                    <p className="text-text-muted">Coming soon in step 3!</p>
-                  </div>
+                  <HiddenGems />
                 </motion.div>
               )}
             </AnimatePresence>
