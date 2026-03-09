@@ -62,23 +62,25 @@ const Navbar = () => {
       <nav className={`${location.pathname === '/' ? 'absolute' : 'fixed'} top-0 left-0 right-0 z-50`}>
         <div
           className={`will-change-transform transition-[margin,margin-top,height,border-radius,background-color,box-shadow,backdrop-filter,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            (isScrolled || location.pathname !== '/')
+            (isScrolled || location.pathname.includes('/movies/') || location.pathname.includes('/tv/') || location.pathname.includes('/person/'))
               ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-14 md:h-16 rounded-2xl border bg-primary/95 backdrop-blur-xl border-border shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
               : 'mx-0 mt-0 h-18 md:h-24 rounded-none border border-transparent bg-transparent backdrop-blur-0 shadow-none'
           }`}
         >
-        <div className="container-custom h-full flex items-center justify-between">
-          {/* Logo */}
-          <Link 
-            to={isAuthenticated ? '/home' : '/'} 
-            className="text-4xl md:text-4xl sm:text-2xl font-branding font-bold tracking-wide text-accent group"
-          >
-            <span className="text-text-primary">Cinema</span>
-            <span >Hub</span>
-          </Link>
+        <div className="container-custom h-full flex items-center justify-between relative">
+          {/* Logo - Left Aligned */}
+          <div className="z-10">
+            <Link 
+              to={isAuthenticated ? '/home' : '/'} 
+              className="text-4xl md:text-4xl sm:text-2xl font-branding font-bold tracking-wide text-accent group"
+            >
+              <span className="text-text-primary">Cinema</span>
+              <span >Hub</span>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 z-0">
             {navLinks.map((link) => (
               link.path.includes('#') ? (
                 <a
@@ -108,8 +110,8 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-5">
+          {/* Actions - Right Aligned */}
+          <div className="flex items-center gap-2 md:gap-5 z-10">
             {isAuthenticated && (
               <button onClick={() => setIsSearchOpen(true)} className="p-2 text-text-secondary hover:text-accent transition-colors cursor-pointer" aria-label="Open search">
                 <FiSearch size={20} />

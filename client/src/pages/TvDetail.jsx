@@ -479,7 +479,7 @@ const TvDetail = () => {
         {/* ═══════════ Seasons & Episodes Section ═══════════ */}
         {seasons.length > 0 && (
           <motion.section
-            className="mt-24 md:mt-36"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -544,7 +544,7 @@ const TvDetail = () => {
         {/* Cast Section */}
         {cast.length > 0 && (
           <motion.section
-            className="mt-24 md:mt-36"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -569,7 +569,7 @@ const TvDetail = () => {
         )}
 
         {/* Recommendation & Genre Rows */}
-        <div className="mt-20 md:mt-32 space-y-16 md:space-y-24">
+        <div className="mt-12 md:mt-16 space-y-10 md:space-y-14">
           <ContentRow title="Recommendations" items={recommendationsData?.results} isLoading={isRecommendationsLoading} isError={isRecommendationsError} mediaType="tv" />
           <ContentRow title="Similar Shows" items={similarData?.results} isLoading={isSimilarLoading} isError={isSimilarError} mediaType="tv" />
           {tv.genres?.slice(0, 3).map((genre) => (

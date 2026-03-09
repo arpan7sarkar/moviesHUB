@@ -382,7 +382,7 @@ const MovieDetail = () => {
         {/* Cast Section */}
         {cast.length > 0 && (
           <motion.section
-            className="mt-32 md:mt-48"
+            className="mt-16 md:mt-24"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -407,7 +407,7 @@ const MovieDetail = () => {
         )}
 
         {/* Dynamic Recommendation & Genre Rows - Nexura Inspired */}
-        <div className="mt-20 md:mt-32 space-y-16 md:space-y-24">
+        <div className="mt-12 md:mt-16 space-y-10 md:space-y-14">
           <ContentRow
             title="Recommendations"
             items={recommendationsData?.results}
