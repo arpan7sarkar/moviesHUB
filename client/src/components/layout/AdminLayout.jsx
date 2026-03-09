@@ -70,10 +70,10 @@ const AdminLayout = () => {
             {(!collapsed || isMobileOpen) && (
               <div className="overflow-hidden min-w-0">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-accent">
-                  Nexus
+                  Admin
                 </p>
                 <p className="text-lg font-display font-black text-text-primary leading-none mt-1 uppercase italic">
-                  Admin
+                  Panel
                 </p>
               </div>
             )}
@@ -135,7 +135,7 @@ const AdminLayout = () => {
             className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl text-sm font-black uppercase tracking-tight italic text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-primary transition-all group active:scale-95"
           >
             <FiArrowLeft size={20} className="shrink-0 group-hover:-translate-x-2 transition-transform duration-300" />
-            {(!collapsed || isMobileOpen) && <span>Exit to Hub</span>}
+            {(!collapsed || isMobileOpen) && <span>Back to Home</span>}
           </button>
 
           <div className="flex items-center gap-2 w-full justify-between">

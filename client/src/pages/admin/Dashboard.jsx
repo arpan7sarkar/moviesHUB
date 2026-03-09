@@ -73,10 +73,10 @@ const Dashboard = () => {
             <FiActivity size={40} />
         </div>
         <div>
-            <h2 className="text-2xl font-display font-black text-text-primary uppercase tracking-tight">Sync Failure</h2>
+            <h2 className="text-2xl font-display font-black text-text-primary uppercase tracking-tight">Error Fetching Data</h2>
             <p className="text-text-muted mt-2 max-w-sm mx-auto">We encountered an issue fetching the latest analytics. Check your connection or try again.</p>
         </div>
-        <button onClick={() => window.location.reload()} className="btn-primary px-8 py-3 rounded-xl font-bold">Refresh Intel</button>
+        <button onClick={() => window.location.reload()} className="btn-primary px-8 py-3 rounded-xl font-bold">Refresh Analytics</button>
       </div>
     );
   }
@@ -93,10 +93,10 @@ const Dashboard = () => {
       >
         <div className="space-y-3">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent flex items-center gap-3">
-            <span className="w-10 h-px bg-accent/30" /> Real-time Analytics
+            <span className="w-10 h-px bg-accent/30" /> Dashboard Overview
           </p>
           <h1 className="text-4xl md:text-6xl font-display font-black text-text-primary uppercase italic tracking-tighter">
-            Control <span className="text-accent">Center</span>
+            Admin <span className="text-accent">Dashboard</span>
           </h1>
           <p className="text-text-muted text-lg font-medium opacity-80 max-w-2xl">
             Monitor activity metrics and manage your CinemaHub ecosystem from a unified command deck.
@@ -105,7 +105,7 @@ const Dashboard = () => {
         
         <div className="shrink-0 flex items-center gap-3 bg-accent/5 border border-accent/20 rounded-2xl px-6 py-4 backdrop-blur-md">
             <div className="w-3 h-3 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]" />
-            <span className="text-xs font-black uppercase tracking-widest text-accent">System Online</span>
+            <span className="text-xs font-black uppercase tracking-widest text-accent">Online</span>
         </div>
       </motion.div>
 
@@ -161,7 +161,7 @@ const Dashboard = () => {
         >
           <div className="px-8 py-7 border-b border-border/10 flex items-center justify-between">
             <h2 className="text-lg font-display font-black text-text-primary uppercase italic tracking-tight flex items-center gap-3">
-              <FiUsers className="text-accent" /> New <span className="text-accent italic">Operatives</span>
+              <FiUsers className="text-accent" /> Recent <span className="text-accent italic">Users</span>
             </h2>
             <Link to="/admin/users" className="text-xs font-black uppercase tracking-widest text-accent hover:underline flex items-center gap-2">
                 Manage <FiArrowRight />
@@ -215,7 +215,7 @@ const Dashboard = () => {
             ) : (
               <div className="flex flex-col items-center justify-center py-20 opacity-40">
                 <FiUsers size={48} className="mb-4" />
-                <p className="font-bold text-sm tracking-widest uppercase italic">Silence in sector</p>
+                <p className="font-bold text-sm tracking-widest uppercase italic">No recent accounts</p>
               </div>
             )}
           </div>
@@ -230,7 +230,7 @@ const Dashboard = () => {
         >
           <div className="px-8 py-7 border-b border-border/10">
             <h2 className="text-lg font-display font-black text-text-primary uppercase italic tracking-tight flex items-center gap-3">
-              <FiActivity className="text-rose-400" /> Platform <span className="text-rose-400 italic">Pulse</span>
+              <FiActivity className="text-rose-400" /> Recent <span className="text-rose-400 italic">Favorites</span>
             </h2>
           </div>
           
@@ -258,7 +258,7 @@ const Dashboard = () => {
                                 </p>
                                 <p className="text-[10px] text-text-muted mt-2 font-bold flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-rose-400/50" />
-                                    ENROLLED BY {fav.user?.name || 'CITIZEN'}
+                                    FAVORITED BY {fav.user?.name || 'USER'}
                                 </p>
                             </div>
                         </div>
@@ -280,7 +280,7 @@ const Dashboard = () => {
             ) : (
                 <div className="col-span-full py-20 flex flex-col items-center justify-center opacity-40">
                     <FiActivity size={48} className="mb-4" />
-                    <p className="font-bold text-sm tracking-widest uppercase italic border-t border-border/20 pt-4">Nexus Quiescent</p>
+                    <p className="font-bold text-sm tracking-widest uppercase italic border-t border-border/20 pt-4">No recent activity</p>
                 </div>
             )}
           </div>

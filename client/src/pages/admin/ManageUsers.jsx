@@ -63,19 +63,19 @@ const ManageUsers = () => {
       >
         <div className="space-y-3">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent flex items-center gap-3">
-            <span className="w-10 h-px bg-accent/30" /> Personnel Database
+            <span className="w-10 h-px bg-accent/30" /> User Management
           </p>
           <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary uppercase italic tracking-tighter">
             User <span className="text-accent">Directory</span>
           </h1>
           <p className="text-text-muted text-md font-medium opacity-80 max-w-xl">
-            Monitor registration trends and manage access protocols for platform citizens.
+            Monitor registration trends and manage access for platform users.
           </p>
         </div>
         
         <div className="shrink-0 flex items-center gap-6 bg-accent/5 border border-accent/20 rounded-2xl px-8 py-5 backdrop-blur-md italic">
             <div className="text-right">
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted/60">Active Index</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted/60">Total Users</p>
                 <p className="text-2xl font-display font-black text-text-primary">{total.toLocaleString()} USERS</p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-accent text-primary flex items-center justify-center shadow-lg">
@@ -98,7 +98,7 @@ const ManageUsers = () => {
           />
           <input
             type="text"
-            placeholder="Interrogating User Database..."
+            placeholder="Search users..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-14 pr-6 py-4 bg-primary/40 border border-border/20 rounded-2xl text-sm font-bold text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all"
@@ -117,11 +117,11 @@ const ManageUsers = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white/5">
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">Entity</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden md:table-cell">Enlisted</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden sm:table-cell">Privilege</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">Standing</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 text-right">Overrides</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">User</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden md:table-cell">Joined</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden sm:table-cell">Role</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">Status</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/5">
@@ -140,7 +140,7 @@ const ManageUsers = () => {
                         <FiInbox size={60} />
                         <div className="space-y-2">
                              <p className="text-xl font-display font-black uppercase italic tracking-widest">No Matches</p>
-                             <p className="text-xs font-bold font-mono">Zero entities detected in the current search sector</p>
+                             <p className="text-xs font-bold font-mono">No users matching your search</p>
                         </div>
                     </div>
                   </td>
@@ -209,8 +209,8 @@ const ManageUsers = () => {
                             : 'text-text-muted border-border/40 hover:text-text-primary hover:border-text-muted'
                         } disabled:opacity-30 disabled:cursor-not-allowed`}
                       >
-                        <option value="user" className="bg-primary text-text-primary">Citizen</option>
-                        <option value="admin" className="bg-primary text-text-primary">Overseer</option>
+                        <option value="user" className="bg-primary text-text-primary">User</option>
+                        <option value="admin" className="bg-primary text-text-primary">Admin</option>
                       </select>
                     </td>
 
@@ -224,7 +224,7 @@ const ManageUsers = () => {
                         }`}
                       >
                         <div className={`w-1.5 h-1.5 rounded-full ${user.banned ? 'bg-danger animate-pulse' : 'bg-emerald-400'}`} />
-                        {user.banned ? 'Blacklisted' : 'Operational'}
+                        {user.banned ? 'Banned' : 'Active'}
                       </span>
                     </td>
 
@@ -241,7 +241,7 @@ const ManageUsers = () => {
                                   ? 'bg-accent/10 text-accent border-accent/30 hover:bg-accent/20'
                                   : 'bg-white/5 text-white/40 hover:text-danger hover:bg-danger/10 hover:border-danger/30'
                               }`}
-                              title={user.banned ? 'Restore Access' : 'Revoke Access'}
+                              title={user.banned ? 'Unban User' : 'Ban User'}
                             >
                               {user.banned ? <FiUnlock size={16} /> : <FiLock size={16} />}
                             </button>
@@ -249,7 +249,7 @@ const ManageUsers = () => {
                               onClick={() => setDeleteTarget(user)}
                               disabled={isDeleting}
                               className="w-10 h-10 rounded-xl bg-white/5 border border-border/20 flex items-center justify-center text-white/40 hover:text-danger hover:bg-danger/10 hover:border-danger/30 transition-all active:scale-90 cursor-pointer"
-                              title="Purge Identity"
+                              title="Delete User"
                             >
                               <FiTrash2 size={16} />
                             </button>
@@ -268,7 +268,7 @@ const ManageUsers = () => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-10 py-6 border-t border-border/10 bg-black/20">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">
-              Section {page} of {totalPages}
+              Page {page} of {totalPages}
             </p>
             <div className="flex items-center gap-4">
               <button
@@ -310,23 +310,23 @@ const ManageUsers = () => {
                 <div className="w-20 h-20 rounded-3xl bg-danger/10 border border-danger/30 flex items-center justify-center text-danger mb-8 mx-auto shadow-inner">
                     <FiTrash2 size={32} />
                 </div>
-                <h3 className="text-3xl font-display font-black text-text-primary uppercase italic text-center leading-tight">Identity <span className="text-danger">Purge</span></h3>
+                <h3 className="text-3xl font-display font-black text-text-primary uppercase italic text-center leading-tight">Delete <span className="text-danger">User</span></h3>
                 <p className="text-md text-text-muted mt-4 text-center leading-relaxed">
-                  Are you absolutely certain? Purging <strong className="text-text-primary">{deleteTarget.name}</strong> will erase all associated records, history, and engagement data from the platform.
+                  Are you absolutely certain? Deleting <strong className="text-text-primary">{deleteTarget.name}</strong> will remove them from the system permanently.
                 </p>
                 <div className="grid grid-cols-2 gap-4 mt-10">
                   <button
                     onClick={() => setDeleteTarget(null)}
                     className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-text-muted hover:bg-white/5 transition-all cursor-pointer border border-border/20"
                   >
-                    Abort
+                    Cancel
                   </button>
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
                     className="px-6 py-4 bg-danger text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-danger-hover transition-all disabled:opacity-50 cursor-pointer active:scale-95 italic"
                   >
-                    {isDeleting ? 'Erasing...' : 'PURGE IDENTITY'}
+                    {isDeleting ? 'Deleting...' : 'DELETE USER'}
                   </button>
                 </div>
               </motion.div>

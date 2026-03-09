@@ -46,10 +46,10 @@ const ManageMovies = () => {
       >
         <div className="space-y-3">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent flex items-center gap-3">
-            <span className="w-10 h-px bg-accent/30" /> Catalog Management
+            <span className="w-10 h-px bg-accent/30" /> Movie Management
           </p>
           <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary uppercase italic tracking-tighter">
-            Archive <span className="text-accent">Manager</span>
+            Movies <span className="text-accent">Manager</span>
           </h1>
           <p className="text-text-muted text-md font-medium opacity-80 max-w-xl">
             Edit, categorize, and maintain the cinematic library of CinemaHub.
@@ -61,7 +61,7 @@ const ManageMovies = () => {
           className="group flex items-center gap-3 px-8 py-4 bg-accent text-primary font-black uppercase tracking-widest text-xs rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_8px_25px_rgba(var(--accent-rgb),0.3)] shrink-0 italic"
         >
           <FiPlus size={18} />
-          Append New Entry
+          Add New Movie
         </Link>
       </motion.div>
 
@@ -80,7 +80,7 @@ const ManageMovies = () => {
           />
           <input
             type="text"
-            placeholder="Search Intelligence System..."
+            placeholder="Search movies..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-14 pr-6 py-4 bg-primary/40 border border-border/20 rounded-2xl text-sm font-bold text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all"
@@ -100,7 +100,7 @@ const ManageMovies = () => {
             >
                 {CATEGORIES.map((cat) => (
                     <option key={cat} value={cat === 'all' ? '' : cat} className="bg-primary text-text-primary">
-                    {cat === 'all' ? 'All Sectors' : cat.replace('_', ' ').toUpperCase()}
+                    {cat === 'all' ? 'All Categories' : cat.replace('_', ' ').toUpperCase()}
                     </option>
                 ))}
             </select>
@@ -118,11 +118,11 @@ const ManageMovies = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white/5">
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">Project</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden lg:table-cell text-center">Identity</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden xl:table-cell">Classification</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden md:table-cell">Deployment</th>
-                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 text-right">Protocol</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10">Title</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden lg:table-cell text-center">TMDB ID</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden xl:table-cell">Category</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 hidden md:table-cell">Release</th>
+                <th className="px-8 py-6 font-black text-text-muted text-[10px] uppercase tracking-[0.3em] border-b border-border/10 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/5">
@@ -140,8 +140,8 @@ const ManageMovies = () => {
                     <div className="flex flex-col items-center gap-6 opacity-30">
                         <FiInbox size={60} />
                         <div className="space-y-2">
-                             <p className="text-xl font-display font-black uppercase italic tracking-widest">Archive Empty</p>
-                             <p className="text-xs font-bold font-mono">No data matching active filters in the mainframe</p>
+                             <p className="text-xl font-display font-black uppercase italic tracking-widest">No Movies Found</p>
+                             <p className="text-xs font-bold font-mono">No movies matching your active filters</p>
                         </div>
                     </div>
                   </td>
@@ -230,7 +230,7 @@ const ManageMovies = () => {
                         <button
                           onClick={() => setDeleteTarget(movie)}
                           className="w-10 h-10 rounded-xl bg-white/5 border border-border/20 flex items-center justify-center text-text-muted hover:text-danger hover:bg-danger/10 hover:border-danger/30 transition-all active:scale-90 cursor-pointer"
-                          title="Wipe record"
+                          title="Delete movie"
                         >
                           <FiTrash2 size={16} />
                         </button>
@@ -247,7 +247,7 @@ const ManageMovies = () => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-10 py-6 border-t border-border/10 bg-black/20">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">
-              Vector {page} of {totalPages}
+              Page {page} of {totalPages}
             </p>
             <div className="flex items-center gap-4">
               <button
@@ -279,7 +279,7 @@ const ManageMovies = () => {
                 className="fixed bottom-10 right-10 bg-accent/90 backdrop-blur-md text-primary font-black uppercase tracking-widest text-[10px] px-6 py-4 rounded-full shadow-premium flex items-center gap-4 z-50 italic"
             >
                 <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                Updating Mainframe...
+                Updating...
             </motion.div>
         )}
       </AnimatePresence>
@@ -304,23 +304,23 @@ const ManageMovies = () => {
                 <div className="w-20 h-20 rounded-3xl bg-danger/10 border border-danger/30 flex items-center justify-center text-danger mb-8 mx-auto shadow-inner">
                     <FiTrash2 size={32} />
                 </div>
-                <h3 className="text-3xl font-display font-black text-text-primary uppercase italic text-center leading-tight">Terminal <span className="text-danger">Removal</span></h3>
+                <h3 className="text-3xl font-display font-black text-text-primary uppercase italic text-center leading-tight">Delete <span className="text-danger">Movie</span></h3>
                 <p className="text-md text-text-muted mt-4 text-center leading-relaxed">
-                  Are you absolutely certain? This will permanently purge <strong className="text-text-primary">{deleteTarget.title}</strong> from the Nexus grid.
+                  Are you absolutely certain? This will permanently delete <strong className="text-text-primary">{deleteTarget.title}</strong> from the database.
                 </p>
                 <div className="grid grid-cols-2 gap-4 mt-10">
                   <button
                     onClick={() => setDeleteTarget(null)}
                     className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-text-muted hover:bg-white/5 transition-all cursor-pointer border border-border/20"
                   >
-                    Abort
+                    Cancel
                   </button>
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
                     className="px-6 py-4 bg-danger text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-danger-hover hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer active:scale-95 italic"
                   >
-                    {isDeleting ? 'Wiping...' : 'PURGE RECORD'}
+                    {isDeleting ? 'Deleting...' : 'DELETE MOVIE'}
                   </button>
                 </div>
               </motion.div>
