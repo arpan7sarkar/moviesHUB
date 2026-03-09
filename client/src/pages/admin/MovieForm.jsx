@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiSave, FiX, FiPlay } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiArrowLeft, FiSave, FiX, FiPlay, FiInfo, FiLayers, FiYoutube, FiImage, FiAlertCircle } from 'react-icons/fi';
 import {
   useGetAdminMovieByIdQuery,
   useCreateMovieMutation,
@@ -107,11 +108,11 @@ const MovieForm = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.tmdbId) newErrors.tmdbId = 'TMDB ID is required';
-    if (!form.title.trim()) newErrors.title = 'Title is required';
-    if (form.genres.length === 0) newErrors.genres = 'Select at least one genre';
+    if (!form.tmdbId) newErrors.tmdbId = 'TMDB ID IS REQUIRED';
+    if (!form.title.trim()) newErrors.title = 'TITLE IS REQUIRED';
+    if (form.genres.length === 0) newErrors.genres = 'SELECT AT LEAST ONE CLASSIFICATION';
     if (form.voteAverage && (isNaN(form.voteAverage) || form.voteAverage < 0 || form.voteAverage > 10)) {
-      newErrors.voteAverage = 'Rating must be between 0 and 10';
+      newErrors.voteAverage = 'RATING MUST BE BETWEEN 0 AND 10';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -137,7 +138,7 @@ const MovieForm = () => {
       }
       navigate('/admin/movies');
     } catch (err) {
-      setSubmitError(err?.data?.message || 'Something went wrong. Please try again.');
+      setSubmitError(err?.data?.message || 'CRITICAL FAILURE IN DATA TRANSMISSION. CHECK LOGS.');
     }
   };
 
@@ -145,136 +146,147 @@ const MovieForm = () => {
 
   if (isEditMode && isLoadingMovie) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 bg-elevated rounded-lg animate-pulse" />
-        <div className="bg-secondary border border-border rounded-xl p-6 space-y-6">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-12 bg-elevated rounded-lg animate-pulse" />
-          ))}
+      <div className="space-y-8 max-w-5xl mx-auto">
+        <div className="animate-pulse space-y-4">
+            <div className="h-4 w-32 bg-elevated rounded-full" />
+            <div className="h-12 w-64 bg-elevated rounded-2xl" />
         </div>
+        <div className="bg-secondary/40 border border-border/40 rounded-[2.5rem] p-10 h-[600px] animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* ───── Header ───── */}
-      <div className="flex items-center gap-4">
+    <div className="space-y-10 max-w-5xl mx-auto">
+      {/* ───── Page Header ───── */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex flex-col md:flex-row md:items-center gap-6"
+      >
         <button
           onClick={() => navigate('/admin/movies')}
-          className="p-2 rounded-lg border border-border text-text-muted hover:bg-elevated hover:text-text-primary transition-all cursor-pointer"
+          className="w-14 h-14 rounded-2xl bg-secondary/60 border border-border/40 flex items-center justify-center text-text-muted hover:text-accent hover:border-accent/40 transition-all cursor-pointer active:scale-90"
         >
-          <FiArrowLeft size={18} />
+          <FiArrowLeft size={24} />
         </button>
-        <div>
-          <h1 className="text-3xl font-display font-bold text-text-primary">
-            {isEditMode ? 'Edit Movie' : 'Add New Movie'}
-          </h1>
-          <p className="text-sm text-text-muted mt-0.5">
-            {isEditMode ? 'Update movie details below.' : 'Fill in the details to add a movie to the catalog.'}
+        <div className="space-y-1">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">
+            {isEditMode ? 'Protocol Update' : 'Initialize Project'}
           </p>
+          <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary uppercase italic tracking-tighter">
+            {isEditMode ? 'Update' : 'Creative'} <span className="text-accent">Entry</span>
+          </h1>
         </div>
-      </div>
+      </motion.div>
 
       {/* ───── Submit Error ───── */}
-      {submitError && (
-        <div className="flex items-center gap-3 px-4 py-3 bg-danger/10 border border-danger/20 rounded-lg text-sm text-danger">
-          <span>{submitError}</span>
-          <button onClick={() => setSubmitError('')} className="ml-auto cursor-pointer">
-            <FiX size={16} />
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {submitError && (
+            <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="flex items-center gap-4 px-6 py-4 bg-danger/10 border border-danger/20 rounded-2xl text-xs font-black uppercase tracking-widest text-danger italic"
+            >
+                <FiAlertCircle size={20} />
+                <span>{submitError}</span>
+                <button onClick={() => setSubmitError('')} className="ml-auto cursor-pointer hover:scale-110 transition-transform">
+                    <FiX size={18} />
+                </button>
+            </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ───── Form ───── */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-secondary border border-border rounded-xl p-6 space-y-5">
-          <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider">
-            Basic Information
-          </h2>
+      <form onSubmit={handleSubmit} className="space-y-8 pb-20">
+        
+        {/* Basic Intelligence Section */}
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-secondary/20 backdrop-blur-xl border border-border/20 rounded-[2.5rem] p-8 md:p-12 space-y-10 shadow-premium"
+        >
+          <div className="flex items-center gap-3 border-b border-border/10 pb-6">
+                <FiInfo className="text-accent" size={20} />
+                <h2 className="text-sm font-black text-text-muted uppercase tracking-[0.3em] italic">
+                    Core Intelligence
+                </h2>
+          </div>
 
-          {/* Row: TMDB ID + Title */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                TMDB ID <span className="text-danger">*</span>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+            {/* TMDB ID */}
+            <div className="md:col-span-4">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                Nexus Identifier (TMDB) <span className="text-danger">*</span>
               </label>
-              <input
-                type="number"
-                name="tmdbId"
-                value={form.tmdbId}
-                onChange={handleChange}
-                placeholder="e.g. 550"
-                className={`w-full px-4 py-2.5 bg-primary border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
-                  errors.tmdbId ? 'border-danger focus:border-danger' : 'border-border focus:border-accent/50'
-                }`}
-              />
-              {errors.tmdbId && <p className="text-xs text-danger mt-1">{errors.tmdbId}</p>}
+              <div className="relative group">
+                   <FiLayers size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors" />
+                   <input
+                        type="number"
+                        name="tmdbId"
+                        value={form.tmdbId}
+                        onChange={handleChange}
+                        placeholder="E.G. 550"
+                        className={`w-full pl-14 pr-6 py-4 bg-primary/40 border rounded-2xl text-sm font-bold text-text-primary placeholder:text-text-muted/30 focus:outline-none transition-all ${
+                        errors.tmdbId ? 'border-danger focus:ring-4 focus:ring-danger/5 shadow-[0_0_15px_rgba(var(--danger-rgb),0.1)]' : 'border-border/40 focus:border-accent/40 focus:ring-4 focus:ring-accent/5'
+                        }`}
+                    />
+              </div>
+              {errors.tmdbId && <p className="text-[10px] font-black text-danger mt-2 ml-1 italic tracking-widest">{errors.tmdbId}</p>}
             </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                Title <span className="text-danger">*</span>
+
+            {/* Title */}
+            <div className="md:col-span-8">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                Project Title <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
                 name="title"
                 value={form.title}
                 onChange={handleChange}
-                placeholder="Movie title"
-                className={`w-full px-4 py-2.5 bg-primary border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
-                  errors.title ? 'border-danger focus:border-danger' : 'border-border focus:border-accent/50'
+                placeholder="CINEMATIC TITLE HERE"
+                className={`w-full px-6 py-4 bg-primary/40 border rounded-2xl text-sm font-black uppercase tracking-tight text-text-primary placeholder:text-text-muted/30 focus:outline-none transition-all italic ${
+                  errors.title ? 'border-danger focus:ring-4 focus:ring-danger/5 shadow-[0_0_15px_rgba(var(--danger-rgb),0.1)]' : 'border-border/40 focus:border-accent/40 focus:ring-4 focus:ring-accent/5'
                 }`}
               />
-              {errors.title && <p className="text-xs text-danger mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-[10px] font-black text-danger mt-2 ml-1 italic tracking-widest">{errors.title}</p>}
             </div>
-          </div>
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1.5">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Movie synopsis or description"
-              className="w-full px-4 py-2.5 bg-primary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
-            />
-          </div>
-
-          {/* Row: Poster Path + Release Date + Rating */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                Poster Path
-              </label>
-              <input
-                type="text"
-                name="posterPath"
-                value={form.posterPath}
+            {/* Description */}
+            <div className="md:col-span-12">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                    Narrative Summary
+                </label>
+                <textarea
+                name="description"
+                value={form.description}
                 onChange={handleChange}
-                placeholder="/path/to/poster.jpg"
-                className="w-full px-4 py-2.5 bg-primary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
-              />
-              <p className="text-[11px] text-text-muted mt-1">TMDB poster path (e.g. /6Wdl9N6dL0Hi0T1qJLWSz6gMLbd.jpg)</p>
+                rows={6}
+                placeholder="ELABORATE ON THE CINEMATIC VISION..."
+                className="w-full px-8 py-6 bg-primary/40 border border-border/40 rounded-3xl text-sm font-medium leading-relaxed text-text-primary placeholder:text-text-muted/30 focus:outline-none focus:border-accent/40 focus:ring-4 focus:ring-accent/5 transition-all resize-none"
+                />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                Release Date
+
+            {/* Detailed Stats Row */}
+            <div className="md:col-span-4">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                Deployment Date
               </label>
               <input
                 type="date"
                 name="releaseDate"
                 value={form.releaseDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-primary border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full px-6 py-4 bg-primary/40 border border-border/40 rounded-2xl text-xs font-black uppercase tracking-widest text-text-primary focus:outline-none focus:border-accent/40 transition-all cursor-pointer"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                Rating (0–10)
+
+            <div className="md:col-span-4">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                Critical Rating (0–10)
               </label>
               <input
                 type="number"
@@ -284,147 +296,226 @@ const MovieForm = () => {
                 step="0.1"
                 min="0"
                 max="10"
-                placeholder="e.g. 8.5"
-                className={`w-full px-4 py-2.5 bg-primary border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
-                  errors.voteAverage ? 'border-danger focus:border-danger' : 'border-border focus:border-accent/50'
+                placeholder="E.G. 8.5"
+                className={`w-full px-6 py-4 bg-primary/40 border rounded-2xl text-sm font-black text-text-primary placeholder:text-text-muted/30 focus:outline-none transition-all ${
+                  errors.voteAverage ? 'border-danger focus:ring-4 focus:ring-danger/5 shadow-[0_0_15px_rgba(var(--danger-rgb),0.1)]' : 'border-border/40 focus:border-accent/40 focus:ring-4 focus:ring-accent/5'
                 }`}
               />
-              {errors.voteAverage && <p className="text-xs text-danger mt-1">{errors.voteAverage}</p>}
+              {errors.voteAverage && <p className="text-[10px] font-black text-danger mt-2 ml-1 italic tracking-widest">{errors.voteAverage}</p>}
+            </div>
+
+            <div className="md:col-span-4">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                Allocation Sector
+              </label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full px-6 py-4 bg-primary/40 border border-border/40 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-text-primary focus:outline-none focus:border-accent/40 transition-all cursor-pointer appearance-none"
+              >
+                {CATEGORY_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value} className="bg-primary text-text-primary">
+                    {opt.label.toUpperCase()}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
+        </motion.div>
 
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1.5">
-              Category
-            </label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full sm:w-auto px-4 py-2.5 bg-primary border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent/50 transition-colors cursor-pointer"
+        {/* Media Assets Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Classifications */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-secondary/20 backdrop-blur-xl border border-border/20 rounded-[2.5rem] p-8 md:p-10 space-y-8 shadow-premium"
             >
-              {CATEGORY_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+                <div className="flex items-center justify-between border-b border-border/10 pb-6">
+                    <h2 className="text-sm font-black text-text-muted uppercase tracking-[0.3em] italic flex items-center gap-3">
+                        <FiLayers className="text-accent" /> Classifications
+                    </h2>
+                    {form.genres.length > 0 && (
+                        <span className="text-[10px] font-black text-accent uppercase tracking-widest bg-accent/10 px-3 py-1 rounded-full border border-accent/20 italic">
+                            {form.genres.length} Matrix Linked
+                        </span>
+                    )}
+                </div>
+
+                <div className="flex flex-wrap gap-2.5">
+                    {GENRE_OPTIONS.map((genre) => {
+                    const isSelected = form.genres.includes(genre);
+                    return (
+                        <button
+                        key={genre}
+                        type="button"
+                        onClick={() => toggleGenre(genre)}
+                        className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] border transition-all duration-300 cursor-pointer ${
+                            isSelected
+                            ? 'bg-accent text-primary border-accent shadow-[0_5px_15px_rgba(var(--accent-rgb),0.3)]'
+                            : 'bg-primary/20 text-text-muted/60 border-border/40 hover:border-accent/40 hover:text-text-primary'
+                        }`}
+                        >
+                        {genre}
+                        </button>
+                    );
+                    })}
+                </div>
+                {errors.genres && <p className="text-[10px] font-black text-danger italic tracking-widest">{errors.genres}</p>}
+            </motion.div>
+
+            {/* Visual Assets */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-secondary/20 backdrop-blur-xl border border-border/20 rounded-[2.5rem] p-8 md:p-10 space-y-8 shadow-premium"
+            >
+                <div className="flex items-center gap-3 border-b border-border/10 pb-6">
+                    <FiImage className="text-accent" size={20} />
+                    <h2 className="text-sm font-black text-text-muted uppercase tracking-[0.3em] italic">
+                        Visual Assets
+                    </h2>
+                </div>
+
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                            Poster Manifest Path
+                        </label>
+                        <input
+                            type="text"
+                            name="posterPath"
+                            value={form.posterPath}
+                            onChange={handleChange}
+                            placeholder="/MANIFEST/PATH.JPG"
+                            className="w-full px-6 py-4 bg-primary/40 border border-border/40 rounded-2xl text-[11px] font-mono text-text-primary placeholder:text-text-muted/30 focus:outline-none focus:border-accent/40 transition-all font-bold"
+                        />
+                    </div>
+
+                    <AnimatePresence>
+                        {form.posterPath && (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="flex gap-6 items-end bg-black/10 p-5 rounded-3xl border border-white/5"
+                            >
+                                <div className="w-24 h-36 rounded-2xl overflow-hidden border border-border/40 bg-elevated shadow-card">
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w342${form.posterPath}`}
+                                        alt="Render"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                </div>
+                                <div className="space-y-2 pb-2">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">Visual Render</p>
+                                    <p className="text-[9px] font-bold text-text-muted/60 font-mono italic">Sector: tmdb.org/t/p/w342</p>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </motion.div>
         </div>
 
-        {/* ───── Genre Multi-Select ───── */}
-        <div className="bg-secondary border border-border rounded-xl p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider">
-              Genres <span className="text-danger">*</span>
-            </h2>
-            {form.genres.length > 0 && (
-              <span className="text-xs text-accent font-medium">
-                {form.genres.length} selected
-              </span>
-            )}
+        {/* Transmission & Data Feed Section */}
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-secondary/20 backdrop-blur-xl border border-border/20 rounded-[2.5rem] p-8 md:p-12 space-y-10 shadow-premium"
+        >
+          <div className="flex items-center gap-3 border-b border-border/10 pb-6">
+                <FiYoutube className="text-accent" size={20} />
+                <h2 className="text-sm font-black text-text-muted uppercase tracking-[0.3em] italic">
+                    Data Transmission Feed
+                </h2>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {GENRE_OPTIONS.map((genre) => {
-              const isSelected = form.genres.includes(genre);
-              return (
-                <button
-                  key={genre}
-                  type="button"
-                  onClick={() => toggleGenre(genre)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-accent/15 text-accent border-accent/30 shadow-sm'
-                      : 'bg-primary text-text-muted border-border hover:border-text-muted hover:text-text-secondary'
-                  }`}
-                >
-                  {genre}
-                </button>
-              );
-            })}
-          </div>
-          {errors.genres && <p className="text-xs text-danger">{errors.genres}</p>}
-        </div>
-
-        {/* ───── Trailer ───── */}
-        <div className="bg-secondary border border-border rounded-xl p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider">
-            Trailer
-          </h2>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1.5">
-              YouTube URL
-            </label>
-            <input
-              type="text"
-              name="trailerUrl"
-              value={form.trailerUrl}
-              onChange={handleChange}
-              placeholder="https://www.youtube.com/watch?v=..."
-              className="w-full px-4 py-2.5 bg-primary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
-            />
-          </div>
-
-          {/* Live Preview */}
-          {youtubeId ? (
-            <div className="rounded-xl overflow-hidden border border-border bg-black aspect-video">
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}`}
-                title="Trailer Preview"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="lg:col-span-5 space-y-6">
+                <div>
+                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-text-muted mb-3 italic">
+                        YouTube Transmission URL
+                    </label>
+                    <input
+                    type="text"
+                    name="trailerUrl"
+                    value={form.trailerUrl}
+                    onChange={handleChange}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full px-6 py-4 bg-primary/40 border border-border/40 rounded-2xl text-[11px] font-mono text-text-primary placeholder:text-text-muted/30 focus:outline-none focus:border-accent/40 transition-all font-bold"
+                    />
+                </div>
+                
+                {!youtubeId && form.trailerUrl && (
+                    <div className="flex items-center gap-3 px-5 py-3 bg-warning/5 border border-warning/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-warning italic">
+                        <FiPlay size={16} />
+                        <span>Invalid Feed Key Detected</span>
+                    </div>
+                )}
             </div>
-          ) : form.trailerUrl ? (
-            <div className="flex items-center gap-2 px-4 py-3 bg-warning/10 border border-warning/20 rounded-lg text-sm text-warning">
-              <FiPlay size={14} />
-              <span>Could not detect a valid YouTube URL. Supported formats: youtube.com/watch?v=, youtu.be/, youtube.com/embed/</span>
-            </div>
-          ) : null}
-        </div>
 
-        {/* ───── Poster Preview ───── */}
-        {form.posterPath && (
-          <div className="bg-secondary border border-border rounded-xl p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider">
-              Poster Preview
-            </h2>
-            <div className="w-32 h-48 rounded-lg overflow-hidden border border-border bg-elevated">
-              <img
-                src={`https://image.tmdb.org/t/p/w342${form.posterPath}`}
-                alt="Poster preview"
-                loading="lazy"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
+            <div className="lg:col-span-7">
+                {youtubeId ? (
+                <div className="rounded-[2.5rem] overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl group relative">
+                    <iframe
+                        src={`https://www.youtube.com/embed/${youtubeId}`}
+                        title="Trailer Transmission"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full opacity-80 group-hover:opacity-100 transition-opacity"
+                    />
+                    <div className="absolute inset-0 pointer-events-none border-4 border-accent/20 rounded-[2.5rem] mix-blend-overlay" />
+                </div>
+                ) : (
+                    <div className="rounded-[2.5rem] border border-dashed border-border/40 bg-white/2 flex flex-col items-center justify-center aspect-video text-text-muted/30">
+                        <FiYoutube size={48} className="mb-4" />
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Awaiting Data Feed</p>
+                    </div>
+                )}
             </div>
           </div>
-        )}
+        </motion.div>
 
-        {/* ───── Actions ───── */}
-        <div className="flex items-center gap-3 pt-2">
+        {/* ───── Transmission Controls ───── */}
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10"
+        >
           <button
             type="submit"
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-accent text-primary font-semibold rounded-lg hover:bg-accent-hover transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm cursor-pointer"
+            className="group flex items-center justify-center gap-4 px-12 py-5 bg-accent text-primary font-black uppercase tracking-[0.2em] text-xs rounded-3xl hover:scale-105 active:scale-95 transition-all shadow-[0_15px_40px_rgba(var(--accent-rgb),0.4)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer italic overflow-hidden relative min-w-[280px]"
           >
-            <FiSave size={16} />
-            {isSaving ? 'Saving...' : isEditMode ? 'Update Movie' : 'Create Movie'}
+            <AnimatePresence mode="wait">
+                {isSaving ? (
+                    <motion.div key="saving" className="flex items-center gap-3" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        Encrypting...
+                    </motion.div>
+                ) : (
+                    <motion.div key="save" className="flex items-center gap-3" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+                        <FiSave size={18} />
+                        {isEditMode ? 'Commit Changes' : 'Execute Creation'}
+                    </motion.div>
+                )}
+            </AnimatePresence>
           </button>
+          
           <button
             type="button"
             onClick={() => navigate('/admin/movies')}
-            className="px-6 py-2.5 border border-border rounded-lg text-sm font-medium text-text-primary hover:bg-elevated transition-all cursor-pointer"
+            className="px-10 py-5 bg-white/5 border border-border/20 rounded-3xl text-xs font-black uppercase tracking-[0.2em] text-text-muted hover:text-text-primary hover:bg-white/10 hover:border-text-primary/20 transition-all cursor-pointer active:scale-95 italic"
           >
-            Cancel
+            Abort Protocol
           </button>
-        </div>
+        </motion.div>
       </form>
     </div>
   );

@@ -77,9 +77,11 @@ function App() {
     );
   }
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="flex flex-col min-h-screen bg-primary">
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       
       <main className="flex-grow">
         <AnimatePresence mode="wait">
@@ -118,7 +120,7 @@ function App() {
         </AnimatePresence>
       </main>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }
