@@ -76,7 +76,7 @@ const PlatformLanding = () => {
             </h2>
 
             <p className="mt-5 max-w-3xl text-base leading-8 text-text-secondary md:text-lg">
-              CineVault is not just a catalog. It is the operating layer between discovery and decision, built
+              CinemaHUB is not just a catalog. It is the operating layer between discovery and decision, built
               to help users search faster, save better picks, and keep their watch momentum alive.
             </p>
 
@@ -176,7 +176,7 @@ const PlatformLanding = () => {
               <div className="rounded-2xl border border-border/60 bg-primary/55 p-5">
                 <p className="font-branding text-4xl uppercase leading-none tracking-[0.12em] text-accent/85">Discover. Save. Return.</p>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-text-secondary">
-                  The homepage should explain the product before it asks users to browse. This section frames CineVault as a
+                  The homepage should explain the product before it asks users to browse. This section frames CinemaHUB as a
                   premium utility, not just another poster wall.
                 </p>
               </div>

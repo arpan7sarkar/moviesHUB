@@ -5,7 +5,7 @@
   
   <br/>
   
-  # 🎬 MoviesHub (CineVault Architecture)
+  # 🎬 CinmeaHUb
   
   **A Premium, Production-Grade Full-Stack Movie Discovery Platform**
   
@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
   </p>
   
-  MoviesHub is a complete MERN stack application built for performance, security, and a cinematic user experience. It seamlessly integrates the TMDB API through a secure Node.js proxy and offers advanced features like individual watch histories, favorites, and a fully functional Admin Dashboard.
+  CinemaHUB is a complete MERN stack application built for performance, security, and a cinematic user experience. It seamlessly integrates the TMDB API through a secure Node.js proxy and offers advanced features like individual watch histories, favorites, and a fully functional Admin Dashboard.
 </div>
 
 <br/>
@@ -97,7 +97,7 @@ Create `.env` files based on the provided `.env.example` records.
 **Server (`server/.env`):**
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/moviesHub
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/CinemaHUB
 JWT_SECRET=your_ultra_secure_jwt_string
 JWT_REFRESH_SECRET=your_ultra_secure_jwt_refresh_string
 TMDB_API_KEY=your_private_tmdb_v3_api_key
