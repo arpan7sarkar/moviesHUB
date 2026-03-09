@@ -45,6 +45,7 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'Movies', path: '/movies' },
     { name: 'TV Shows', path: '/tv' },
+    { name: 'Funzone', path: '/funzone' },
   ], []);
 
   return (

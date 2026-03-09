@@ -21,6 +21,7 @@ const MovieDetail = lazy(() => import('./pages/MovieDetail'));
 const TvDetail = lazy(() => import('./pages/TvDetail'));
 const PersonDetail = lazy(() => import('./pages/PersonDetail'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
+const Funzone = lazy(() => import('./pages/Funzone'));
 const Favorites = lazy(() => import('./pages/Favorites'));
 const Watchlist = lazy(() => import('./pages/Watchlist'));
 const History = lazy(() => import('./pages/History'));
@@ -89,6 +90,7 @@ function App() {
             <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
             <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
             <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
+            <Route path="/funzone" element={withRouteBoundary(<Funzone />, 'funzone')} />
             <Route path="/login" element={withRouteBoundary(<Login />, 'login')} />
             <Route path="/register" element={withRouteBoundary(<Register />, 'register')} />
             
