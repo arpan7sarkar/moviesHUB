@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiTrendingUp, FiSmile, FiTarget } from 'react-icons/fi';
+import { FiTrendingUp, FiSmile, FiTarget, FiFilm } from 'react-icons/fi';
 import MovieRoulette from '../components/funzone/MovieRoulette';
 import MoodSelector from '../components/funzone/MoodSelector';
 import HiddenGems from '../components/funzone/HiddenGems';
@@ -10,9 +10,9 @@ const Funzone = () => {
   const [activeTab, setActiveTab] = useState('roulette');
 
   const tabs = [
-    { id: 'roulette', label: 'Movie Roulette', icon: FiTarget, description: 'Let the wheel decide your genre' },
-    { id: 'mood', label: 'Mood Matcher', icon: FiSmile, description: 'Find a movie based on how you feel' },
-    { id: 'hiddengems', label: 'Hidden Gems', icon: FiTrendingUp, description: 'Discover highly rated obscure films' },
+    { id: 'roulette', label: 'Spin & Watch', icon: FiTarget, description: "Let fate choose your next favorite film" },
+    { id: 'mood', label: 'Vibe Check', icon: FiSmile, description: "Matches for whatever you're feeling" },
+    { id: 'hiddengems', label: 'Vault Secrets', icon: FiTrendingUp, description: "Masterpieces you likely haven't seen" },
   ];
 
   return (
@@ -22,7 +22,7 @@ const Funzone = () => {
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h1 className="text-4xl md:text-5xl font-display font-bold text-text-primary mb-4 flex items-center justify-center gap-3">
-              <span className="text-4xl">🍿</span> Funzone
+              <FiFilm className="text-4xl text-accent" /> Funzone
             </h1>
             <p className="text-text-secondary text-lg">
               Can't decide what to watch? Explore these fun ways to discover your next favorite movie.

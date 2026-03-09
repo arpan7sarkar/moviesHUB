@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPlay, FiRefreshCw, FiStar } from 'react-icons/fi';
+import { FiPlay, FiRefreshCw, FiStar, FiCalendar, FiArrowLeft } from 'react-icons/fi';
 import { useDiscoverQuery } from '../../features/movies/movieApi';
 import { Link } from 'react-router-dom';
 
 const GENRES = [
-  { id: 28, name: 'Action', color: '#EF4444', emoji: '💥' },
-  { id: 35, name: 'Comedy', color: '#F59E0B', emoji: '😂' },
-  { id: 18, name: 'Drama', color: '#3B82F6', emoji: '🎭' },
-  { id: 27, name: 'Horror', color: '#8B5CF6', emoji: '👻' },
-  { id: 878, name: 'Sci-Fi', color: '#10B981', emoji: '👽' },
-  { id: 10749, name: 'Romance', color: '#EC4899', emoji: '❤️' },
-  { id: 53, name: 'Thriller', color: '#6366F1', emoji: '🔪' },
-  { id: 16, name: 'Animation', color: '#14B8A6', emoji: '✨' },
+  { id: 28, name: 'ACTION' },
+  { id: 35, name: 'COMEDY' },
+  { id: 18, name: 'DRAMA' },
+  { id: 27, name: 'HORROR' },
+  { id: 878, name: 'SCI-FI' },
+  { id: 10749, name: 'ROMANCE' },
+  { id: 53, name: 'THRILLER' },
+  { id: 16, name: 'ANIMATION' },
 ];
 
-// Helper to get a random item
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
 const RouletteResult = ({ genre, onReset }) => {
-  // To get varied results, fetch a random page between 1 and 5
   const randomPage = React.useMemo(() => Math.floor(Math.random() * 5) + 1, [genre.id]);
   
   const { data, isLoading, isError } = useDiscoverQuery({
@@ -30,92 +26,115 @@ const RouletteResult = ({ genre, onReset }) => {
     'vote_count.gte': 100
   });
 
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovies, setSelectedMovies] = useState([]);
 
   React.useEffect(() => {
-    if (data?.results?.length > 0 && !selectedMovie) {
-      setSelectedMovie(getRandomItem(data.results));
+    if (data?.results?.length > 0 && selectedMovies.length === 0) {
+      const shuffled = [...data.results].sort(() => 0.5 - Math.random());
+      setSelectedMovies(shuffled.slice(0, 5));
     }
-  }, [data, selectedMovie]);
+  }, [data, selectedMovies]);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 min-h-[400px]">
         <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-text-secondary animate-pulse">Finding the perfect {genre.name} movie...</p>
+        <p className="text-text-secondary animate-pulse">Finding the perfect {genre.name} movies...</p>
       </div>
     );
   }
 
-  if (isError || !selectedMovie) {
+  if (isError || selectedMovies.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 min-h-[400px]">
-        <p className="text-danger mb-4">Oops! Couldn't find a movie right now.</p>
+      <div className="flex flex-col items-center justify-center p-8 min-h-[400px] w-full">
+        <p className="text-danger mb-4">Oops! Couldn't find movies right now.</p>
         <button onClick={onReset} className="btn-primary">Try Again</button>
       </div>
     );
   }
 
-  const posterUrl = selectedMovie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
-    : null;
-
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col md:flex-row gap-8 items-center bg-primary/40 p-6 md:p-8 rounded-3xl border border-border/50"
+      className="flex flex-col items-center w-full"
     >
-      <div className="w-48 md:w-64 shrink-0 rounded-2xl overflow-hidden shadow-elevated relative group">
-        {posterUrl ? (
-          <img src={posterUrl} alt={selectedMovie.title} className="w-full h-auto object-cover aspect-2/3" />
-        ) : (
-          <div className="w-full aspect-2/3 bg-surface flex items-center justify-center text-text-muted">
-            No Poster
-          </div>
-        )}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-          <Link to={`/movies/${selectedMovie.id}`} className="btn-primary">
-            View Details
-          </Link>
-        </div>
-      </div>
-      
-      <div className="flex-1 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium mb-4">
-          <span>{genre.emoji}</span> {genre.name} Pick
-        </div>
-        <h2 className="text-3xl font-display font-bold text-text-primary mb-2">
-          {selectedMovie.title}
-        </h2>
-        {selectedMovie.release_date && (
-          <p className="text-text-muted text-sm mb-4">
-            {new Date(selectedMovie.release_date).getFullYear()}
-          </p>
-        )}
-        <p className="text-text-secondary line-clamp-4 mb-6 leading-relaxed">
-          {selectedMovie.overview || "No overview available for this title."}
-        </p>
-        <div className="flex items-center justify-center md:justify-start gap-4 mb-8">
-          <div className="flex items-center gap-1.5 text-warning font-semibold bg-warning/10 px-3 py-1.5 rounded-lg">
-            <FiStar className="fill-warning text-warning" />
-            <span>{selectedMovie.vote_average?.toFixed(1)}</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-center md:justify-start gap-4">
-          <Link to={`/movies/${selectedMovie.id}`} className="btn-primary">
-            More Info
-          </Link>
+      <div className="flex items-center justify-between w-full mb-8">
+        <div className="flex items-center gap-4">
           <button
             onClick={onReset}
-            className="p-3 text-text-secondary hover:text-accent bg-surface hover:bg-surface border border-border rounded-xl transition-all"
-            title="Spin Again"
+            className="p-2 text-text-muted hover:text-accent hover:bg-surface rounded-full transition-colors cursor-pointer"
           >
-            <FiRefreshCw size={20} />
+            <FiArrowLeft size={24} />
           </button>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-accent uppercase tracking-wider">
+              {genre.name} PICKS
+            </h2>
+            <p className="text-text-muted text-sm">We've selected 5 options for you.</p>
+          </div>
         </div>
+        <button
+          onClick={onReset}
+          className="hidden md:flex p-2 px-4 text-text-secondary hover:text-accent bg-surface hover:bg-surface border border-border rounded-xl transition-all items-center gap-2 cursor-pointer font-bold"
+        >
+          <FiRefreshCw size={18} />
+          Spin Again
+        </button>
       </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
+        {selectedMovies.map((movie) => (
+          <Link
+            key={movie.id}
+            to={`/movies/${movie.id}`}
+            className="group bg-primary/50 border border-border/50 rounded-2xl overflow-hidden hover:border-accent/40 hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full"
+          >
+            <div className="relative aspect-2/3 overflow-hidden shrink-0">
+              {movie.poster_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-full bg-surface flex items-center justify-center text-text-muted text-sm text-center p-2">
+                  No Poster
+                </div>
+              )}
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+            
+            <div className="p-3 md:p-4 flex flex-col grow justify-between">
+              <h3 className="font-display font-bold text-text-primary text-sm line-clamp-2 leading-tight mb-2 group-hover:text-accent transition-colors">
+                {movie.title}
+              </h3>
+              <div className="flex items-center justify-between text-xs text-text-muted mt-auto">
+                 <div className="flex items-center gap-1">
+                    <FiStar className="text-warning fill-warning" />
+                    <span className="text-text-primary font-medium">{movie.vote_average?.toFixed(1)}</span>
+                 </div>
+                 {movie.release_date && (
+                   <div className="flex items-center gap-1">
+                     <FiCalendar />
+                     <span>{new Date(movie.release_date).getFullYear()}</span>
+                   </div>
+                 )}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+      
+      <button
+        onClick={onReset}
+        className="mt-8 md:hidden w-full p-3 text-text-secondary hover:text-accent bg-surface hover:bg-surface border border-border rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer font-bold"
+      >
+        <FiRefreshCw size={18} />
+        Spin Again
+      </button>
     </motion.div>
   );
 };
@@ -136,8 +155,6 @@ const MovieRoulette = () => {
     const winningIndex = Math.floor(Math.random() * GENRES.length);
     
     // We want the winning segment to land at the top (0 degrees).
-    // The center of segment i is at: i * segmentAngle + (segmentAngle / 2)
-    // To align it to top, we need to rotate backwards by that much.
     const targetBase = 360 - (winningIndex * segmentAngle + segmentAngle / 2);
     
     // Add multiple full rotations for effect (e.g., 5-8 spins)
@@ -165,7 +182,7 @@ const MovieRoulette = () => {
   };
 
   return (
-    <div className="flex flex-col items-center max-w-4xl mx-auto w-full">
+    <div className="flex flex-col items-center max-w-5xl mx-auto w-full">
       <AnimatePresence mode="wait">
         {!selectedGenre ? (
           <motion.div
@@ -176,47 +193,85 @@ const MovieRoulette = () => {
             className="flex flex-col items-center w-full"
           >
             {/* The Wheel */}
-            <div className="relative w-72 h-72 md:w-96 md:h-96 my-8">
+            <div className="relative w-[320px] h-[320px] md:w-[500px] md:h-[500px] my-8 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               {/* Pointer */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 text-accent filter drop-shadow-[0_0_8px_rgba(212,168,83,0.5)]">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2L2 22h20L12 2z" className="rotate-180 transform origin-center" />
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  {/* Pointing down triangle */}
+                  <path d="M5 5 L35 5 L20 25 Z" fill="#926B22" />
+                  <path d="M8 7 L32 7 L20 23 Z" fill="#D4A853" />
                 </svg>
               </div>
 
               {/* Wheel Container */}
               <motion.div
-                className="w-full h-full rounded-full overflow-hidden border-4 border-surface shadow-glow bg-surface relative"
+                className="w-full h-full rounded-full overflow-hidden bg-black relative shadow-[inset_0_0_10px_rgba(0,0,0,1),0_0_0_8px_#111,0_0_0_10px_#555]"
                 animate={{ rotate: rotation }}
-                transition={{ type: 'tween', duration: 4, ease: [0.2, 0.8, 0.2, 1] }} // smooth deceleration
+                transition={{ type: 'tween', duration: 4, ease: [0.1, 0.9, 0.2, 1] }} 
               >
                 <svg viewBox="0 0 100 100" className="w-full h-full">
-                  {GENRES.map((genre, i) => (
-                    <g key={genre.id}>
-                      <path
-                        d={getSegmentPath(i, GENRES.length)}
-                        fill={genre.color}
-                        className="opacity-90 hover:opacity-100 transition-opacity"
-                      />
-                      <text
-                        x="50"
-                        y="20"
-                        fill="white"
-                        fontSize="4"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        transform={`rotate(${i * (360 / GENRES.length) + (360 / GENRES.length) / 2}, 50, 50)`}
-                        className="drop-shadow-md tracking-wider font-display uppercase"
-                      >
-                        {genre.emoji} {genre.name}
-                      </text>
-                    </g>
-                  ))}
+                  <defs>
+                    {/* Metallic Gold Gradient for segments */}
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#E2C974" />
+                      <stop offset="50%" stopColor="#C4A45A" />
+                      <stop offset="100%" stopColor="#8A6E35" />
+                    </linearGradient>
+                    
+                    {/* Black/Charcoal Gradient for segments */}
+                    <linearGradient id="blackGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2A2A2A" />
+                      <stop offset="50%" stopColor="#111111" />
+                      <stop offset="100%" stopColor="#000000" />
+                    </linearGradient>
+
+                    {/* Glass Overlay over the entire wheel */}
+                    <linearGradient id="glassOverlay" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="white" stopOpacity="0.4" />
+                      <stop offset="50%" stopColor="white" stopOpacity="0.05" />
+                      <stop offset="50.1%" stopColor="black" stopOpacity="0.1" />
+                      <stop offset="100%" stopColor="black" stopOpacity="0.5" />
+                    </linearGradient>
+                  </defs>
+
+                  {GENRES.map((genre, i) => {
+                    const isGold = i % 2 !== 0; // Alternating
+                    const bgColor = isGold ? 'url(#goldGradient)' : 'url(#blackGradient)';
+                    return (
+                      <g key={genre.id}>
+                        <path
+                          d={getSegmentPath(i, GENRES.length)}
+                          fill={bgColor}
+                        />
+                        <g transform={`rotate(${i * (360 / GENRES.length) + (360 / GENRES.length) / 2}, 50, 50)`}>
+                           {/* Rotate text radially, reading from center to edge */}
+                           <text
+                             x="50"
+                             y="27"
+                             fill={isGold ? '#111' : '#E2C974'}
+                             fontSize="6"
+                             fontWeight="bold"
+                             textAnchor="middle"
+                             className="font-branding tracking-widest"
+                             transform="rotate(-90, 50, 27)"
+                           >
+                             {genre.name}
+                           </text>
+                        </g>
+                      </g>
+                    );
+                  })}
+                  
+                  {/* Glossy Overlay */}
+                  <circle cx="50" cy="50" r="50" fill="url(#glassOverlay)" pointerEvents="none" />
                 </svg>
                 
                 {/* Center Hub */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-primary rounded-full border-4 border-secondary shadow-inner flex items-center justify-center">
-                  <span className="text-xl font-branding text-accent">CH</span>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[22%] h-[22%] rounded-full shadow-[0_0_15px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-hidden">
+                   <div className="w-full h-full" style={{ background: 'radial-gradient(circle, #F5DB8B 0%, #D4A853 40%, #926B22 80%, #4A340C 100%)' }}>
+                      {/* Fake conical gradient for metallic effect over the hub */}
+                      <div className="w-full h-full opacity-50" style={{ background: 'conic-gradient(transparent 0deg, rgba(255,255,255,0.8) 45deg, transparent 90deg, rgba(255,255,255,0.8) 135deg, transparent 180deg, rgba(255,255,255,0.8) 225deg, transparent 270deg, rgba(255,255,255,0.8) 315deg, transparent 360deg)' }} />
+                   </div>
                 </div>
               </motion.div>
             </div>
@@ -224,15 +279,15 @@ const MovieRoulette = () => {
             <button
               onClick={spinWheel}
               disabled={isSpinning}
-              className={`btn-primary text-lg px-10 py-4 rounded-full flex items-center gap-3 w-content disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 ${
-                !isSpinning && 'cta-pulse hover:scale-105 shadow-[0_0_30px_rgba(212,168,83,0.3)]'
+              className={`btn-primary text-lg px-10 py-4 rounded-full flex items-center gap-3 w-content disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 mt-4 ${
+                !isSpinning && 'cta-pulse hover:scale-105 shadow-[0_0_30px_rgba(212,168,83,0.3)] cursor-pointer'
               }`}
             >
               <FiPlay className="fill-current" />
-              {isSpinning ? 'Deciding...' : 'Spin the Wheel!'}
+              {isSpinning ? 'Good Luck...' : 'Spin the Wheel!'}
             </button>
             <p className="mt-4 text-text-muted text-sm text-center max-w-sm">
-              Let fate decide your next viewing experience. Spin the wheel to get a random cinematic masterpiece.
+              Click to spin the wheel and get a selection of 5 random cinematic masterworks.
             </p>
           </motion.div>
         ) : (

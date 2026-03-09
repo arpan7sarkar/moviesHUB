@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiStar, FiCalendar } from 'react-icons/fi';
+import { FiArrowLeft, FiStar, FiCalendar, FiActivity } from 'react-icons/fi';
 import { useDiscoverQuery } from '../../features/movies/movieApi';
 import { Link } from 'react-router-dom';
 
@@ -42,9 +42,9 @@ const MoodResults = ({ mood, onBack }) => {
         </button>
         <div>
           <h2 className="text-2xl font-display font-bold text-text-primary flex items-center gap-2">
-            <span>{mood.emoji}</span> {mood.title} Picks
+            <span>{mood.emoji}</span> {mood.title} Vibe
           </h2>
-          <p className="text-text-muted text-sm">{mood.description}</p>
+          <p className="text-text-muted text-sm">Our hand-picked {mood.title.toLowerCase()} list.</p>
         </div>
       </div>
 
@@ -123,9 +123,9 @@ const MoodSelector = () => {
           >
             <div className="text-center mb-10">
               <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3 flex items-center justify-center gap-3">
-                <span className="text-4xl">🎭</span> What's Your Mood?
+                <FiActivity className="text-4xl text-accent" /> What's the Vibe?
               </h1>
-              <p className="text-text-secondary">Pick a mood and we'll find the perfect movies for you.</p>
+              <p className="text-text-secondary">Pick your current energy and we'll match it with a movie.</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">

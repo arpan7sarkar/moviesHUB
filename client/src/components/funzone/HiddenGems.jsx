@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiFilter, FiStar, FiCalendar, FiArrowLeft } from 'react-icons/fi';
+import { FiFilter, FiStar, FiCalendar, FiArrowLeft, FiAward } from 'react-icons/fi';
 import { useDiscoverQuery } from '../../features/movies/movieApi';
 import { Link } from 'react-router-dom';
 
@@ -65,9 +65,9 @@ const GemResults = ({ filters, onBack }) => {
         </button>
         <div>
           <h2 className="text-2xl font-display font-bold text-text-primary flex items-center gap-2">
-            <span>💎</span> Discovered Gems
+            <FiAward className="text-accent" /> Vault Secrets
           </h2>
-          <p className="text-text-muted text-sm">Movies people rarely talk about but critics love.</p>
+          <p className="text-text-muted text-sm">Underrated masterpieces found deep in our database.</p>
         </div>
       </div>
 
@@ -161,9 +161,9 @@ const HiddenGems = () => {
           >
             <div className="text-center mb-10">
               <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3 flex items-center justify-center gap-3">
-                <span className="text-4xl">💎</span> Hidden Gem Finder
+                <FiAward className="text-4xl text-accent" /> The Vault's Secrets
               </h1>
-              <p className="text-text-secondary">Discover amazing movies that most people have never heard of.</p>
+              <p className="text-text-secondary">Explore amazing movies that didn't get the fame they deserve.</p>
             </div>
 
             <div className="w-full max-w-3xl bg-secondary/80 border border-border rounded-3xl p-6 md:p-8 backdrop-blur-sm shadow-elevated">
@@ -178,7 +178,7 @@ const HiddenGems = () => {
                       onClick={() => setFilters(prev => ({ ...prev, genre: g.id }))}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
                         filters.genre === g.id 
-                          ? 'bg-danger text-white border border-danger/50 shadow-md' 
+                          ? 'bg-accent text-primary border border-accent/50 shadow-md' 
                           : 'bg-primary/50 text-text-secondary border border-border hover:bg-surface hover:text-text-primary'
                       }`}
                     >
@@ -198,7 +198,7 @@ const HiddenGems = () => {
                       onClick={() => setFilters(prev => ({ ...prev, decade: d.id }))}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
                         filters.decade === d.id 
-                          ? 'bg-danger text-white border border-danger/50 shadow-md' 
+                          ? 'bg-accent text-primary border border-accent/50 shadow-md' 
                           : 'bg-primary/50 text-text-secondary border border-border hover:bg-surface hover:text-text-primary'
                       }`}
                     >
@@ -226,9 +226,9 @@ const HiddenGems = () => {
                     step="0.1" 
                     value={filters.minRating}
                     onChange={(e) => setFilters(prev => ({ ...prev, minRating: parseFloat(e.target.value) }))}
-                    className="w-full h-2 bg-primary rounded-lg appearance-none cursor-pointer accent-danger outline-none"
+                    className="w-full h-2 bg-primary rounded-lg appearance-none cursor-pointer accent-accent outline-none"
                     style={{
-                      background: `linear-gradient(to right, #EF4444 0%, #EF4444 ${((filters.minRating - 6) / 3) * 100}%, #1A2035 ${((filters.minRating - 6) / 3) * 100}%, #1A2035 100%)`
+                      background: `linear-gradient(to right, #D4A853 0%, #D4A853 ${((filters.minRating - 6) / 3) * 100}%, #1A2035 ${((filters.minRating - 6) / 3) * 100}%, #1A2035 100%)`
                     }}
                   />
                   <div className="flex justify-between text-xs text-text-muted mt-2 font-medium">
@@ -242,9 +242,9 @@ const HiddenGems = () => {
               <div className="flex justify-center">
                 <button 
                   onClick={handleSearch}
-                  className="bg-danger hover:bg-danger/90 text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(239,68,68,0.3)] cursor-pointer"
+                  className="bg-accent hover:bg-accent/90 text-primary font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(212,168,83,0.3)] cursor-pointer"
                 >
-                  💎 Find Hidden Gems
+                  <FiAward /> Unlock the Vault
                 </button>
               </div>
 

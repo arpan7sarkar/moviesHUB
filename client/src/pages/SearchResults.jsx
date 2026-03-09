@@ -22,7 +22,7 @@ const PersonResultCard = ({ person }) => (
     to={`/person/${person.id}`}
     className="flex flex-col items-center group"
   >
-    <div className="w-full aspect-[2/3] rounded-xl overflow-hidden bg-elevated border border-border/20 mb-3 group-hover:border-accent transition-all shadow-card group-hover:shadow-elevated">
+    <div className="w-full aspect-2/3 rounded-xl overflow-hidden bg-elevated border border-border/20 mb-3 group-hover:border-accent transition-all shadow-card group-hover:shadow-elevated">
       {person.profile_path ? (
         <img
           src={`${TMDB_IMG}/w300${person.profile_path}`}
@@ -155,7 +155,7 @@ const SearchResults = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer whitespace-nowrap border flex-shrink-0
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer whitespace-nowrap border shrink-0
                   ${activeTab === tab.id
                     ? 'bg-accent/15 border-accent/30 text-accent font-semibold'
                     : 'bg-white/5 border-border/30 text-text-muted hover:text-text-primary hover:bg-white/10'
@@ -175,7 +175,7 @@ const SearchResults = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
               {Array.from({ length: 18 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="aspect-[2/3] bg-elevated rounded-lg mb-2" />
+                  <div className="aspect-2/3 bg-elevated rounded-lg mb-2" />
                   <div className="h-3 bg-elevated rounded w-3/4 mb-1" />
                   <div className="h-2.5 bg-elevated rounded w-1/2" />
                 </div>
