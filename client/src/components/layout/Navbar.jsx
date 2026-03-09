@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiSearch, FiMenu, FiX, FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
 import ThemeToggle from '../ui/ThemeToggle';
 import Sidebar from './Sidebar';
@@ -24,8 +24,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled((prev) => {
+        if (!prev && y > 72) return true;
+        if (prev && y < 28) return false;
+        return prev;
+      });
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -35,56 +41,82 @@ const Navbar = () => {
     closeMobileMenu();
   }, [location, closeMobileMenu]);
 
-  const navLinks = React.useMemo(() => [
-    { name: 'Home', path: '/' },
-    { name: 'Movies', path: '/movies' },
-    { name: 'TV Shows', path: '/tv' },
-  ], []);
+  const navLinks = React.useMemo(() => (
+    isAuthenticated
+      ? [
+          { name: 'Home', path: '/home' },
+          { name: 'Movies', path: '/movies' },
+          { name: 'TV Shows', path: '/tv' },
+          { name: 'Funzone', path: '/funzone' },
+        ]
+      : [
+          { name: 'Features', path: '/#features' },
+          { name: 'Process', path: '/#process' },
+          { name: 'Use Cases', path: '/#use-cases' },
+          { name: 'FAQ', path: '/#faq' },
+        ]
+  ), [isAuthenticated]);
 
   return (
     <>
-      <nav
-        className={`fixed top-0 w-full z-50 border-b will-change-transform transition-[backdrop-filter,background-color,box-shadow,padding,height,border-color] duration-500 ease-out ${
-          isScrolled 
-            ? 'bg-primary/85 backdrop-blur-xl border-border/90 py-2 h-16 md:h-[72px] shadow-[0_10px_35px_rgba(0,0,0,0.28)]' 
-            : 'bg-primary/0 backdrop-blur-0 border-transparent py-4 h-20 md:h-[88px]'
-        }`}
-      >
-        <div className="container-custom flex items-center justify-between">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="text-2xl md:text-3xl font-display font-bold tracking-tighter text-text-primary group"
-          >
-            Cine<span className="text-accent group-hover:text-accent-hover transition-colors">Vault</span>
-          </Link>
+      <nav className={`${location.pathname === '/' ? 'absolute' : 'fixed'} top-0 left-0 right-0 z-50`}>
+        <div
+          className={`will-change-transform transition-[margin,margin-top,height,border-radius,background-color,box-shadow,backdrop-filter,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            (isScrolled || location.pathname.includes('/movies/') || location.pathname.includes('/tv/') || location.pathname.includes('/person/'))
+              ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-14 md:h-16 rounded-2xl border bg-primary/95 backdrop-blur-xl border-border shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
+              : 'mx-0 mt-0 h-18 md:h-24 rounded-none border border-transparent bg-transparent backdrop-blur-0 shadow-none'
+          }`}
+        >
+        <div className="container-custom h-full flex items-center justify-between relative">
+          {/* Logo - Left Aligned */}
+          <div className="z-10">
+            <Link 
+              to={isAuthenticated ? '/home' : '/'} 
+              className="text-4xl md:text-4xl sm:text-2xl font-branding font-bold tracking-wide text-accent group"
+            >
+              <span className="text-text-primary">Cinema</span>
+              <span >Hub</span>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 z-0">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`relative text-sm font-medium transition-colors hover:text-accent ${
-                  location.pathname === link.path ? 'text-accent' : 'text-text-secondary'
-                }`}
-              >
-                {link.name}
-                {location.pathname === link.path && (
-                  <motion.div
-                    layoutId="nav-underline"
-                    className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent"
-                  />
-                )}
-              </Link>
+              link.path.includes('#') ? (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className="relative text-sm font-medium transition-colors text-text-secondary hover:text-accent"
+                >
+                  {link.name}
+                </a>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`relative text-sm font-medium transition-colors hover:text-accent ${
+                    location.pathname === link.path ? 'text-accent' : 'text-text-secondary'
+                  }`}
+                >
+                  {link.name}
+                  {location.pathname === link.path && (
+                    <motion.div
+                      layoutId="nav-underline"
+                      className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent"
+                    />
+                  )}
+                </Link>
+              )
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-5">
-            <button onClick={() => setIsSearchOpen(true)} className="p-2 text-text-secondary hover:text-accent transition-colors cursor-pointer" aria-label="Open search">
-              <FiSearch size={20} />
-            </button>
+          {/* Actions - Right Aligned */}
+          <div className="flex items-center gap-2 md:gap-5 z-10">
+            {isAuthenticated && (
+              <button onClick={() => setIsSearchOpen(true)} className="p-2 text-text-secondary hover:text-accent transition-colors cursor-pointer" aria-label="Open search">
+                <FiSearch size={20} />
+              </button>
+            )}
             
             <div className="hidden sm:block">
               <ThemeToggle />
@@ -114,7 +146,7 @@ const Navbar = () => {
                 <Link to="/profile" className="flex items-center gap-2 group">
                   <div className="w-8 h-8 rounded-full bg-elevated border border-border overflow-hidden group-hover:border-accent transition-all">
                     {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                      <img src={user.avatar} alt={user.name} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-text-muted">
                         <FiUser size={16} />
@@ -124,9 +156,14 @@ const Navbar = () => {
                 </Link>
               </div>
             ) : (
-              <Link to="/login" className="btn-primary py-1.5 px-4 text-sm hidden sm:block">
-                Sign In
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-accent transition-colors hidden sm:block">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn-primary py-1.5 px-4 text-sm hidden sm:block">
+                  Get Started
+                </Link>
+              </div>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -139,16 +176,17 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+        </div>
       </nav>
 
       <Sidebar 
         isOpen={isMobileMenuOpen} 
         onClose={closeMobileMenu} 
         navLinks={navLinks}
-        isScrolled={isScrolled} 
+        isScrolled={isScrolled}
       />
 
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      {isAuthenticated && <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />}
     </>
   );
 };

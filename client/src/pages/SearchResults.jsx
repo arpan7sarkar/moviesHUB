@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiSearch, FiFilm, FiTv, FiUser, FiGrid } from 'react-icons/fi';
@@ -22,7 +22,7 @@ const PersonResultCard = ({ person }) => (
     to={`/person/${person.id}`}
     className="flex flex-col items-center group"
   >
-    <div className="w-full aspect-[2/3] rounded-xl overflow-hidden bg-elevated border border-border/20 mb-3 group-hover:border-accent transition-all shadow-card group-hover:shadow-elevated">
+    <div className="w-full aspect-2/3 rounded-xl overflow-hidden bg-elevated border border-border/20 mb-3 group-hover:border-accent transition-all shadow-card group-hover:shadow-elevated">
       {person.profile_path ? (
         <img
           src={`${TMDB_IMG}/w300${person.profile_path}`}
@@ -48,6 +48,7 @@ const SearchResults = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [page, setPage] = useState(1);
   const [allResults, setAllResults] = useState([]);
+  const loadMoreRef = useRef(null);
 
   const { data, isLoading, isFetching } = useSearchMultiQuery(
     { query, page },
@@ -90,13 +91,32 @@ const SearchResults = () => {
   const totalPages = data?.total_pages || 1;
   const canLoadMore = page < totalPages && page < 20; // Cap at 20 pages
 
+  useEffect(() => {
+    if (activeTab !== 'all' || !canLoadMore || isFetching || isLoading) return;
+    const current = loadMoreRef.current;
+    if (!current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { root: null, rootMargin: '0px', threshold: 1 }
+    );
+
+    observer.observe(current);
+    return () => observer.disconnect();
+  }, [activeTab, canLoadMore, isFetching, isLoading]);
+
   if (!query) {
     return (
       <PageTransition>
         <main className="min-h-screen bg-primary pt-24 pb-16">
           <div className="container-custom px-4 md:px-8 flex flex-col items-center justify-center min-h-[60vh]">
             <FiSearch size={56} className="text-text-muted mb-6" />
-            <h1 className="text-3xl font-display font-bold text-text-primary mb-3">Search CineVault</h1>
+            <h1 className="text-3xl font-display font-bold text-text-primary mb-3">Search CinemaHub</h1>
             <p className="text-text-muted text-base">Use the search icon in the navbar to find movies, TV shows, and people.</p>
           </div>
         </main>
@@ -106,7 +126,7 @@ const SearchResults = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-24 pb-16">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-16">
         <div className="container-custom px-4 md:px-8">
 
           {/* Header */}
@@ -135,7 +155,7 @@ const SearchResults = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer whitespace-nowrap border flex-shrink-0
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer whitespace-nowrap border shrink-0
                   ${activeTab === tab.id
                     ? 'bg-accent/15 border-accent/30 text-accent font-semibold'
                     : 'bg-white/5 border-border/30 text-text-muted hover:text-text-primary hover:bg-white/10'
@@ -155,7 +175,7 @@ const SearchResults = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
               {Array.from({ length: 18 }).map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="aspect-[2/3] bg-elevated rounded-lg mb-2" />
+                  <div className="aspect-2/3 bg-elevated rounded-lg mb-2" />
                   <div className="h-3 bg-elevated rounded w-3/4 mb-1" />
                   <div className="h-2.5 bg-elevated rounded w-1/2" />
                 </div>
@@ -179,25 +199,14 @@ const SearchResults = () => {
                 })}
               </div>
 
-              {/* Load More */}
               {canLoadMore && activeTab === 'all' && (
-                <div className="flex justify-center">
-                  <motion.button
-                    onClick={() => setPage(p => p + 1)}
-                    disabled={isFetching}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-2 px-8 py-3 rounded-xl bg-white/5 border border-border/30 text-text-primary font-medium text-sm hover:bg-white/10 disabled:opacity-50 transition-all cursor-pointer"
-                  >
-                    {isFetching ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                        <span>Loading...</span>
-                      </>
-                    ) : (
-                      <span>Load More Results</span>
-                    )}
-                  </motion.button>
+                <div ref={loadMoreRef} className="flex justify-center min-h-10">
+                  {isFetching && (
+                    <div className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/5 border border-border/30 text-text-muted text-sm">
+                      <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                      <span>Loading...</span>
+                    </div>
+                  )}
                 </div>
               )}
             </>

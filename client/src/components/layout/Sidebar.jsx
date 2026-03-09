@@ -2,18 +2,42 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
+import { FiUser, FiHeart, FiBookmark, FiClock, FiSettings, FiLogOut } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useLogoutMutation } from '../../features/auth/authApi';
+import { logout } from '../../features/auth/authSlice';
 import ThemeToggle from '../ui/ThemeToggle';
 
 const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth || { isAuthenticated: false, user: null });
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutUser] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+      localStorage.removeItem('token');
+      dispatch(logout());
+      onClose();
+      navigate('/');
+    } catch (err) {
+      dispatch(logout());
+      onClose();
+      navigate('/');
+    }
+  };
 
   useEffect(() => {
     onClose();
   }, [location, onClose]);
 
-  const navHeightClass = isScrolled ? 'top-16 md:top-[72px]' : 'top-20 md:top-[88px]';
+  // Match sidebar top with navbar bottom in both states.
+  const navHeightClass = isScrolled
+    ? 'top-[4.25rem] md:top-20'
+    : 'top-[4.5rem] md:top-20';
 
   const backdropVariants = {
     hidden: { opacity: 0 },
@@ -68,7 +92,7 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                 <motion.div variants={linkVariants} className="flex items-center gap-4 mb-2 pb-4 border-b border-border">
                   <div className="w-12 h-12 rounded-full border border-accent bg-elevated overflow-hidden shrink-0 transition-colors">
                     {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name || 'User'} className="w-full h-full object-cover" />
+                      <img src={user.avatar} alt={user.name || 'User'} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-accent">
                         <FiUser size={24} />
@@ -80,7 +104,7 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                       {user?.name || 'User'}
                     </span>
                     <span className="text-sm text-text-muted truncate">
-                      {user?.email || 'user@cinevault.io'}
+                      {user?.email || 'user@cinemahub.io'}
                     </span>
                   </div>
                 </motion.div>
@@ -89,14 +113,24 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
               {/* Staggered Navigation Links */}
               {navLinks.map((link) => (
                 <motion.div variants={linkVariants} key={link.path}>
-                  <Link
-                    to={link.path}
-                    className={`block text-xl font-display font-semibold transition-colors ${
-                      location.pathname === link.path ? 'text-accent' : 'text-text-primary hover:text-accent'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
+                  {link.path.includes('#') ? (
+                    <a
+                      href={link.path}
+                      onClick={onClose}
+                      className="block text-xl font-display font-semibold text-text-primary hover:text-accent transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={`block text-xl font-display font-semibold transition-colors ${
+                        location.pathname === link.path ? 'text-accent' : 'text-text-primary hover:text-accent'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
               
@@ -132,11 +166,19 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                       <FiUser className="text-accent" /> Profile
                     </Link>
                   </motion.div>
+                  <motion.div variants={linkVariants}>
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 text-lg font-display text-danger hover:text-danger/80 transition-colors cursor-pointer w-full text-left"
+                    >
+                      <FiLogOut /> Logout
+                    </button>
+                  </motion.div>
                 </div>
               ) : (
                 <motion.div variants={linkVariants}>
-                  <Link to="/login" className="btn-primary block w-full text-center py-3 text-lg font-display hover:scale-[1.02] active:scale-95 transition-transform">
-                    Sign In
+                  <Link to="/register" className="btn-primary block w-full text-center py-3 text-lg font-display hover:scale-[1.02] active:scale-95 transition-transform">
+                    Get Started
                   </Link>
                 </motion.div>
               )}

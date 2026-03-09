@@ -10,7 +10,7 @@ import {
   useAddToWatchlistMutation,
   useRemoveFromWatchlistMutation,
 } from '../../features/user/userApi';
-import { resolvePoster, handlePosterError } from '../../utils/mediaFallbacks';
+import { resolvePoster, handlePosterError, getBlurBackground } from '../../utils/mediaFallbacks';
 
 const MovieCard = ({ item, mediaType: propMediaType }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -111,7 +111,12 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
       id={`movie-card-${tmdbId}`}
     >
       <div className="relative w-full aspect-[2/3] overflow-hidden rounded-2xl border border-border/70 bg-elevated shadow-[0_14px_40px_rgba(0,0,0,0.28)] transition-all duration-500 group-hover:-translate-y-1.5 group-hover:border-accent/45 group-hover:shadow-[0_24px_56px_rgba(0,0,0,0.45)]">
-        {!imgLoaded && <div className="absolute inset-0 rounded-2xl bg-elevated animate-pulse" />}
+        {!imgLoaded && (
+          <div
+            className="absolute inset-0 rounded-2xl bg-elevated"
+            style={getBlurBackground('thumb')}
+          />
+        )}
 
         <img
           src={posterUrl}
@@ -120,12 +125,12 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
           onLoad={() => setImgLoaded(true)}
           onError={handlePosterError}
           className={`h-full w-full object-cover transition-all duration-700 ${
-            imgLoaded ? 'scale-100 opacity-100 group-hover:scale-110' : 'scale-105 opacity-0'
+            imgLoaded ? 'scale-100 opacity-100 blur-0 group-hover:scale-110' : 'scale-105 opacity-0 blur-xl'
           }`}
+          style={getBlurBackground('thumb')}
         />
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/0" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/0" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,168,83,0.26),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
         {rating && (
@@ -170,7 +175,7 @@ const MovieCard = ({ item, mediaType: propMediaType }) => {
       </div>
 
       <div className="mt-3 px-1 text-left">
-        <h3 className="truncate text-sm font-semibold leading-tight text-text-primary transition-colors duration-200 group-hover:text-accent">
+        <h3 className="truncate text-sm font-serif font-bold leading-tight text-text-primary transition-colors duration-200 group-hover:text-accent">
           {title}
         </h3>
         <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-text-muted">

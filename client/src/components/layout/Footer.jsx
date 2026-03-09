@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiGithub, FiTwitter, FiInstagram, FiMail, FiYoutube } from 'react-icons/fi';
+import { useSelector } from 'react-redux';
+import { FiTwitter, FiInstagram, FiMail, FiYoutube } from 'react-icons/fi';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { isAuthenticated } = useSelector((state) => state.auth || {});
+  const homeLink = isAuthenticated ? '/home' : '/';
 
   return (
     <footer className="w-full bg-primary border-t border-white/5 py-12 md:py-20 mt-auto">
@@ -12,31 +15,31 @@ const Footer = () => {
           {/* Brand and Details */}
           <div className="md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
             <Link 
-              to="/" 
-              className="text-2xl font-display font-bold tracking-tighter text-text-primary group mb-4"
+              to={homeLink} 
+              className="text-3xl font-branding font-bold tracking-wide text-accent group mb-4"
             >
-              Cine<span className="text-accent group-hover:text-accent-hover transition-colors">Vault</span>
+              <span className="text-text-primary">Cinema</span>Hub
             </Link>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
               Experience movie magic at its finest. Discover, track, and watch your 
-              favorite cinema pieces with CineVault.
+              favorite cinema pieces with CinemaHub.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="flex flex-col items-center md:items-start space-y-4">
             <h4 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-2">Explore</h4>
-            <Link to="/" className="text-sm text-text-muted hover:text-accent transition-colors">Home</Link>
-            <Link to="/movies" className="text-sm text-text-muted hover:text-accent transition-colors">Movies</Link>
-            <Link to="/tv" className="text-sm text-text-muted hover:text-accent transition-colors">TV Shows</Link>
+            <Link to={homeLink} className="text-sm text-text-muted hover:text-accent transition-colors">Home</Link>
+            <Link to={isAuthenticated ? '/movies' : '/login'} className="text-sm text-text-muted hover:text-accent transition-colors">Movies</Link>
+            <Link to={isAuthenticated ? '/tv' : '/register'} className="text-sm text-text-muted hover:text-accent transition-colors">TV Shows</Link>
           </div>
 
           {/* Support */}
           <div className="flex flex-col items-center md:items-start space-y-4">
             <h4 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-2">Support</h4>
-            <Link to="/profile" className="text-sm text-text-muted hover:text-accent transition-colors">My Profile</Link>
-            <Link to="/watchlist" className="text-sm text-text-muted hover:text-accent transition-colors">Watchlist</Link>
-            <Link to="/favorites" className="text-sm text-text-muted hover:text-accent transition-colors">Favorites</Link>
+            <Link to={isAuthenticated ? '/profile' : '/login'} className="text-sm text-text-muted hover:text-accent transition-colors">{isAuthenticated ? 'My Profile' : 'Login'}</Link>
+            <Link to={isAuthenticated ? '/watchlist' : '/register'} className="text-sm text-text-muted hover:text-accent transition-colors">{isAuthenticated ? 'Watchlist' : 'Sign Up'}</Link>
+            <Link to={isAuthenticated ? '/favorites' : '/'} className="text-sm text-text-muted hover:text-accent transition-colors">{isAuthenticated ? 'Favorites' : 'Overview'}</Link>
           </div>
 
           {/* Connect */}
@@ -64,7 +67,7 @@ const Footer = () => {
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-text-muted">
-            &copy; {currentYear} CineVault Inc. All rights reserved.
+            &copy; {currentYear} CinemaHub Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-8">
             <Link to="#" className="text-xs text-text-muted hover:text-text-primary transition-colors">Privacy Policy</Link>

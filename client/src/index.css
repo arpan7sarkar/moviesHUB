@@ -18,7 +18,9 @@
   --color-border: rgba(255, 255, 255, 0.06);
 
   /* Typography */
-  --font-display: "Outfit", system-ui, sans-serif;
+  --font-display: "Zodiak","Melodrama", system-ui, sans-serif;
+  --font-branding: "Bebas Neue", sans-serif;
+  --font-serif: "Satoshi", "Boska", serif;
   --font-body: "Inter", system-ui, sans-serif;
 
   /* Border Radii */
@@ -34,7 +36,6 @@
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
   :root {
     /* Custom CSS vars for manual use/interpolation */
@@ -85,7 +86,7 @@
 
 @layer components {
   .container-custom {
-    @apply w-full max-w-[1400px] mx-auto px-5 md:px-10 lg:px-20;
+    @apply w-full px-4 md:px-8 lg:px-12 max-w-screen-2xl mx-auto;
   }
 
   .btn-primary {

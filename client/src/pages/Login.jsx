@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn, FiFilm } from 'react-icons/fi';
@@ -17,13 +17,17 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [login, { isLoading }] = useLoginMutation();
+  const from = location.state?.from?.pathname;
+  // If user was on profile when they logged out, we want to send them to home instead of back to profile.
+  const redirectTo = (from && from !== '/profile') ? from : '/home';
 
   // Redirect if already logged in
   useEffect(() => {
-    if (isAuthenticated) navigate('/', { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate(redirectTo, { replace: true });
+  }, [isAuthenticated, navigate, redirectTo]);
 
   const validate = () => {
     const newErrors = {};
@@ -51,7 +55,7 @@ const Login = () => {
       localStorage.setItem('token', res.token);
       dispatch(setUser(res));
       setToast({ show: true, message: 'Welcome back!', type: 'success' });
-      setTimeout(() => navigate('/'), 500);
+      setTimeout(() => navigate(redirectTo, { replace: true }), 500);
     } catch (err) {
       const message = err?.data?.message || err?.data?.error || 'Login failed. Please try again.';
       setToast({ show: true, message, type: 'error' });
@@ -64,9 +68,9 @@ const Login = () => {
 
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-accent/[0.03] blur-3xl" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-accent/[0.04] blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-accent/[0.02] blur-3xl" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-accent/3 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-accent/4 blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-accent/2 blur-3xl" />
         </div>
 
         <motion.div
@@ -84,8 +88,8 @@ const Login = () => {
                 <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
                   <FiFilm size={20} className="text-accent" />
                 </div>
-                <span className="text-xl font-display font-bold text-text-primary">
-                  Cine<span className="text-accent">Vault</span>
+                <span className="text-xl font-branding font-bold text-accent">
+                   <span className="text-text-primary">Cinema</span>Hub
                 </span>
               </Link>
               <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-2">
@@ -111,7 +115,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setErrors(p => ({ ...p, email: '' })); }}
                     placeholder="you@example.com"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-3 pl-11 pr-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-3 pl-11 pr-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all ${
                       errors.email
                         ? 'border-danger/50 focus:ring-danger/20'
                         : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
@@ -137,7 +141,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setErrors(p => ({ ...p, password: '' })); }}
                     placeholder="••••••••"
-                    className={`w-full bg-white/[0.04] border rounded-xl py-3 pl-11 pr-11 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full bg-white/4 border rounded-xl py-3 pl-11 pr-11 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 transition-all ${
                       errors.password
                         ? 'border-danger/50 focus:ring-danger/20'
                         : 'border-border/40 focus:border-accent/50 focus:ring-accent/20'
@@ -196,7 +200,7 @@ const Login = () => {
 
           {/* Bottom decoration text */}
           <p className="text-center text-text-muted text-[11px] mt-6">
-            By continuing, you agree to CineVault's Terms of Service and Privacy Policy.
+            By continuing, you agree to CinemaHub's Terms of Service and Privacy Policy.
           </p>
         </motion.div>
 

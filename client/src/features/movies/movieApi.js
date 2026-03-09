@@ -1,5 +1,8 @@
 import { apiSlice } from '../api/apiSlice';
 
+const LIST_CACHE_SECONDS = 600;
+const DETAIL_CACHE_SECONDS = 1800;
+
 export const movieApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTrending: builder.query({
@@ -8,6 +11,8 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { page },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
       providesTags: ['Movie'],
     }),
     getList: builder.query({
@@ -16,6 +21,8 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { page },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
       providesTags: ['Movie'],
     }),
     getMovieDetails: builder.query({
@@ -23,6 +30,8 @@ export const movieApi = apiSlice.injectEndpoints({
         url: `/tmdb/movie/${id}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
       providesTags: (result, error, id) => [{ type: 'Movie', id }],
     }),
     getTvDetails: builder.query({
@@ -30,6 +39,8 @@ export const movieApi = apiSlice.injectEndpoints({
         url: `/tmdb/tv/${id}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
       providesTags: (result, error, id) => [{ type: 'Movie', id }],
     }),
     getVideos: builder.query({
@@ -37,12 +48,16 @@ export const movieApi = apiSlice.injectEndpoints({
         url: `/tmdb/${mediaType}/${id}/videos`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
     }),
     getCredits: builder.query({
       query: ({ mediaType, id }) => ({
         url: `/tmdb/${mediaType}/${id}/credits`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
     }),
     searchMulti: builder.query({
       query: ({ query, page = 1 }) => ({
@@ -50,6 +65,8 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { query, page },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
     }),
     discover: builder.query({
       query: ({ mediaType, page = 1, ...params }) => ({
@@ -57,6 +74,8 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { page, ...params },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
       providesTags: ['Movie'],
     }),
     getPersonDetails: builder.query({
@@ -64,12 +83,16 @@ export const movieApi = apiSlice.injectEndpoints({
         url: `/tmdb/person/${id}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
     }),
     getPersonCredits: builder.query({
       query: (id) => ({
         url: `/tmdb/person/${id}/combined_credits`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
     }),
     getRecommendations: builder.query({
       query: ({ mediaType, id, page = 1 }) => ({
@@ -77,6 +100,8 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { page },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
     }),
     getSimilar: builder.query({
       query: ({ mediaType, id, page = 1 }) => ({
@@ -84,12 +109,16 @@ export const movieApi = apiSlice.injectEndpoints({
         method: 'GET',
         params: { page },
       }),
+      keepUnusedDataFor: LIST_CACHE_SECONDS,
+      refetchOnMountOrArgChange: LIST_CACHE_SECONDS,
     }),
     getTvSeasonDetails: builder.query({
       query: ({ tvId, seasonNumber }) => ({
         url: `/tmdb/tv/${tvId}/season/${seasonNumber}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: DETAIL_CACHE_SECONDS,
+      refetchOnMountOrArgChange: DETAIL_CACHE_SECONDS,
     }),
   }),
 });

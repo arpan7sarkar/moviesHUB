@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 // Route Guards
@@ -14,26 +14,28 @@ import AdminLayout from './components/layout/AdminLayout';
 import RouteErrorBoundary from './components/errors/RouteErrorBoundary';
 
 // Page Components
-import Home from './pages/Home';
-import Movies from './pages/Movies';
-import TvShows from './pages/TvShows';
-import MovieDetail from './pages/MovieDetail';
-import TvDetail from './pages/TvDetail';
-import PersonDetail from './pages/PersonDetail';
-import SearchResults from './pages/SearchResults';
-import Favorites from './pages/Favorites';
-import Watchlist from './pages/Watchlist';
-import History from './pages/History';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
-import NotFound from './pages/NotFound';
+const Landing = lazy(() => import('./pages/Landing'));
+const Home = lazy(() => import('./pages/Home'));
+const Movies = lazy(() => import('./pages/Movies'));
+const TvShows = lazy(() => import('./pages/TvShows'));
+const MovieDetail = lazy(() => import('./pages/MovieDetail'));
+const TvDetail = lazy(() => import('./pages/TvDetail'));
+const PersonDetail = lazy(() => import('./pages/PersonDetail'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const Funzone = lazy(() => import('./pages/Funzone'));
+const Favorites = lazy(() => import('./pages/Favorites'));
+const Watchlist = lazy(() => import('./pages/Watchlist'));
+const History = lazy(() => import('./pages/History'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Profile = lazy(() => import('./pages/Profile'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Admin Page Components
-import Dashboard from './pages/admin/Dashboard';
-import ManageMovies from './pages/admin/ManageMovies';
-import MovieForm from './pages/admin/MovieForm';
-import ManageUsers from './pages/admin/ManageUsers';
+// Admin pages (separate dynamic chunks)
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ManageMovies = lazy(() => import('./pages/admin/ManageMovies'));
+const MovieForm = lazy(() => import('./pages/admin/MovieForm'));
+const ManageUsers = lazy(() => import('./pages/admin/ManageUsers'));
 
 import { useGetMeQuery } from './features/auth/authApi';
 
@@ -41,9 +43,14 @@ function App() {
   const location = useLocation();
   const mode = useSelector((state) => state.theme.mode);
   const token = localStorage.getItem('token');
+  const routeFallback = (
+    <div className="min-h-[45vh] flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-accent/40 border-t-accent rounded-full animate-spin" />
+    </div>
+  );
   const withRouteBoundary = (element, key) => (
     <RouteErrorBoundary resetKey={`${key}-${location.pathname}`}>
-      {element}
+      <Suspense fallback={routeFallback}>{element}</Suspense>
     </RouteErrorBoundary>
   );
 
@@ -70,24 +77,28 @@ function App() {
     );
   }
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="flex flex-col min-h-screen bg-primary">
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={withRouteBoundary(<Home />, 'home')} />
-            <Route path="/movies" element={withRouteBoundary(<Movies />, 'movies')} />
-            <Route path="/tv" element={withRouteBoundary(<TvShows />, 'tv')} />
-            <Route path="/movies/:id" element={withRouteBoundary(<MovieDetail />, 'movie-detail')} />
-            <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
-            <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
-            <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
+            <Route path="/" element={withRouteBoundary(<Landing />, 'landing')} />
             <Route path="/login" element={withRouteBoundary(<Login />, 'login')} />
             <Route path="/register" element={withRouteBoundary(<Register />, 'register')} />
             
             <Route element={withRouteBoundary(<ProtectedRoute />, 'protected')}>
+              <Route path="/home" element={withRouteBoundary(<Home />, 'home')} />
+              <Route path="/movies" element={withRouteBoundary(<Movies />, 'movies')} />
+              <Route path="/tv" element={withRouteBoundary(<TvShows />, 'tv')} />
+              <Route path="/movies/:id" element={withRouteBoundary(<MovieDetail />, 'movie-detail')} />
+              <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
+              <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
+              <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
+              <Route path="/funzone" element={withRouteBoundary(<Funzone />, 'funzone')} />
               <Route path="/favorites" element={withRouteBoundary(<Favorites />, 'favorites')} />
               <Route path="/watchlist" element={withRouteBoundary(<Watchlist />, 'watchlist')} />
               <Route path="/history" element={withRouteBoundary(<History />, 'history')} />
@@ -109,7 +120,7 @@ function App() {
         </AnimatePresence>
       </main>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }

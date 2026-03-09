@@ -11,8 +11,10 @@ import {
   FiShield,
   FiMenu,
   FiX,
+  FiSettings,
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from '../ui/ThemeToggle';
 
 const sidebarLinks = [
   { name: 'Dashboard', path: '/admin', icon: FiGrid, end: true },
@@ -33,7 +35,13 @@ const AdminLayout = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-primary flex pt-16 md:pt-[72px] transition-all duration-500 ease-in-out">
+    <div className="min-h-screen bg-primary flex relative overflow-hidden">
+      {/* ───── Decorative Background ───── */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
+      </div>
+
       {/* ───── Mobile Sidebar Overlay ───── */}
       <AnimatePresence>
         {isMobileOpen && (
@@ -42,30 +50,30 @@ const AdminLayout = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsMobileOpen(false)}
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm md:hidden cursor-pointer"
+            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm md:hidden cursor-pointer"
           />
         )}
       </AnimatePresence>
 
       {/* ───── Sidebar ───── */}
       <aside
-        className={`fixed top-16 md:top-[72px] left-0 bottom-0 z-[110] flex flex-col bg-secondary border-r border-border transition-all duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed top-0 left-0 bottom-0 z-[110] flex flex-col bg-secondary/70 backdrop-blur-3xl border-r border-border/40 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-x-0 ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${collapsed ? 'md:w-[72px]' : 'md:w-60'} w-64`}
+        } ${collapsed ? 'md:w-[88px]' : 'md:w-64'} w-72`}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-4 py-5 border-b border-border shrink-0">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center text-accent shrink-0">
-              <FiShield size={18} />
+        <div className={`flex items-center ${collapsed && !isMobileOpen ? 'justify-center' : 'justify-between px-6'} py-8 border-b border-border/10 shrink-0`}>
+          <div className="flex items-center gap-4 overflow-hidden">
+            <div className="w-11 h-11 rounded-xl bg-accent text-primary flex items-center justify-center shadow-[0_8px_20px_rgba(var(--accent-rgb),0.3)] shrink-0">
+              <FiShield size={22} />
             </div>
             {(!collapsed || isMobileOpen) && (
               <div className="overflow-hidden min-w-0">
-                <p className="text-sm font-semibold text-text-primary truncate">
-                  Admin Panel
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-accent">
+                  Admin
                 </p>
-                <p className="text-[11px] text-text-muted truncate">
-                  {user?.name || 'Administrator'}
+                <p className="text-lg font-display font-black text-text-primary leading-none mt-1 uppercase italic">
+                  Panel
                 </p>
               </div>
             )}
@@ -73,84 +81,122 @@ const AdminLayout = () => {
           {/* Mobile Close Button */}
           <button 
             onClick={() => setIsMobileOpen(false)}
-            className="p-2 md:hidden text-text-muted hover:text-text-primary"
+            className="p-2 md:hidden text-text-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <FiX size={20} />
+            <FiX size={24} />
           </button>
         </div>
 
         {/* Nav Links */}
-        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto no-scrollbar scroll-smooth">
+        <nav className="flex-1 py-10 px-4 space-y-3 overflow-y-auto no-scrollbar scroll-smooth">
+          <div className="px-4 mb-4">
+               {(!collapsed || isMobileOpen) && (
+                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary mb-4 opacity-100">Main Menu</p>
+               )}
+          </div>
           {sidebarLinks.map((link) => (
             <NavLink
               key={link.path}
               to={link.path}
               end={link.end}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
+                `flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all duration-500 relative group overflow-hidden ${
                   isActive
-                    ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm'
-                    : 'text-text-secondary hover:bg-elevated hover:text-text-primary border border-transparent'
+                    ? 'text-primary'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 }`
               }
             >
-              <link.icon
-                size={18}
-                className="shrink-0 transition-colors"
-              />
-              {(!collapsed || isMobileOpen) && <span className="truncate">{link.name}</span>}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="active-nav-bg"
+                      className="absolute inset-0 bg-accent shadow-[0_8px_25px_rgba(var(--accent-rgb),0.3)] z-0"
+                    />
+                  )}
+                  <link.icon
+                    size={20}
+                    className={`relative z-10 transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                  />
+                  {(!collapsed || isMobileOpen) && (
+                    <span className="relative z-10 truncate font-display tracking-tight uppercase italic">{link.name}</span>
+                  )}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="border-t border-border px-3 py-3 space-y-2 shrink-0">
+        <div className="border-t border-border/10 px-4 py-8 space-y-4 shrink-0 bg-primary/20 backdrop-blur-sm">
           <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-elevated hover:text-text-primary transition-all group"
+            onClick={() => navigate('/home')}
+            className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl text-sm font-black uppercase tracking-tight italic text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-primary transition-all group active:scale-95"
           >
-            <FiArrowLeft size={18} className="shrink-0 group-hover:-translate-x-1 transition-transform" />
-            {(!collapsed || isMobileOpen) && <span>Back to Site</span>}
+            <FiArrowLeft size={20} className="shrink-0 group-hover:-translate-x-2 transition-transform duration-300" />
+            {(!collapsed || isMobileOpen) && <span>Back to Home</span>}
           </button>
 
-          <button
-            onClick={() => setCollapsed((prev) => !prev)}
-            className="hidden md:flex items-center gap-3 w-full px-3 py-2 rounded-lg text-xs text-text-muted hover:bg-elevated hover:text-text-primary transition-all cursor-pointer"
-          >
-            {collapsed ? (
-              <FiChevronRight size={16} className="shrink-0" />
-            ) : (
-              <>
-                <FiChevronLeft size={16} className="shrink-0" />
-                <span>Collapse</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2 w-full justify-between">
+            <button
+              onClick={() => setCollapsed((prev) => !prev)}
+              className="hidden md:flex flex-1 items-center gap-4 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary hover:text-accent transition-all cursor-pointer"
+            >
+              {collapsed ? (
+                <FiChevronRight size={18} className="shrink-0 mx-auto" />
+              ) : (
+                <>
+                  <FiChevronLeft size={18} className="shrink-0" />
+                  <span>Minimize</span>
+                </>
+              )}
+            </button>
+            <div className={`flex justify-center shrink-0 ${collapsed ? 'w-full' : 'mr-4'}`}>
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </aside>
 
       {/* ───── Main Content ───── */}
       <main
-        className={`flex-1 transition-all duration-300 ease-in-out min-w-0 ${
-          collapsed ? 'md:ml-[72px]' : 'md:ml-60'
-        } ml-0`}
+        className={`flex-1 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] min-w-0 ${
+          collapsed ? 'md:ml-[88px]' : 'md:ml-64'
+        } ml-0 relative z-10`}
       >
         {/* Mobile Header Toggle */}
-        <div className="sticky top-16 md:hidden px-4 md:px-0 z-30 transition-all duration-300">
-          <div className="py-4 flex items-center gap-4">
+        <div className="sticky top-0 md:hidden px-4 z-30 transition-all duration-300 pt-2">
+          <div className="py-6 flex items-center justify-between gap-4 bg-primary/80 backdrop-blur-md rounded-3xl border border-border/10 px-6 -mx-4 shadow-sm">
              <button
               onClick={() => setIsMobileOpen(true)}
-              className="p-2 rounded-lg bg-secondary border border-border text-text-primary shadow-sm active:scale-95 transition-all cursor-pointer"
+              className="p-3 rounded-xl bg-accent/10 border border-accent/20 text-accent shadow-premium active:scale-90 transition-all cursor-pointer"
               aria-label="Open sidebar"
             >
-              <FiMenu size={20} />
+              <FiMenu size={22} />
             </button>
-            <h1 className="text-lg font-bold text-text-primary uppercase tracking-wider font-display shrink-0">CineVault Admin</h1>
+            <h1 className="text-xl font-black uppercase tracking-[0.2em] font-branding italic shrink-0">
+               <span className="text-text-primary">Cinema</span><span className="text-accent">Hub</span> <span className="text-xs font-normal border-l border-border/40 pl-3 ml-1">Admin</span>
+            </h1>
+            <div className="w-10 h-10 rounded-full bg-surface border border-border/30 overflow-hidden">
+                {user?.avatar && <img src={user.avatar} className="w-full h-full object-cover" alt="" />}
+            </div>
           </div>
         </div>
 
-        <div className="p-4 sm:p-6 md:p-8 lg:p-10 max-w-[1400px] mx-auto w-full overflow-hidden">
-          <Outlet />
+        {/* Content Wrapper */}
+        <div className="p-6 md:p-10 lg:p-14 max-w-[1600px] mx-auto w-full min-h-full">
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={location.pathname}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                    <Outlet />
+                </motion.div>
+            </AnimatePresence>
         </div>
       </main>
     </div>
@@ -158,4 +204,3 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
-

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiUserPlus, FiFilm } from 'react-icons/fi';
@@ -21,12 +21,14 @@ const Register = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [register, { isLoading }] = useRegisterMutation();
+  const redirectTo = location.state?.from?.pathname || '/home';
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/', { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate(redirectTo, { replace: true });
+  }, [isAuthenticated, navigate, redirectTo]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +74,7 @@ const Register = () => {
       localStorage.setItem('token', res.token);
       dispatch(setUser(res));
       setToast({ show: true, message: 'Account created successfully!', type: 'success' });
-      setTimeout(() => navigate('/'), 1000);
+      setTimeout(() => navigate(redirectTo, { replace: true }), 1000);
     } catch (err) {
       const message = err?.data?.message || err?.data?.error || 'Registration failed.';
       setToast({ show: true, message, type: 'error' });
@@ -99,12 +101,12 @@ const Register = () => {
                 <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
                   <FiFilm size={20} className="text-accent" />
                 </div>
-                <span className="text-xl font-display font-bold text-text-primary">
-                  Cine<span className="text-accent">Vault</span>
+                <span className="text-xl font-branding font-bold text-accent">
+                   <span className="text-text-primary">Cinema</span>Hub
                 </span>
               </Link>
               <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-2">
-                Join CineVault
+                Join CinemaHub
               </h1>
               <p className="text-text-muted text-sm">Create your account to start exploring</p>
             </div>

@@ -19,8 +19,8 @@ const ContentRow = ({ title, items, isLoading, isError, seeAllLink, mediaType })
   return (
     <section className="w-full py-6 md:py-10 relative group/row">
       {/* Section Header */}
-      <div className="container-custom flex items-center justify-between mb-5 md:mb-6">
-        <h2 className="text-xl md:text-2xl font-display font-semibold text-text-primary tracking-tight">
+      <div className="pl-3 pr-1 md:pl-6 md:pr-3 lg:pl-12 lg:pr-4 flex items-center justify-between mb-5 md:mb-6">
+        <h2 className="text-xl md:text-2xl font-display font-semibold text-text-primary tracking-tight ">
           {title}
         </h2>
         {seeAllLink && (
@@ -55,7 +55,7 @@ const ContentRow = ({ title, items, isLoading, isError, seeAllLink, mediaType })
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
           }}
-          className="!px-5 md:!px-10 lg:!px-20"
+          className="!pl-3 !pr-0 md:!pl-6 md:!pr-0 lg:!pl-12 lg:!pr-0"
         >
           {items.map((item) => (
             <SwiperSlide key={item.id}>
