@@ -171,7 +171,7 @@ const PersonDetail = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-24 pb-20">
+      <main className="min-h-screen bg-primary pt-[4.5rem] md:pt-20 pb-20">
         <div className="container-custom px-4 md:px-8">
           <div className="flex flex-col md:flex-row gap-10 md:gap-16">
 

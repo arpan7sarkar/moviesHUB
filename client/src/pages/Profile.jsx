@@ -81,7 +81,7 @@ const Profile = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-primary pt-32 pb-20">
+      <div className="min-h-screen bg-primary pt-[4.5rem] md:pt-20 pb-20">
         <div className="container-custom max-w-4xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             

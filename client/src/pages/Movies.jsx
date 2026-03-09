@@ -98,7 +98,7 @@ const Movies = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-24 pb-16">
+      <main className="min-h-screen bg-primary pt-[4.5rem] md:pt-20 pb-16">
         <div className="container-custom px-4 md:px-8">
 
           {/* ═══════════ Page Header ═══════════ */}
