@@ -20,7 +20,9 @@ const Login = () => {
   const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [login, { isLoading }] = useLoginMutation();
-  const redirectTo = location.state?.from?.pathname || '/home';
+  const from = location.state?.from?.pathname;
+  // If user was on profile when they logged out, we want to send them to home instead of back to profile.
+  const redirectTo = (from && from !== '/profile') ? from : '/home';
 
   // Redirect if already logged in
   useEffect(() => {

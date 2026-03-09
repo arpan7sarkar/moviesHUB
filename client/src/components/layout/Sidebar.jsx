@@ -2,12 +2,33 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiHeart, FiBookmark, FiClock, FiSettings } from 'react-icons/fi';
+import { FiUser, FiHeart, FiBookmark, FiClock, FiSettings, FiLogOut } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useLogoutMutation } from '../../features/auth/authApi';
+import { logout } from '../../features/auth/authSlice';
 import ThemeToggle from '../ui/ThemeToggle';
 
 const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth || { isAuthenticated: false, user: null });
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutUser] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+      localStorage.removeItem('token');
+      dispatch(logout());
+      onClose();
+      navigate('/');
+    } catch (err) {
+      dispatch(logout());
+      onClose();
+      navigate('/');
+    }
+  };
 
   useEffect(() => {
     onClose();
@@ -144,6 +165,14 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                     <Link to="/profile" className="flex items-center gap-3 text-lg font-display text-text-primary hover:text-accent transition-colors">
                       <FiUser className="text-accent" /> Profile
                     </Link>
+                  </motion.div>
+                  <motion.div variants={linkVariants}>
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 text-lg font-display text-danger hover:text-danger/80 transition-colors cursor-pointer w-full text-left"
+                    >
+                      <FiLogOut /> Logout
+                    </button>
                   </motion.div>
                 </div>
               ) : (

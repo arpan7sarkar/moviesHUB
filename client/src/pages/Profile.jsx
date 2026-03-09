@@ -66,10 +66,10 @@ const Profile = () => {
       await logoutUser().unwrap();
       localStorage.removeItem('token');
       dispatch(logout());
-      navigate('/login');
+      navigate('/');
     } catch (err) {
       dispatch(logout());
-      navigate('/login');
+      navigate('/');
     }
   };
 

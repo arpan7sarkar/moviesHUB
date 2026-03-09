@@ -73,13 +73,13 @@ const LandingHero = () => {
               </Link>
             </motion.div>
             
-            <Link 
-              to="/login"
+            <a 
+              href="#process"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white/3 border border-white/10 text-text-primary font-bold rounded-xl hover:bg-white/8 transition-colors group"
             >
               <FiPlay className="text-accent group-hover:scale-110 transition-transform" fill="currentColor" />
               <span>See How It Works</span>
-            </Link>
+            </a>
           </div>
 
           {/* Social Proof snippet below CTA */}

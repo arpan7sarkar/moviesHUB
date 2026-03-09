@@ -299,7 +299,7 @@ const TvDetail = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pb-12">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-12">
         {/* Full-bleed Backdrop */}
         <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden">
           {tv.backdrop_path && (

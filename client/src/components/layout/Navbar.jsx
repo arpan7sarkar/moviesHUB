@@ -61,10 +61,10 @@ const Navbar = () => {
     <>
       <nav className={`${location.pathname === '/' ? 'absolute' : 'fixed'} top-0 left-0 right-0 z-50`}>
         <div
-          className={`transition-[background-color,backdrop-filter,border-color,box-shadow,height] duration-500 ease-in-out ${
-            (location.pathname !== '/')
-              ? (isScrolled ? 'h-16 md:h-20 bg-primary/90 backdrop-blur-xl border-b border-border shadow-lg' : 'h-18 md:h-24 bg-primary/0 border-b border-transparent')
-              : 'h-18 md:h-24 bg-transparent border-b border-transparent shadow-none'
+          className={`will-change-transform transition-[margin,margin-top,height,border-radius,background-color,box-shadow,backdrop-filter,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            (isScrolled || location.pathname !== '/')
+              ? 'mx-3 mt-3 md:mx-6 md:mt-4 h-14 md:h-16 rounded-2xl border bg-primary/95 backdrop-blur-xl border-border shadow-[0_12px_35px_rgba(0,0,0,0.32)]'
+              : 'mx-0 mt-0 h-18 md:h-24 rounded-none border border-transparent bg-transparent backdrop-blur-0 shadow-none'
           }`}
         >
         <div className="container-custom h-full flex items-center justify-between">
@@ -154,9 +154,14 @@ const Navbar = () => {
                 </Link>
               </div>
             ) : (
-              <Link to="/register" className="btn-primary py-1.5 px-4 text-sm hidden sm:block">
-                Get Started
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-accent transition-colors hidden sm:block">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn-primary py-1.5 px-4 text-sm hidden sm:block">
+                  Get Started
+                </Link>
+              </div>
             )}
 
             {/* Mobile Menu Toggle */}
