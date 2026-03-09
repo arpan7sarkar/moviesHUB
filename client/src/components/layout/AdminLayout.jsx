@@ -106,7 +106,7 @@ const AdminLayout = () => {
         {/* Sidebar Footer */}
         <div className="border-t border-border px-3 py-3 space-y-2 shrink-0">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/home')}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-elevated hover:text-text-primary transition-all group"
           >
             <FiArrowLeft size={18} className="shrink-0 group-hover:-translate-x-1 transition-transform" />

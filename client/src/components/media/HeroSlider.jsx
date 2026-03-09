@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
 import { FiPlay, FiBookmark, FiStar } from 'react-icons/fi';
@@ -11,6 +12,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 const HeroSlider = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth || {});
   const { data, isLoading, isError } = useGetTrendingQuery({
     mediaType: 'all',
     timeWindow: 'day',
@@ -50,11 +52,13 @@ const HeroSlider = () => {
           const title = item.title || item.name;
           const year = (item.release_date || item.first_air_date)?.substring(0, 4);
           const rating = item.vote_average?.toFixed(1);
+          const mediaRoute = item.media_type === 'tv' ? 'tv' : 'movies';
+          const primaryCta = isAuthenticated ? `/${mediaRoute}/${item.id}` : '/register';
+          const secondaryCta = isAuthenticated ? '/watchlist' : '/login';
           const overview =
             item.overview?.length > 200
               ? item.overview.substring(0, 200) + '...'
               : item.overview;
-          const mediaRoute = item.media_type === 'tv' ? 'tv' : 'movies';
 
           return (
             <SwiperSlide key={item.id}>
@@ -107,16 +111,16 @@ const HeroSlider = () => {
                     {/* CTA Buttons */}
                     <div className="flex flex-wrap items-center gap-3">
                       <Link
-                        to={`/${mediaRoute}/${item.id}`}
+                        to={primaryCta}
                         className="btn-primary cta-pulse flex items-center gap-2 px-7 py-3 text-sm md:text-base"
                       >
                         <FiPlay size={16} className="fill-primary" />
-                        <span className="font-semibold">Watch Now</span>
+                        <span className="font-semibold">{isAuthenticated ? 'Watch Now' : 'Get Started'}</span>
                       </Link>
-                      <button className="flex items-center gap-2 px-5 py-3 bg-black/25 hover:bg-black/35 text-white text-sm md:text-base font-medium rounded-md border border-white/20 hover:border-white/35 transition-all backdrop-blur-sm active:scale-95">
+                      <Link to={secondaryCta} className="flex items-center gap-2 px-5 py-3 bg-black/25 hover:bg-black/35 text-white text-sm md:text-base font-medium rounded-md border border-white/20 hover:border-white/35 transition-all backdrop-blur-sm active:scale-95">
                         <FiBookmark size={16} />
-                        <span>Watchlist</span>
-                      </button>
+                        <span>{isAuthenticated ? 'Watchlist' : 'Sign In'}</span>
+                      </Link>
                     </div>
                   </div>
                 </div>

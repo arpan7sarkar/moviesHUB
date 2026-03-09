@@ -36,7 +36,7 @@ const History = () => {
   if (isLoading) {
     return (
       <PageTransition>
-        <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom flex items-center justify-center">
+        <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
         </div>
       </PageTransition>
@@ -46,7 +46,7 @@ const History = () => {
   if (isError) {
     return (
       <PageTransition>
-        <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom text-center">
+        <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom text-center">
           <p className="text-danger">Failed to load watch history. Please try again later.</p>
         </div>
       </PageTransition>
@@ -70,7 +70,7 @@ const History = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom">
+      <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
           <SectionTitle 
             title="Watch History" 

@@ -14,6 +14,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import RouteErrorBoundary from './components/errors/RouteErrorBoundary';
 
 // Page Components
+const Landing = lazy(() => import('./pages/Landing'));
 const Home = lazy(() => import('./pages/Home'));
 const Movies = lazy(() => import('./pages/Movies'));
 const TvShows = lazy(() => import('./pages/TvShows'));
@@ -83,18 +84,19 @@ function App() {
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={withRouteBoundary(<Home />, 'home')} />
-            <Route path="/movies" element={withRouteBoundary(<Movies />, 'movies')} />
-            <Route path="/tv" element={withRouteBoundary(<TvShows />, 'tv')} />
-            <Route path="/movies/:id" element={withRouteBoundary(<MovieDetail />, 'movie-detail')} />
-            <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
-            <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
-            <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
-            <Route path="/funzone" element={withRouteBoundary(<Funzone />, 'funzone')} />
+            <Route path="/" element={withRouteBoundary(<Landing />, 'landing')} />
             <Route path="/login" element={withRouteBoundary(<Login />, 'login')} />
             <Route path="/register" element={withRouteBoundary(<Register />, 'register')} />
             
             <Route element={withRouteBoundary(<ProtectedRoute />, 'protected')}>
+              <Route path="/home" element={withRouteBoundary(<Home />, 'home')} />
+              <Route path="/movies" element={withRouteBoundary(<Movies />, 'movies')} />
+              <Route path="/tv" element={withRouteBoundary(<TvShows />, 'tv')} />
+              <Route path="/movies/:id" element={withRouteBoundary(<MovieDetail />, 'movie-detail')} />
+              <Route path="/tv/:id" element={withRouteBoundary(<TvDetail />, 'tv-detail')} />
+              <Route path="/person/:id" element={withRouteBoundary(<PersonDetail />, 'person-detail')} />
+              <Route path="/search" element={withRouteBoundary(<SearchResults />, 'search')} />
+              <Route path="/funzone" element={withRouteBoundary(<Funzone />, 'funzone')} />
               <Route path="/favorites" element={withRouteBoundary(<Favorites />, 'favorites')} />
               <Route path="/watchlist" element={withRouteBoundary(<Watchlist />, 'watchlist')} />
               <Route path="/history" element={withRouteBoundary(<History />, 'history')} />

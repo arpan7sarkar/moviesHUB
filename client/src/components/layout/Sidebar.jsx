@@ -92,14 +92,24 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
               {/* Staggered Navigation Links */}
               {navLinks.map((link) => (
                 <motion.div variants={linkVariants} key={link.path}>
-                  <Link
-                    to={link.path}
-                    className={`block text-xl font-display font-semibold transition-colors ${
-                      location.pathname === link.path ? 'text-accent' : 'text-text-primary hover:text-accent'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
+                  {link.path.includes('#') ? (
+                    <a
+                      href={link.path}
+                      onClick={onClose}
+                      className="block text-xl font-display font-semibold text-text-primary hover:text-accent transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={`block text-xl font-display font-semibold transition-colors ${
+                        location.pathname === link.path ? 'text-accent' : 'text-text-primary hover:text-accent'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
               
@@ -138,8 +148,8 @@ const Sidebar = ({ isOpen, onClose, navLinks, isScrolled }) => {
                 </div>
               ) : (
                 <motion.div variants={linkVariants}>
-                  <Link to="/login" className="btn-primary block w-full text-center py-3 text-lg font-display hover:scale-[1.02] active:scale-95 transition-transform">
-                    Sign In
+                  <Link to="/register" className="btn-primary block w-full text-center py-3 text-lg font-display hover:scale-[1.02] active:scale-95 transition-transform">
+                    Get Started
                   </Link>
                 </motion.div>
               )}

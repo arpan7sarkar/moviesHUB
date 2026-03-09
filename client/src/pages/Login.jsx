@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn, FiFilm } from 'react-icons/fi';
@@ -17,13 +17,15 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [login, { isLoading }] = useLoginMutation();
+  const redirectTo = location.state?.from?.pathname || '/home';
 
   // Redirect if already logged in
   useEffect(() => {
-    if (isAuthenticated) navigate('/', { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate(redirectTo, { replace: true });
+  }, [isAuthenticated, navigate, redirectTo]);
 
   const validate = () => {
     const newErrors = {};
@@ -51,7 +53,7 @@ const Login = () => {
       localStorage.setItem('token', res.token);
       dispatch(setUser(res));
       setToast({ show: true, message: 'Welcome back!', type: 'success' });
-      setTimeout(() => navigate('/'), 500);
+      setTimeout(() => navigate(redirectTo, { replace: true }), 500);
     } catch (err) {
       const message = err?.data?.message || err?.data?.error || 'Login failed. Please try again.';
       setToast({ show: true, message, type: 'error' });

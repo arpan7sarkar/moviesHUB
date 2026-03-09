@@ -17,7 +17,7 @@ const Funzone = () => {
 
   return (
     <PageTransition>
-      <main className="min-h-screen bg-primary pt-[4.5rem] md:pt-20 pb-16">
+      <main className="min-h-screen bg-primary pt-18 md:pt-20 pb-16">
         <div className="container-custom">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-12">

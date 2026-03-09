@@ -13,7 +13,7 @@ const Favorites = () => {
   if (isLoading) {
     return (
       <PageTransition>
-        <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom flex items-center justify-center">
+        <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
         </div>
       </PageTransition>
@@ -23,7 +23,7 @@ const Favorites = () => {
   if (isError) {
     return (
       <PageTransition>
-        <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom text-center">
+        <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom text-center">
           <p className="text-danger">Failed to load favorites. Please try again later.</p>
         </div>
       </PageTransition>
@@ -32,7 +32,7 @@ const Favorites = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-[4.5rem] md:pt-20 pb-20 container-custom">
+      <div className="min-h-screen pt-18 md:pt-20 pb-20 container-custom">
         <SectionTitle 
           title="My Favorites" 
           subtitle="Your absolute cinematic preferences"
