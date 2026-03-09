@@ -19,8 +19,21 @@ connectDB();
 
 // Global Middleware
 app.use(helmet());
+
+if (env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // Trust first proxy for secure cookies
+}
+
+const allowedOrigins = env.CLIENT_URL ? env.CLIENT_URL.split(',').map(url => url.trim()) : ['http://localhost:5173', 'http://localhost:5174'];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
